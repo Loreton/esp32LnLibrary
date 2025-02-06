@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 06-02-2025 08.57.59
+// Date .........: 06-02-2025 17.51.49
 vedere test_file: /home/loreto/lnProfile/appls/Arduino-ESP32/Esp32TEST/LnFunctions/src/splitString_ok.cpp
 */
 
@@ -104,3 +104,27 @@ char * getWord(char *input_str, const char *delim, uint8_t word_nr) {
     return ptr;
 }
 
+
+int main() {
+
+    String xxx = "Here; is some; sample;100;data;1.414;1020";
+    splitString_OK(xxx, ";");
+    // splitString_type01a(xxx, ";");
+    char myString[] = "Here; is some; sample;100;data;1.414;1020";
+    // split_StringType(xxx, ';');
+    // split_cStringType(myString, ';');
+    split_anyString(xxx, ';');
+    split_anyString(myString, ';');
+}
+
+
+void setup() {
+    Serial.begin(115200);
+    delay(2000);
+    main()
+
+}
+
+
+
+void loop() {}

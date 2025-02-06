@@ -1,0 +1,79 @@
+/*
+ *  An example sketch using the Preferences "Bytes" methods
+ *   to store and retrieve an arbitrary number of bytes in
+ *   a namespace.
+ */
+
+#include <Preferences.h>
+
+#define RO_MODE true
+#define RW_MODE false
+
+
+void setup() {
+
+    Preferences mySketchPrefs;
+
+    Serial.begin(115200);
+    delay(250);
+
+    mySketchPrefs.begin("myPrefs", RW_MODE);   // open (or create) the namespace
+                                               //  "myPrefs" in RW mode
+    mySketchPrefs.clear();                     // delete any previous keys in this namespace
+
+    // Create an array of test values. We're using hex numbers
+    //  throughout to better show how the bytes move around.
+    int16_t myArray[] = { 0x1112, 0x2122, 0x3132, 0x4142, 0x5152, 0x6162, 0x7172 };
+
+    Serial.println("Printing myArray...");
+    for (int i = 0; i < sizeof(myArray) / sizeof(int16_t); i++) {
+        Serial.print(myArray[i], HEX); Serial.print(", ");
+    }
+    Serial.println("\n");
+
+    // In the next statement, the second sizeof() needs
+    //  to match the data type of the elements of myArray
+    Serial.print("The number of elements in myArray is: ");
+    Serial.println( sizeof(myArray) / sizeof(int16_t) );
+    Serial.print("But the size of myArray in bytes is: ");
+    Serial.println( sizeof(myArray) );
+    Serial.println("");
+
+    Serial.println("Storing myArray into the Preferences namespace 'myPrefs' against the key 'myPrefsBytes'.");
+    // Note: in the next statement, to store the entire array, we must use the
+    //  size of the array in bytes, not the number of elements in the array.
+    mySketchPrefs.putBytes( "myPrefsBytes", myArray, sizeof(myArray) );
+    Serial.print("The size of \"myPrefsBytes\" is (in bytes): ");
+    Serial.println( mySketchPrefs.getBytesLength("myPrefsBytes") );
+    Serial.println("");
+
+    int16_t myIntBuffer[20] = {}; // No magic about 20. Just making a buffer (array) big enough.
+    Serial.println("Retrieving the value of myPrefsBytes into myIntBuffer.");
+    Serial.println("   - Note the data type of myIntBuffer matches that of myArray");
+    mySketchPrefs.getBytes("myPrefsBytes", myIntBuffer,
+                           mySketchPrefs.getBytesLength("myPrefsBytes"));
+
+    Serial.println("Printing myIntBuffer...");
+    // In the next statement, sizeof() needs to match the data type of the elements of myArray
+    for (int i = 0; i < mySketchPrefs.getBytesLength("myPrefsBytes") / sizeof(int16_t); i++) {
+       Serial.print(myIntBuffer[i], HEX); Serial.print(", ");
+    }
+    Serial.println("\n");
+
+    Serial.println(
+      "We can see how the data from myArray is actually stored in the namespace as follows.");
+    uint8_t myByteBuffer[40] = {}; // No magic about 40. Just making a buffer (array) big enough.
+    mySketchPrefs.getBytes("myPrefsBytes", myByteBuffer,
+                           mySketchPrefs.getBytesLength("myPrefsBytes"));
+
+    Serial.println("Printing myByteBuffer...");
+    for (int i = 0; i < mySketchPrefs.getBytesLength("myPrefsBytes"); i++) {
+       Serial.print(myByteBuffer[i], HEX); Serial.print(", ");
+    }
+    Serial.println("");
+
+}
+
+void loop() {
+  ;
+}
