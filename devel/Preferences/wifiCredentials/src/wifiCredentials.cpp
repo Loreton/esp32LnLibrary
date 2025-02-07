@@ -10,150 +10,212 @@
 */
 
 #include <Preferences.h>
-#include "WiFi.h"
 
-// #define _LN_SSID_CPP
-// #include "ln_ssid.h"
-
+bool RO_MODE = true;
+bool RW_MODE = false;
 
 
+#define printf Serial.printf
+#define println Serial.println
+
+const char PROGMEM *ssid_NameSpace = "ssids_ns";
+// const char PROGMEM *ssidList_key = "ssids_list";
+// const char PROGMEM *ssid_keyIndex = "ssids_list";
+const char PROGMEM *ssid_NRs = "nr_ssids";
+
+const char * PROGMEM base_SSIDs     [] = {"Casetta",      "cpe210",        "OpenWrt",      "LoretoHotSpot", "Loreto.net",   "WebPocket-4545"};
+const char * PROGMEM base_PASSWORDs [] = {"CasettaPassw", "cpe210Passw", "OpenWrtPassw", "LoretohsPassw",      "LoretonetPassw",    "WebSockPassw"};
+uint8_t SSID_NUMBERS = sizeof(base_SSIDs) / sizeof(base_SSIDs[0]); // calcolo del numero di elementi
+
+char  *cSSID[20];
+String sSSID[20];
+
+// typedef struct {
+//     String ssid;
+//     String password;
+// } ssid_String_t;
+
+#define MAX_SSID_LEN 20
+typedef struct {
+    const char ssid[MAX_SSID_LEN];
+    const char password[MAX_SSID_LEN];
+} ssid_char_t;
+
+ssid_char_t *ssidStruct;
+
+/* ----------------------------------
+    Siccome non è possibile avere una lista delle keyValue nel namespace
+    creiamo una key_index_list per sopperire
+    nr_ssids -> numero degli SSIDs
+    01 -> ssid1
+    02 -> ssid2
+    ...
+    che ci aiuterà per fare il retrieve della password
+    ... e poi:
+    ssid1 -> password1
+    ...
+    convivono nello stesso namespace ma non credo sia un problema
+---------------------------------------*/
+
+void writeSSIDs(Preferences ns) {
+    // non potendo avere il sizeof di un char * calcolo il numero di elementi
+    const size_t SSID_NUMBERS = sizeof(base_SSIDs) / sizeof(base_SSIDs[0]); // calcolo del numero di elementi
+
+    // numero degli SSID
+    ns.putChar(ssid_NRs, SSID_NUMBERS);
+
+    // buffer per numero sequenziale dell'indice
+    char buf[4];
+    for (int i = 0; i < SSID_NUMBERS; ++i) {
+        sprintf(buf, "%02x", i);
+        // write index
+        printf("writing: %s, String = %s\n", buf, base_SSIDs[i]);
+        ns.putString(buf, base_SSIDs[i]);
+        printf("writing: %s, String = %s\n", base_SSIDs[i], base_PASSWORDs[i]);
+        // write ssid-psw
+        ns.putString(base_SSIDs[i], base_PASSWORDs[i]);
+     }
+}
 
 
+// ssid into char using malloc()
+void readSSIDs_malloc(Preferences ns) {
+    String password;
+    String ssid;
+    // retrieve del numero di SSIds
+    // int8_t nr_ssids = ns.getChar(ssid_NRs);
+    SSID_NUMBERS = ns.getChar(ssid_NRs);
 
-// ##########################################################
-// #
-// ##########################################################
-String readKey(const char * nameSpace, const char * key_name) {
-    Preferences preferences;
-    Serial.printf("\n\nReading key: %s\n", key_name);
+    // buffer per numero sequenziale dell'indice
+    char buf[4];
+    for (int i = 0; i < SSID_NUMBERS; ++i) {
+        sprintf(buf, "%02x", i);
+        ssid = ns.getString(buf);
+        printf("read: %s, value = %s\n", buf, ssid.c_str());
 
-    preferences.begin(nameSpace, true);
-    String value = preferences.getString(key_name); // prototype String getString(const char* key, String defaultValue = String());
-    preferences.end();
+        password = ns.getString(ssid.c_str());
+        printf("ssid: %s, password = %s\n", ssid.c_str(), password.c_str());
 
-    if (value == "") {
-        Serial.printf("     No values found for %s\n", key_name);
-    } else {
-        Serial.printf("     value: %s for key: %s has been read from flash memory\n", value, key_name);
+        // convert co char* using malloc ... ma non mi fido
+        int str_len = ssid.length() + 1;
+        cSSID[i] = (char *)malloc((str_len+1) * sizeof(char ));;
+        ssid.toCharArray(cSSID[i], str_len);
+        printf("%d - s_ssid: %s\n", i, ssid.c_str());
+        printf("%d - new_ssid: %s\n", i, cSSID[i]);
+        println();
+     }
+}
+
+// ssid into char
+void readSSIDs_struct_char(Preferences ns) {
+    // retrieve del numero di SSIds
+    SSID_NUMBERS = ns.getChar(ssid_NRs);
+    ssid_char_t xxx[22];
+    ssidStruct = &xxx;
+    // buffer per numero sequenziale dell'indice
+    char buf[4];
+    for (int i = 0; i < SSID_NUMBERS; ++i) {
+        // prepara l'indice per leggere l'ssid index
+        sprintf(buf, "%02x", i);
+        size_t len = ns.getString(buf, ssidStruct->ssid, MAX_SSID_LEN);
+        printf("read: %s, value = %s (len: %d)\n", buf, ssidStruct->ssid, len);
+
+        // password = ns.getString(ssid.c_str());
+        // printf("ssid: %s, password = %s\n", ssid.c_str(), password.c_str());
+
+        // // convert co char* using malloc ... ma non mi fido
+        // int str_len = ssid.length() + 1;
+        // cSSID[i] = (char *)malloc((str_len+1) * sizeof(char ));;
+        // ssid.toCharArray(cSSID[i], str_len);
+        // printf("%d - s_ssid: %s\n", i, ssid.c_str());
+        // printf("%d - new_ssid: %s\n", i, cSSID[i]);
+        // println();
+     }
+}
+
+// ssid into String
+void readSSIDs_String(Preferences ns) {
+    String password;
+    // retrieve del numero di SSIds
+    // int8_t nr_ssids = ns.getChar(ssid_NRs);
+    SSID_NUMBERS = ns.getChar(ssid_NRs);
+
+    // buffer per numero sequenziale dell'indice
+    char buf[4];
+    for (int i = 0; i < SSID_NUMBERS; ++i) {
+        sprintf(buf, "%02x", i);
+        sSSID[i] = ns.getString(buf);
+        printf("read: %s, value = %s\n", buf, sSSID[i].c_str());
+
+        password = ns.getString(sSSID[i].c_str());
+        printf("ssid: %s, password = %s\n", sSSID[i].c_str(), password.c_str());
+
+     }
+}
+
+// ssid into String
+void readSSIDs_String(Preferences ns) {
+    String password;
+    String ssid;
+    // retrieve del numero di SSIds
+    // int8_t nr_ssids = ns.getChar(ssid_NRs);
+    SSID_NUMBERS = ns.getChar(ssid_NRs);
+
+    // buffer per numero sequenziale dell'indice
+    char buf[4];
+    for (int i = 0; i < SSID_NUMBERS; ++i) {
+        sprintf(buf, "%02x", i);
+        sSSID[i] = ns.getString(buf);
+        printf("read: %s, value = %s\n", buf, sSSID[i].c_str());
+
+        password = ns.getString(sSSID[i].c_str());
+        printf("ssid: %s, password = %s\n", sSSID[i].c_str(), password.c_str());
+
+     }
+}
+
+
+// ssid into struct
+void setSssidPreferences() {
+    Preferences ssidPrefs;
+    ssidPrefs.begin(ssid_NameSpace, RO_MODE);           // Open our namespace (or create it
+
+    //  if it doesn't exist) in RO mode.
+    bool isSsidList = ssidPrefs.isKey(ssid_NRs);     // Test for the existence
+    if (isSsidList == false) {
+        ssidPrefs.end();                             // close the namespace in RO mode and...
+        ssidPrefs.begin(ssid_NameSpace, RW_MODE);        //  reopen it in RW mode.
+        writeSSIDs(ssidPrefs);
+        ssidPrefs.end();                             // Close the namespace in RW mode and...
+        ssidPrefs.begin(ssid_NameSpace, RO_MODE);        //  reopen it in RO mode so the setup code
+
     }
 
-    return value;
-}
+    // Retrieve the operational parameters from the namespace
+    //  and save them into their run-time variables.
+    // String data = ssidPrefs.getString(ssid_NRs);
+    // const char *cdata = ssidPrefs.getString(ssid_NRs);
+    // readSSIDs_String(ssidPrefs);
+    readSSIDs_struct_char(ssidPrefs);
+    ssidPrefs.end();                                      // Close our preferences namespace.
 
+    // printf("xxxssid: %s\n", xxxSSID);
 
-// ##########################################################
-// #
-// ##########################################################
-void writeKeyValue(const char * nameSpace, const char * key, const char * value) {
-    Preferences preferences;
-
-    Serial.printf("\nWriting key: %s = %s\n", key, value);
-
-    preferences.begin(nameSpace, false);
-    preferences.putString(key, value);
-    preferences.end();
-
-    Serial.println("    Network Credentials Saved using Preferences");
+    // printf("ssid list keys: %s", data.c_str());
 
 }
 
 
-// ##########################################################
-// #
-// ##########################################################
-bool connectWiFi(String ssid, String password) {
-    uint32_t notConnectedCounter = 0;
-    bool fConnected = true;
-    const int  DELAY = 200;
-    const uint8_t  TIMEOUT = 15; // seconds
 
-    // Connect to Wi-Fi
-    WiFi.mode(WIFI_STA);
-    WiFi.begin(ssid.c_str(), password.c_str());
-    Serial.printf("Connecting to SSID: %s ", ssid);
-
-    // Wait for wifi to be connected
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(DELAY);
-        Serial.print(".");
-        if ( ++notConnectedCounter > (TIMEOUT * (1000/DELAY)) ) { // Reset board if not connected after 15s
-            fConnected = false;
-            Serial.printf("\nerror connecting to SSID: %s\n", ssid);
-            // ESP.restart();
-            break;
-        }
-    }
-
-    return fConnected;
-}
-
-
-
-
-
-
-const char * nsWiFiCredentials = "wifiCredentials";
-
-// ##########################################################
-// #
-// ##########################################################
 void setup() {
     Serial.begin(115200);
-    Serial.println("waiting 2 seconds ..");
     delay(2000);
+    println();
 
-    // String ssid1 = preferences.getString("ssid", "");
-
-    String ssid1     = readKey(nsWiFiCredentials, "ssid1");
-    String password1 = readKey(nsWiFiCredentials, "password1");
-    String ssid2     = readKey(nsWiFiCredentials, "ssid2");
-    String password2 = readKey(nsWiFiCredentials, "password2");
-
-
-
-    Serial.printf("\nNetwork Credentials Read using Preferences\n");
-    Serial.printf("    ssid1......: %s\n", ssid1);
-    Serial.printf("    password1..: %s\n", password1);
-    Serial.printf("    ssid2......: %s\n", ssid2);
-    Serial.printf("    password2..: %s\n", password2);
-
-    if (ssid1 == "" or password1 == "") { // se falso ....
-        writeKeyValue(nsWiFiCredentials, "ssid1",     WIFI_SSID1);
-        writeKeyValue(nsWiFiCredentials, "password1", WIFI_PASS1);
-    }
-
-    if (ssid2 == "" or password2 == "") { // se falso ....
-        writeKeyValue(nsWiFiCredentials, "ssid2",      WIFI_SSID2);
-        writeKeyValue(nsWiFiCredentials, "password2",  WIFI_PASS2);
-    }
-
-    bool fConnected=false;
-    fConnected = connectWiFi(ssid2, password2);
-    if (!fConnected) {
-        fConnected = connectWiFi(ssid1, password1);
-    }
-
-    Serial.printf("\nconnected to WIFI\n");
-
-
-    if (fConnected) {
-        Serial.println("scanning wifi networks");
-        int n = WiFi.scanNetworks();
-        Serial.println("scan done");
-        if (n == 0) {
-            Serial.println("no networks found");
-        } else {
-            Serial.printf("%d networks found\n", n);
-            for (int i = 0; i < n; ++i) {
-                // Print SSID and RSSI for each network found
-                // Serial.printf("STATION Mode, IP address: %s, SSID: %s, RSSI: %d\n", WiFi.localIP().toString().c_str(), WiFi.SSID().c_str(), WiFi.RSSI());
-                Serial.printf("     [%02d] - SSID: %-20s - RSSI: %d\n", i + 1, WiFi.SSID(i), WiFi.RSSI(i) );
-                delay(10);
-            }
-            Serial.printf("Local IP: %s", WiFi.localIP().toString().c_str());
-        }
-    }
-
+    setSssidPreferences();
+    // for (int8_t i=0; i<SSID_NUMBERS; i++) {
+    //     printf("%d - new_ssid: %s\n", i, sSSID[i].c_str());
+    // }
 }
 
 
