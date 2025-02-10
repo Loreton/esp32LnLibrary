@@ -12,12 +12,11 @@
 #include <Arduino.h>
 #include <Preferences.h>
 
-// --- loreto
+// --- correlate
 #include "@ln_wifi.h"
-// #include "@ln_ssids.h" // contiene ple password degli SSIDs
-#include "@ssidsTypeChar.h" // contiene ple password degli SSIDs
+#include "@ssidsTypeChar.h" // contiene le password degli SSIDs /home/loreto/lnProfile/envars/include/@ssidsTypeChar.h
 
-// --- loreto others
+// ---  others
 #include "@lnMacros.h"
 
 

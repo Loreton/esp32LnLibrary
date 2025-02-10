@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 07-02-2025 16.44.12
+// Date .........: 08-02-2025 16.03.32
 */
 
 #include <Arduino.h>
@@ -15,7 +15,6 @@
         //#define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
     #endif
 
-    #define m_FNAME                     Serial.printf(PSTR("[%-20s:%04d] "), __FILENAME__, __LINE__)
 
 
 
@@ -29,6 +28,7 @@
     // #define m_NOW
     // -------------------------------------------------
 
+    #define m_FNAME                     Serial.printf(PSTR("[%-20s:%04d] "), __FILENAME__, __LINE__)
 
 
     #define SERIAL_BEGIN(...)           Serial.begin(__VA_ARGS__)

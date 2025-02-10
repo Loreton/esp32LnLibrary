@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 07-02-2025 17.57.50
+// Date .........: 10-02-2025 18.44.26
 */
 
 #ifndef __LN_WIFI__
@@ -25,20 +25,21 @@
     // ssid_t *ssidPtr;
 
     typedef struct {
-        bool        updated;                         /** data in struct was changed */
+        bool        available = false;                         /** data in struct was changed */
         const char  *ssid;                     /**< SSID of AP */
         const char  *password;
-        uint8_t     *bssid;                     /**< MAC address of AP */
+        uint8_t     *bssid = NULL;                     /**< MAC address of AP */
         const char  *bssidStr;                     /**< MAC address of AP */
-        uint8_t     channel;                      /**< channel of AP */
-        int8_t      rssi;                         /**< signal strength of AP */
-        int8_t      diff_rssi;                         /**< signal strength of AP */
+        uint8_t     channel = 0;                      /**< channel of AP */
+        int8_t      rssi = -127;                         /**< signal strength of AP */
+        // int8_t      diff_rssi=0;                         /**< signal strength of AP */
+        int8_t      is_better=false;       // newRSSI better than curRSSI
     } structNET;
+
 
 
     extern structNET bestSSID;
     // extern structNET *bestssid;
-
 
 
 
@@ -50,9 +51,19 @@
     void wifi_Start(void);
     bool processScannedNetworks(int16_t networksFound);
     void wifi_connect(void);
+    void wifi_reconnect(void);
     // void wifi_connect(const char *ssid, const char *pass);
     int ssidInList(const char *ssid);
+    bool connectOnScanResult(int16_t networksFound=-99);
 
+    // inline bool wifi_isConnected(void);
+    // inline void wifi_asyncScan(void);
+    // inline void wifi_scanDelete(void);
+    // inline int16_t wifi_scanComplete(void);
 
+    bool wifi_isConnected(void);
+    void wifi_asyncScan(void);
+    void wifi_scanDelete(void);
+    int16_t wifi_scanComplete(void);
 
 #endif
