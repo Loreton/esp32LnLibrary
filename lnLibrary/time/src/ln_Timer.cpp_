@@ -1,0 +1,36 @@
+//
+// updated by ...: Loreto Notarantonio
+// Date .........: 12-02-2025 09.48.43
+// ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
+//
+
+#include <Arduino.h>    // in testa anche per le definizioni dei type
+#include <ESP32Time.h> // ESP32Time.cpp
+
+
+
+#include "@ln_MillisTimer.h"
+
+// struct tm timeinfo2;
+extern ESP32Time     rtc;
+struct tm timeinfo2;
+
+
+
+
+// #########################################
+// # con EPOCH time
+// #########################################
+
+void setPulsetime(structTimer_t *t, uint32_t seconds) {
+    t->pulsetime = seconds;
+}
+
+void setTimer(structTimer_t *t, int8_t hh, int8_t mm, int8_t ss) {
+    t->hh = hh;
+    t->min = min;
+    t->sec = sec;
+}
+
+
+

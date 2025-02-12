@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 06-02-2025 08.27.53
+// Date .........: 12-02-2025 09.47.08
 */
 
 #include <ESP32Time.h> // per definire ESP32Time rtc;
@@ -34,6 +34,8 @@
     void printLocalTime(struct tm *timeinfo);
     void print_rtc_time(void);
 
+    bool isMinuteOClock(void);
+    bool isQuarterOClock(void);
     // void printTime(void);
 
 

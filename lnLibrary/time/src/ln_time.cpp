@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 11-02-2025 19.09.18
+// Date .........: 12-02-2025 14.56.03
 */
 
 #include "Arduino.h"
@@ -43,6 +43,7 @@ char PROGMEM buffer_time[TIME_BUFFER_LENGTH];
 
 
 
+struct tm timeinfo = rtc.getTimeStruct();
 
 // #########################################
 // #
@@ -65,7 +66,7 @@ void time_setup() {
 // // #########################################
 char *nowTime() {
     // struct tm timeinfo = get_timeinfo();
-    struct tm timeinfo = rtc.getTimeStruct();
+    timeinfo = rtc.getTimeStruct();
     snprintf(buffer_time, TIME_BUFFER_LENGTH, "%02d:%02d:%02d", timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
     // snprintf(buffer_time, TIME_BUFFER_LENGTH, "%s", "01:02:03");
     return buffer_time;
@@ -82,11 +83,32 @@ char *nowTime() {
 
 
 
+bool isMinuteOClock() {
+    static int8_t last_minute=-1;
+    timeinfo = rtc.getTimeStruct();
+    if (timeinfo.tm_sec == 0 && timeinfo.tm_min != last_minute) {
+        last_minute = timeinfo.tm_min;
+        return true;
+    }
+    return false;
+}
+
+bool isQuarterOClock() {
+    static int8_t last_minute=-1;
+    timeinfo = rtc.getTimeStruct();
+
+    if (timeinfo.tm_min%15 == 0 && timeinfo.tm_min != last_minute) {
+        last_minute = timeinfo.tm_min;
+        return true;
+    }
+    return false;
+}
+
+
 // #########################################
 // #
 // #########################################
 int8_t waitForSecond(void) {
-    struct tm timeinfo = rtc.getTimeStruct();
     int8_t last_second = timeinfo.tm_sec;
     while (timeinfo.tm_sec == last_second) {
         delay(50);
@@ -99,7 +121,7 @@ int8_t waitForSecond(void) {
 // # return mssing seconds to minutes (60)
 // #########################################
 int secondsToMinute() {
-    struct tm timeinfo = rtc.getTimeStruct();
+    timeinfo = rtc.getTimeStruct();
     int sec_of_day=(timeinfo.tm_hour*3600) + (timeinfo.tm_min*60)  + timeinfo.tm_sec;
     int rest = sec_of_day % 60;
     printf0_FN("sec_of_day: %d rest: %d\n", sec_of_day, rest);
@@ -112,27 +134,28 @@ int secondsToMinute() {
 // #########################################
 // #
 // #########################################
-struct tm get_timeinfo(void) {
-    struct tm timeinfo;
-    getLocalTime(&timeinfo);
-    return timeinfo;
-}
+// struct tm get_timeinfo(void) {
+//     struct tm timeinfo;
+//     getLocalTime(&timeinfo);
+//     return timeinfo;
+// }
 
 // #########################################
 // # return seconds
 // #########################################
-uint8_t getSeconds(void) {
-    struct tm timeinfo;
-    getLocalTime(&timeinfo);
-    return timeinfo.tm_sec;
-}
+// uint8_t getSeconds(void) {
+//     timeinfo = rtc.getTimeStruct();
+//     struct tm timeinfo;
+//     getLocalTime(&timeinfo);
+//     return timeinfo.tm_sec;
+// }
 
 
 // #########################################
 // # return seconds of day
 // #########################################
 int secondsOfDay(int offset) {
-    struct tm timeinfo = rtc.getTimeStruct();
+    timeinfo = rtc.getTimeStruct();
     return (timeinfo.tm_hour*3600) + (timeinfo.tm_min*60) + timeinfo.tm_sec + offset;
 }
 
@@ -140,7 +163,7 @@ int secondsOfDay(int offset) {
 // # return minutes of day
 // #########################################
 int minutesOfDay(int offset) {
-    struct tm timeinfo = rtc.getTimeStruct();
+    timeinfo = rtc.getTimeStruct();
     return (timeinfo.tm_hour*3600) + timeinfo.tm_min  + offset;
 }
 

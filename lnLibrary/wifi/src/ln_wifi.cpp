@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 11-02-2025 15.50.49
+// Date .........: 12-02-2025 16.11.39
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -25,7 +25,7 @@
 // ---------------------------------
 // macros Aliases
 // ---------------------------------
-#define print_ln    LN_PRINTln
+// #define print_ln    LN_PRINTln
 
 #define printf0     LN_PRINTf
 #define printf0_FN  LN_PRINTf_FN

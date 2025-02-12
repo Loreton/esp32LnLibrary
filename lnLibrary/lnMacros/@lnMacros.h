@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 11-02-2025 17.15.59
+// Date .........: 12-02-2025 16.50.27
 */
 
 #include <Arduino.h>
@@ -32,8 +32,10 @@
 
 
     #define SERIAL_BEGIN(...)           Serial.begin(__VA_ARGS__)
+
     #define LN_PRINT(...)               Serial.print(__VA_ARGS__)
     #define LN_PRINTln(...)             Serial.println(__VA_ARGS__)
+
     #define LN_PRINTf(...)              Serial.printf(__VA_ARGS__, __VA_ARGS__)
 
     #define LN_PRINTf_FN(...)           m_FNAME; Serial.printf( __VA_ARGS__, __VA_ARGS__)
