@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 12-02-2025 16.11.39
+// Date .........: 13-02-2025 10.46.15
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -25,20 +25,20 @@
 // ---------------------------------
 // macros Aliases
 // ---------------------------------
-// #define print_ln    LN_PRINTln
+// #define print_ln    lnPrintLN
 
-#define printf0     LN_PRINTf
-#define printf0_FN  LN_PRINTf_FN
-#define printf0_NFN LN_PRINTf_NowFN
+#define printf0     lnPrintF
+#define printf0_FN  lnPrintF_FN
+#define printf0_NFN lnPrintF_NowFN
 
-#define printf2     /*LN_PRINTf*/
-#define printf2_FN  /*LN_PRINTf_FN*/
-#define printf2_NFN /*LN_PRINTf_NowFN*/
+#define printf2     /*lnPrintF*/
+#define printf2_FN  /*lnPrintF_FN*/
+#define printf2_NFN /*lnPrintF_NowFN*/
 
-#define printf3     /*LN_PRINTf*/
-#define printf3_FN  /*LN_PRINTf_FN*/
+#define printf3     /*lnPrintF*/
+#define printf3_FN  /*lnPrintF_FN*/
 
-#define printf4     /*LN_PRINTf*/
+#define printf4     /*lnPrintF*/
 
 
 
@@ -377,7 +377,18 @@ bool connectOnScanResult(int16_t networksFound) {
 //# ref: https://github.com/espressif/arduino-esp32/blob/master/libraries/WiFi/examples/WiFiScanAsync/WiFiScanAsync.ino
 //##############################################################
 void wifi_Start() {
-    setWifiCredentials();
+    #ifdef LN_USE_LITTLEFS
+        #include "fileSystem.h"
+        // ---- open "fileSystem.cpp"
+        if (! openLittleFS() ) {return; }
+
+        // ---- read ssid json file "loadSsid.cpp"
+        SSID_ARRAY_COUNT = load_ssidArray(LittleFS, "/ssids.json");
+        lnprintf("loaded  %d ssid network definitions\n", SSID_ARRAY_COUNT);
+        if (SSID_ARRAY_COUNT < 0) {return;}
+    #else
+        setWifiCredentials();
+    #endif
 
     printf0_NFN("syncronous_Scan start\n");
     // int16_t networksFound = WiFi.scanNetworks(false);  // 'false' turns Async Mode OFF

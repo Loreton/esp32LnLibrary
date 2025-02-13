@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 07-02-2025 09.24.52
+// Date .........: 13-02-2025 09.38.05
 */
 
 
@@ -58,6 +58,9 @@ void StringToChar() {
 }
 
 
+
+#if 0
+
 int  main() {
     StringToChar();
     println();
@@ -77,3 +80,4 @@ void setup() {
 }
 
 void loop() {}
+#endif

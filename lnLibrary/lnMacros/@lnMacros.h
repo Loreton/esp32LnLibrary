@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 12-02-2025 16.50.27
+// Date .........: 13-02-2025 09.17.35
 */
 
 #include <Arduino.h>
@@ -22,7 +22,7 @@
     // -------------------------------------------------
     char * nowTime(void);
     char * nowTimeDummy(void);
-    // - insert one of these if defined otherwise BLANK...
+    // - insert one of these if defined otherwise BLANK...,
     #define m_NOW                       Serial.printf("[%s]: ", nowTime())
     // #define m_NOW                       Serial.printf("[%s]: ", nowTimeDummy())
     // #define m_NOW
@@ -34,13 +34,13 @@
     #define SERIAL_BEGIN(...)           Serial.begin(__VA_ARGS__)
 
     #define LN_PRINT(...)               Serial.print(__VA_ARGS__)
-    #define LN_PRINTln(...)             Serial.println(__VA_ARGS__)
+    #define lnPrintLN(...)             Serial.println(__VA_ARGS__)
 
-    #define LN_PRINTf(...)              Serial.printf(__VA_ARGS__, __VA_ARGS__)
+    #define lnPrintF(...)              Serial.printf(__VA_ARGS__, __VA_ARGS__)
 
-    #define LN_PRINTf_FN(...)           m_FNAME; Serial.printf( __VA_ARGS__, __VA_ARGS__)
-    #define LN_PRINTf_Now(...)          m_NOW;   Serial.printf( __VA_ARGS__, __VA_ARGS__)
-    #define LN_PRINTf_NowFN(...)        m_NOW;   m_FNAME; Serial.printf( __VA_ARGS__, __VA_ARGS__)
+    #define lnPrintF_FN(...)           m_FNAME; Serial.printf( __VA_ARGS__, __VA_ARGS__)
+    #define lnPrintF_Now(...)          m_NOW;   Serial.printf( __VA_ARGS__, __VA_ARGS__)
+    #define lnPrintF_NowFN(...)        m_NOW;   m_FNAME; Serial.printf( __VA_ARGS__, __VA_ARGS__)
 
 
     // #define lnprintf(...)           Serial.printf(PSTR("[%-20s:%04d] "), __FILENAME__, __LINE__);Serial.printf( __VA_ARGS__, __VA_ARGS__)

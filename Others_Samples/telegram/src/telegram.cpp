@@ -17,8 +17,8 @@
 // ---------------------------------
 // macros Aliases
 // ---------------------------------
-// #define printf0                       LN_PRINTf
-#define printf0_NFN                    LN_PRINTf_NowFN
+// #define printf0                       lnPrintF
+#define printf0_NFN                    lnPrintF_NowFN
 
 
 

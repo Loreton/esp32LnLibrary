@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 04-02-2025 15.59.28
+// Date .........: 13-02-2025 09.43.43
 */
 
 // #define PIPPO
@@ -135,7 +135,7 @@ void rtrim(char *s) {
 }
 
 
-
+#if 0
 int main() {
     char s[] = " \t  Hello, Geeks!    x";
     printf("original: '%s'\n", s);
@@ -159,3 +159,6 @@ void setup() {
  
 
 void loop() {}
+
+
+#endif

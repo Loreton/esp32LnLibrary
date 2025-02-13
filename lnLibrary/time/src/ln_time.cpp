@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 12-02-2025 14.56.03
+// Date .........: 13-02-2025 09.17.33
 */
 
 #include "Arduino.h"
@@ -25,20 +25,20 @@ char PROGMEM buffer_time[TIME_BUFFER_LENGTH];
 // ---------------------------------
 // macros Aliases
 // ---------------------------------
-#define print_ln    LN_PRINTln
+#define print_ln    lnPrintLN
 
-#define printf0     LN_PRINTf
-#define printf0_FN  LN_PRINTf_FN
-#define printf0_NFN LN_PRINTf_NowFN
+#define printf0     lnPrintF
+#define printf0_FN  lnPrintF_FN
+#define printf0_NFN lnPrintF_NowFN
 
-#define printf2     /*LN_PRINTf*/
-#define printf2_FN  /*LN_PRINTf_FN*/
-#define printf2_NFN /*LN_PRINTf_NowFN*/
+#define printf2     /*lnPrintF*/
+#define printf2_FN  /*lnPrintF_FN*/
+#define printf2_NFN /*lnPrintF_NowFN*/
 
-#define printf3     /*LN_PRINTf*/
-#define printf3_FN  /*LN_PRINTf_FN*/
+#define printf3     /*lnPrintF*/
+#define printf3_FN  /*lnPrintF_FN*/
 
-#define printf4     /*LN_PRINTf*/
+#define printf4     /*lnPrintF*/
 
 
 

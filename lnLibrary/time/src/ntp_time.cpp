@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 11-02-2025 19.10.20
+// Date .........: 13-02-2025 09.16.38
 */
 
 #include "Arduino.h"
@@ -15,7 +15,7 @@
 // --- others
 #include "@lnMacros.h"
 
-#define printf0_Now                  LN_PRINTf_NowFN
+#define printf0_Now                  lnPrintF_NowFN
 
 #define EUROPE_ROME_TZ "CET-1CEST,M3.5.0,M10.5.0/3" // https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv
 
