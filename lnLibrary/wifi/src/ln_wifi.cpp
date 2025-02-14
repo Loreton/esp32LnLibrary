@@ -377,6 +377,7 @@ bool connectOnScanResult(int16_t networksFound) {
 //# ref: https://github.com/espressif/arduino-esp32/blob/master/libraries/WiFi/examples/WiFiScanAsync/WiFiScanAsync.ino
 //##############################################################
 void wifi_Start() {
+
     #ifdef LN_USE_LITTLEFS
         #include "fileSystem.h"
         // ---- open "fileSystem.cpp"
@@ -388,7 +389,10 @@ void wifi_Start() {
         if (SSID_ARRAY_COUNT < 0) {return;}
     #else
         setWifiCredentials();
+        #endif
+    #if 0
     #endif
+
 
     printf0_NFN("syncronous_Scan start\n");
     // int16_t networksFound = WiFi.scanNetworks(false);  // 'false' turns Async Mode OFF

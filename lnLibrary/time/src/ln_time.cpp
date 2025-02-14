@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 13-02-2025 09.17.33
+// Date .........: 14-02-2025 10.06.01
 */
 
 #include "Arduino.h"
@@ -80,6 +80,27 @@ char *nowTime() {
 // void printTime(void) {
     // printf0_FN("\tnow: %s\n\tepoch: %ull\n\tsecondsOfDay: %d\n\tminutesOfDay: %d\n", Now(), getEpoch(), secondsOfDay(), minutesOfDay());
 // }
+
+// allineamento al minuto ...
+void alignToMinute() {
+    printf0_NFN("waiting for minute o'clock\n");
+    timeinfo = rtc.getTimeStruct();
+    while (timeinfo.tm_sec != 0) {
+        timeinfo = rtc.getTimeStruct();
+    }
+    printf0_NFN("ready...\n");
+}
+
+
+bool isSecondOClock() {
+    static int8_t last_second=-1;
+    timeinfo = rtc.getTimeStruct();
+    if (timeinfo.tm_sec != last_second) {
+        last_second = timeinfo.tm_sec;
+        return true;
+    }
+    return false;
+}
 
 
 

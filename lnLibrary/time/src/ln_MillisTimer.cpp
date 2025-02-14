@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 12-02-2025 14.49.55
+// Date .........: 14-02-2025 09.30.49
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -21,21 +21,21 @@ struct tm timeinfo2;
 // # con millis() time
 // #########################################
 
-void setMillisTimer(structMillisTimer_t *t, uint32_t pulsetime) {
-    t->pulsetime = pulsetime;
+void setMillisTimer(structMillisTimer_t *t, uint32_t interval) {
+    t->interval = interval;
 }
 
-void startMillisTimer(structMillisTimer_t *t, uint32_t pulsetime) {
+void startMillisTimer(structMillisTimer_t *t, uint32_t interval) {
     t->start = millis();
     t->running = true;
     t->expired = false;
-    if (pulsetime != 0)
-        t->pulsetime = pulsetime;
+    if (interval != 0)
+        t->interval = interval;
 }
 
 
 void updateMillisTimer(structMillisTimer_t *t) {
-    if ( (millis() - t->start) > t->pulsetime) {
+    if ( (millis() - t->start) > t->interval) {
         t->start = millis();
         t->running = false;
         t->expired = true;
