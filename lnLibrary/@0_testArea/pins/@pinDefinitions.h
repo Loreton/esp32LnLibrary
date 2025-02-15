@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 28-01-2025 21.05.54
+// Date .........: 15-02-2025 20.37.49
 //
 
 #include <Arduino.h>
@@ -88,11 +88,6 @@ CMD     GPIO11      CMD 2                                   D0      GPIO7  D0 2
     #define led_internal_pin            D23  // OUTPUT  mandatory on Esp32_X2_realy_board
 
 
-    // #define BUTTON_NO_PRESS         0
-    // #define BUTTON_NORMAL_PRESS     1
-    // #define BUTTON_MEDIUM_PRESS     2
-    // #define BUTTON_LONG_PRESS       3
-    // #define BUTTON_LONG_LONG_PRESS  4
 
     enum ErrorCode { ERROR_01 = 1, ERROR_10 = 10 };
     enum PressType { BUTTON_NO_PRESS = 0, BUTTON_NORMAL_PRESS, BUTTON_MEDIUM_PRESS, BUTTON_LONG_PRESS, BUTTON_LONG_LONG_PRESS  };
