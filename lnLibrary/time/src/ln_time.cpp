@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 14-02-2025 10.06.01
+// Date .........: 17-02-2025 17.23.05
 */
 
 #include "Arduino.h"
@@ -20,7 +20,7 @@ char PROGMEM buffer_time[TIME_BUFFER_LENGTH];
 
 
 #define EUROPE_ROME_TZ "CET-1CEST,M3.5.0,M10.5.0/3" // https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv
-
+#define MYTZ "CET-1CEST,M3.5.0,M10.5.0/3"
 
 // ---------------------------------
 // macros Aliases
@@ -54,8 +54,9 @@ void time_setup() {
     //rtc.setTime(1609459200);  // 1st Jan 2021 00:00:00
     // rtc.offset = 7200; // change offset value
     // rtc.offset = 3600; // change offset value
-    setenv("TZ", EUROPE_ROME_TZ, 1);    // Set environment variable with your time zone
-    tzset();
+    // setenv("TZ", EUROPE_ROME_TZ, 1);    // Set environment variable with your time zone
+    // tzset();
+    configTzTime(EUROPE_ROME_TZ, "time.google.com", "time.windows.com", "pool.ntp.org");
 
     printf0_NFN("RTC local time set\n");
 }
