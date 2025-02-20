@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 13-02-2025 09.38.05
+// Date .........: 20-02-2025 17.52.20
 */
 
 
@@ -8,8 +8,15 @@
 
 // char msg[] = "1,20,300,4000,50000";
 
-#define printf Serial.printf
-#define println Serial.println
+
+
+
+// ---------------------------------
+#include "@lnMacros.h"
+// macros Aliases
+// ---------------------------------
+#define printf0_NFN          lnPrintF_NowFN
+#define x_printf0_NFN
 
 
 /*
@@ -53,8 +60,27 @@ void StringToChar() {
 
     // Copy it over
     sString.toCharArray(cString, str_len);
+    // oppure
+    sprintf(cString, "%s", sString.c_str());
+
     printf("sString3: %s\n", sString.c_str());
     printf("cString3: %s\n", cString);
+}
+
+
+bool isString(const char *str) {
+    bool isValid = false;
+    if (!str) {
+        x_printf0_NFN("null\n");
+    }
+    if (str[0] == '\0') {
+        x_printf0_NFN("empty\n");
+    }
+    else if (str ) {
+        x_printf0_NFN("%s\n", str);
+        isValid=true;
+    }
+    return isValid;
 }
 
 
