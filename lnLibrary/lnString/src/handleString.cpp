@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 20-02-2025 17.52.20
+// Date .........: 23-02-2025 20.36.56
 */
 
 
@@ -68,12 +68,13 @@ void StringToChar() {
 }
 
 
-bool isString(const char *str) {
+bool ln_isString(const char *str) {
     bool isValid = false;
+
     if (!str) {
         x_printf0_NFN("null\n");
     }
-    if (str[0] == '\0') {
+    else if (str[0] == '\0') {
         x_printf0_NFN("empty\n");
     }
     else if (str ) {
