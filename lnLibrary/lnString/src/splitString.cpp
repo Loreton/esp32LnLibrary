@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 26-02-2025 14.26.13
+// Date .........: 26-02-2025 20.03.17
 */
 
 
@@ -12,7 +12,7 @@
 
 // char msg[] = "1,20,300,4000,50000";
 
-#define printf0_FN       lnPrintF_FN
+#define printf0_NFN       lnPrintF_NowFN
 #define print_ln         lnPrintLN
 
 
@@ -23,18 +23,18 @@
 ####################################################
 */
 
-const char *splittedResult[20];
+const PROGMEM char *splittedResult[100];
 
 uint8_t splitString(char *input_str, const char *delim) {
-    printf0_FN("Parsing String: %s\n", input_str);
+    printf0_NFN("Parsing String: %s\n", input_str);
 
 
     char* ptr = strtok(input_str, delim); // get first word
-    printf0_FN("index\ttext\n");
+    printf0_NFN("index\ttext\n");
     int8_t i = 0;
     while (ptr) {
         splittedResult[i]=ptr;
-        printf0_FN("%d - '%s'\n", i, ptr);  // this is the ASCII text we want to transform into an integer
+        printf0_NFN("%d - '%s'\n", i, ptr);  // this is the ASCII text we want to transform into an integer
         ptr = strtok(NULL, delim);
         i++;
     }
@@ -51,7 +51,7 @@ uint8_t splitString(char *input_str, const char *delim) {
 #    creaa una string di lavoro
 ####################################################
 */
-uint8_t splitSaveString(char *input_str, const char *delim, bool safe) {
+uint8_t splitSavingString(char *input_str, const char *delim, bool safe) {
     uint8_t words = 0;
     if (safe) {
         char *working_string = strdup(input_str); // se non vogliamo modificare l'originale
@@ -86,7 +86,7 @@ char *getWord(char *input_str, const char *delim, int8_t word_nr) {
             if (curr_word == word_nr) {
                 break;
             }
-            printf0_FN("%d - '%s'\n", curr_word, ptr);
+            printf0_NFN("%d - '%s'\n", curr_word, ptr);
             ptr = strtok(NULL, delim);
             curr_word++;
         }
@@ -96,26 +96,40 @@ char *getWord(char *input_str, const char *delim, int8_t word_nr) {
 }
 
 
+// ######################################################################
+// #  Example:
+// #    char myString[]="12:34:55";
+// #    char delim[] = ":";
+// #    int32_t seconds = stringToSeconds(myString, delim);
+// #    printf0_NFN("seconds: %d\n", seconds);
+// ######################################################################
+int32_t stringToSeconds(char *input_str, const char *delim) {
+    int words = splitString(input_str, delim);
+    int32_t seconds=0;
 
+    // TYPE 1
+    switch (words) {
+        case 1:
+            seconds += atoi(splittedResult[0]);
+            break;
 
+        case 2:
+            seconds += atoi(splittedResult[0])*60;
+            seconds += atoi(splittedResult[1]);
+            break;
 
-int  main() {
-    char myString[] ="Loreto  ciao  300  4000       50000";
-    const char delim[] = " ";
-    int words = splitString(myString, delim);
-    for (int j=0; j<words; j++) {
-        printf0_FN("%d - %s\n", j, splittedResult[j]);
+        case 3:
+            seconds += atoi(splittedResult[0])*3600;
+            seconds += atoi(splittedResult[1])*60;
+            seconds += atoi(splittedResult[2]);
+            break;
+
+        default:
+            seconds = 0;
+
     }
+    printf0_NFN("seconds [switch]: %d\n", seconds);
+    return seconds;
 }
 
-
-void setup() {
-    Serial.begin(115200);
-    delay(2000);
-    main();
-    printf0_FN("program completed\n");
-
-}
-
-void loop() {}
 
