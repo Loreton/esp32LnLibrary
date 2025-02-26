@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 26-02-2025 18.02.21
+// Date .........: 23-02-2025 20.36.56
 */
 
 
@@ -86,39 +86,25 @@ bool ln_isString(const char *str) {
 
 
 
+#if 0
+
+int  main() {
+    StringToChar();
+    println();
+    charToString();
 
 
-// ######################################################################
-// #  Example:
-// #    char myString[]="12:34:55";
-// #    char delim[] = ":";
-// #    int32_t seconds = stringToSeconds(myString, delim);
-// #    printf0_FN("seconds: %d\n", seconds);
-// ######################################################################
-int32_t stringToSeconds(char *input_str, const char *delim) {
-    int words = splitString(input_str, delim);
-    int32_t seconds=0;
 
-    // TYPE 1
-    switch (words) {
-        case 1:
-            seconds += atoi(splittedResult[0]);
-            break;
 
-        case 2:
-            seconds += atoi(splittedResult[0])*60;
-            seconds += atoi(splittedResult[1]);
-            break;
+    printf("----- completed ---- \n");
 
-        case 3:
-            seconds += atoi(splittedResult[0])*3600;
-            seconds += atoi(splittedResult[1])*60;
-            seconds += atoi(splittedResult[2]);
-            break;
-
-        default:
-            seconds = 0;
-
-    }
-    printf0_FN("seconds [switch]: %d\n", seconds);
 }
+
+void setup() {
+    Serial.begin(115200);
+    delay(2000);
+    main();
+}
+
+void loop() {}
+#endif
