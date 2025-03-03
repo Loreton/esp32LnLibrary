@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 14-02-2025 10.06.06
+// Date .........: 03-03-2025 17.27.27
 */
 
 #include <ESP32Time.h> // per definire ESP32Time rtc;
@@ -39,6 +39,7 @@
     bool isQuarterOClock(void);
     void alignToMinute(void);
     // void printTime(void);
+    void to_HHMMSS(uint32_t mseconds, char *outStr, uint8_t maxlen=10);
 
 
 #endif

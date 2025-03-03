@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 17-02-2025 17.23.05
+// Date .........: 03-03-2025 17.26.21
 */
 
 #include "Arduino.h"
@@ -74,6 +74,20 @@ char *nowTime() {
 }
 
 
+
+// converts to (HH:MM:SS)
+void to_HHMMSS(uint32_t mseconds, char *outStr, uint8_t maxlen) {
+    // time_t rawTime = millis() / 1000;
+    // struct tm *timeInfo = gmtime(&rawTime);
+    // char timeStr[32];
+    // strftime(timeStr, sizeof(timeStr), "ESP32-CAM run since: %H:%M:%S", timeInfo);
+    // Serial.println(timeStr);
+    // myBot.sendMessage(msg, timeStr);
+
+    time_t rawTime = mseconds / 1000;
+    struct tm *timeInfo = gmtime(&rawTime);
+    strftime(outStr, maxlen, "%H:%M:%S", timeInfo);
+}
 
 // #########################################
 // #

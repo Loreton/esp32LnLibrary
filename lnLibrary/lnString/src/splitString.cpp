@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 26-02-2025 20.03.17
+// Date .........: 27-02-2025 19.25.42
 */
 
 
@@ -12,8 +12,7 @@
 
 // char msg[] = "1,20,300,4000,50000";
 
-#define printf0_NFN       lnPrintF_NowFN
-#define print_ln         lnPrintLN
+#define printf0_NFN   //    lnPrintF_NowFN
 
 
 /*
