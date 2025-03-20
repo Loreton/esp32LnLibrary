@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 27-02-2025 19.39.35
+// Date .........: 20-03-2025 10.36.43
 */
 
 #include <Arduino.h>
@@ -26,27 +26,59 @@
     // #define m_NOW
     // -------------------------------------------------
 
-    #define SERIAL_DEBUG
+
+    // #define DEBUG_MSG_FAUXMO(fmt, ...) { DEBUG_FAUXMO.printf(fmt, ## __VA_ARGS__); }
+
+    // #define SERIAL_DEBUG
+    // #ifdef SERIAL_DEBUG
+    //     #define SERIAL_BEGIN(...)           Serial.begin(__VA_ARGS__)
+    //     #define LN_PRINT(...)               Serial.print(__VA_ARGS__)
+    //     #define lnPrintLN(...)             Serial.println(__VA_ARGS__)
+    //     #define lnPrintF(...)              Serial.printf(__VA_ARGS__, __VA_ARGS__)
+    //     #define lnPrintF_FN(...)           m_FNAME; Serial.printf( __VA_ARGS__, __VA_ARGS__)
+    //     #define lnPrintF_Now(...)          m_NOW;   Serial.printf( __VA_ARGS__, __VA_ARGS__)
+    //     // #define lnPrintF_NowFN(...)        m_NOW;   m_FNAME; Serial.printf( __VA_ARGS__, __VA_ARGS__)
+    // #else
+    //     #define SERIAL_BEGIN(...)
+    //     #define LN_PRINT(...)
+    //     #define lnPrintLN(...)
+    //     #define lnPrintF(...)
+    //     #define lnPrintF_FN(...)
+    //     #define lnPrintF_Now(...)
+    //     #define lnPrintF_NowFN(...)
+    // #endif
 
 
-    #ifdef SERIAL_DEBUG
-        #define SERIAL_BEGIN(...)           Serial.begin(__VA_ARGS__)
-        #define LN_PRINT(...)               Serial.print(__VA_ARGS__)
-        #define lnPrintLN(...)             Serial.println(__VA_ARGS__)
-        #define lnPrintF(...)              Serial.printf(__VA_ARGS__, __VA_ARGS__)
-        #define lnPrintF_FN(...)           m_FNAME; Serial.printf( __VA_ARGS__, __VA_ARGS__)
-        #define lnPrintF_Now(...)          m_NOW;   Serial.printf( __VA_ARGS__, __VA_ARGS__)
-        #define lnPrintF_NowFN(...)        m_NOW;   m_FNAME; Serial.printf( __VA_ARGS__, __VA_ARGS__)
+
+    #define lnSERIAL Serial
+
+    #ifdef lnSERIAL
+        #if defined(ARDUINO_ARCH_ESP32)
+            // #warning "Sono in ARDUINO_ARCH_ESP32"
+            #define lnPrint(...)                                  lnSERIAL.print(__VA_ARGS__)
+            #define lnPrintLN(...)                                lnSERIAL.println(__VA_ARGS__)
+            #define lnPrintF(fmt, ...)       {                    lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
+            #define lnPrintF_FN(fmt, ...)    {          m_FNAME;  lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
+            #define lnPrintF_now(fmt, ...)   {          m_NOW;    lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
+            #define lnPrintF_NowFN(fmt, ...) { m_NOW;   m_FNAME;  lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
+        #else
+            #error "Non sono in ARDUINO_ARCH_ESP32"
+            #define lnPrint(...)                                  lnSERIAL.print(__VA_ARGS__)
+            #define lnPrintLN(...)                                lnSERIAL.println(__VA_ARGS__)
+            #define lnPrintF(fmt, ...)       {                    lnSERIAL.printf(fmt, ## __VA_ARGS__); }
+            #define lnPrintF_FN(fmt, ...)    {          m_FNAME;  lnSERIAL.printf(fmt, ## __VA_ARGS__); }
+            #define lnPrintF_now(fmt, ...)   {          m_NOW;  lnSERIAL.printf(fmt, ## __VA_ARGS__); }
+            #define lnPrintF_NowFN(fmt, ...) { m_NOW;   m_FNAME;  lnSERIAL.printf(fmt, ## __VA_ARGS__); }
+        #endif
     #else
-        #define SERIAL_BEGIN(...)
-        #define LN_PRINT(...)
+        #warning "Serial NOT be used."
+        #define lnPrint(...)
         #define lnPrintLN(...)
-        #define lnPrintF(...)
-        #define lnPrintF_FN(...)
-        #define lnPrintF_Now(...)
-        #define lnPrintF_NowFN(...)
+        #define lnPrintF(fmt, ...)
+        #define lnPrintF_FN(fmt, ...)
+        #define lnPrintF_now(fmt, ...)
+        #define lnPrintF_NowFN(fmt, ...)
     #endif
-
 
 
     // ============================
