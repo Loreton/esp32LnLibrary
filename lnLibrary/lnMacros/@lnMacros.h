@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 20-03-2025 10.36.43
+// Date .........: 21-03-2025 09.48.58
 */
 
 #include <Arduino.h>
@@ -19,9 +19,9 @@
     // -------------------------------------------------
     char * nowTime(void);
     char * nowTimeDummy(void);
-    #define m_FNAME                     Serial.printf(PSTR("[%-20s:%04d] "), __FILENAME__, __LINE__)
+    #define m_FNAME1                     Serial.printf(PSTR("[%-20s:%04d] "), __FILENAME__, __LINE__)
     // - insert one of these if defined otherwise BLANK...,
-    #define m_NOW                       Serial.printf("[%s]: ", nowTime())
+    #define m_NOW1                       Serial.printf("[%s]: ", nowTime())
     // #define m_NOW                       Serial.printf("[%s]: ", nowTimeDummy())
     // #define m_NOW
     // -------------------------------------------------
@@ -55,6 +55,8 @@
     #ifdef lnSERIAL
         #if defined(ARDUINO_ARCH_ESP32)
             // #warning "Sono in ARDUINO_ARCH_ESP32"
+            #define m_FNAME                                       lnSERIAL.printf((PGM_P) PSTR("[%-20s:%04d] "), __FILENAME__, __LINE__)
+            #define m_NOW                                         lnSERIAL.printf((PGM_P) "[%s]: ", nowTime())
             #define lnPrint(...)                                  lnSERIAL.print(__VA_ARGS__)
             #define lnPrintLN(...)                                lnSERIAL.println(__VA_ARGS__)
             #define lnPrintF(fmt, ...)       {                    lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }

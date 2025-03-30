@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 15-02-2025 20.37.49
+// Date .........: 28-03-2025 11.18.04
 //
 
 #include <Arduino.h>
@@ -73,118 +73,6 @@ CMD     GPIO11      CMD 2                                   D0      GPIO7  D0 2
     #define D35       35        // OK          --   input only
     #define D36       36        // OK          --   input only
     #define D39       39        // OK          --   input only
-
-
-    #define pumpState_pin               D02  // INPUT
-    #define startButton_pin             D03  // INPUT
-    #define pressControlState_pin       D04  // INPUT
-
-    #define activeBuzzer_pin            D12  // OUTPUT
-    #define passiveBuzzer_pin           D13  // OUTPUT
-    #define LED_pin                     D22  // OUTPUT
-
-    #define pressControlRelay_pin       D16  // OUTPUT  mandatory on Esp32_X2_realy_board
-    #define loadSuperiore_pin           D17  // OUTPUT  mandatory on Esp32_X2_realy_board
-    #define led_internal_pin            D23  // OUTPUT  mandatory on Esp32_X2_realy_board
-
-
-
-    enum ErrorCode { ERROR_01 = 1, ERROR_10 = 10 };
-    enum PressType { BUTTON_NO_PRESS = 0, BUTTON_NORMAL_PRESS, BUTTON_MEDIUM_PRESS, BUTTON_LONG_PRESS, BUTTON_LONG_LONG_PRESS  };
-
-
-
-
-    typedef struct  {
-
-        const   char             *name;
-        const   char             *strMode;                  // "INPUT" or.....
-                uint8_t          pin                = 0;
-                uint8_t          mode               = INPUT_PULLUP; // ${HOME}/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp32-hal-gpio.h
-                bool             ON                 = LOW;
-                bool             OFF                = HIGH;
-                bool             changedState       = false;
-                bool             state              = HIGH;
-                bool             lastState          = HIGH;
-                bool             active_level       = LOW;
-                bool             isPressed          = false;
-                bool             isReleased         = false;
-                uint8_t          lastPressedLevel   = 0;
-                uint8_t          pressedLevel       = 0;     // SHORT_PRESS, LONG_PRESS
-                unsigned long    startedMillis       = 0ul;
-        const   int16_t         *thresholds;                // pointer to array {400, 1500, 3000, ...} for button pressed length
-                int8_t           thresholds_len      = 0;   // numero di entries  sizeof(thresholds)/sizeof(uint16_t);
-    } io_input_pin_struct_t;
-
-
-
-    typedef struct  {
-
-        const   char             *name;
-        const   char             *strMode;        // "INPUT" or.....
-                uint8_t          pin                = 0;
-                uint8_t          mode               = OUTPUT; // ${HOME}/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp32-hal-gpio.h
-                bool             active_level       = LOW;
-                bool             ON                 = LOW;
-                bool             OFF                = HIGH;
-                bool             state              = HIGH;
-                // bool             lastState          = HIGH;
-
-                int32_t          pulsetime       = 0;
-                int32_t          remaining       = 0;
-                int32_t          start_time       = 0; // epoch time
-                int32_t          end_time       = 0; // epoch time
-    } io_output_pin_struct_t;
-
-
-
-
-
-
-    extern const char *str_action[];
-    extern const char *str_pinLevel[];
-    extern const char *str_INPUT;
-    extern const char *str_INPUT_PULLUP;
-    extern const char *str_OUTPUT;
-    extern const int8_t INPUT_PINS;
-    extern const int8_t OUTPUT_PINS;
-
-
-
-    extern io_input_pin_struct_t PINs[];
-    extern io_input_pin_struct_t *pumpState; // input
-    extern io_input_pin_struct_t *startButton; // input
-    extern io_input_pin_struct_t *pressControlState; // input
-
-    extern io_output_pin_struct_t *pressControlRelay;
-    extern io_output_pin_struct_t *loadSuperioreRelay;
-    extern io_output_pin_struct_t *activeBuzzer;
-    extern io_output_pin_struct_t *passiveBuzzer;
-    extern io_output_pin_struct_t *LED;
-    extern io_output_pin_struct_t *led_internals;
-    // extern io_output_pin_struct_t *relay02;
-
-    extern const char * PROGMEM THRESHOLD_LEVEL_TYPES[];
-
-
-    // --------------------------------------------------
-    // --- functions prototypes
-    // --------------------------------------------------
-    // ---- readPin.cpp
-
-
-
-
-
-
-
-
-    // ---- pins_Initialize.cpp
-    // void pinInitialize(void);
-    void pinsInitialization(void);
-
-
-
 
 
 #endif
