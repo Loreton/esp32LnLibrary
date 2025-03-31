@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 30-03-2025 19.53.01
+// Date .........: 31-03-2025 20.23.12
 //
 
 #include <Arduino.h> // in testa anche per le definizioni dei type
@@ -8,16 +8,56 @@
 
 // Example 2 - Receive with an end-marker
 
-const byte numChars = 20;
-char receivedChars[numChars+1];   // an array to store the received data
-
-boolean newData = false;
+const byte MAX_NUMCHARS = 20;
+char receivedChars[MAX_NUMCHARS+1];   // an array to store the received data
 
 
-void readSerialData(void) {
+// uint8_t readSerialData1(uint8_t max_chars=MAX_NUMCHARS) {
+//     if (max_chars > MAX_NUMCHARS) {max_chars = MAX_NUMCHARS; }
+
+//     char   endMarker = 13; // char endMarker = '\n';
+//     char   chr;
+//     int8_t ndx = 0;
+
+//     // Flash buffer
+//     while (Serial.available() > 0) {
+//         Serial.read();
+//     }
+
+//     while(true) { // remain here until told to break
+//         if (Serial.available() > 0) {
+//             chr = Serial.read();
+//             int asciiVal = (int) chr;
+
+//             if (asciiVal == endMarker) {
+//                 receivedChars[ndx] = '\0'; // terminate the string
+//                 break;
+//             }
+
+//             else {// END char
+//                 receivedChars[ndx] = chr;
+//                 ndx++;
+//             }
+
+//             // if numchar reached exit
+//             if (ndx >= max_chars) {
+//                 receivedChars[max_chars] = '\0'; // terminate the string
+//                 ndx = max_chars;
+//                 break;
+//             }
+//         }
+
+//     }
+//     return ndx; // numero di caratteri catturati
+// }
+
+uint8_t readSerialData(const char *chars="", uint8_t max_chars=MAX_NUMCHARS) {
+    if (max_chars > MAX_NUMCHARS) {max_chars = MAX_NUMCHARS; }
+
+    char   endMarker = 13; // char endMarker = '\n';
+    char   chr;
     int8_t ndx = 0;
-    char endMarker = 13; // char endMarker = '\n';
-    char rc;
+    uint8_t len = strlen(chars);
 
     // Flash buffer
     while (Serial.available() > 0) {
@@ -26,51 +66,76 @@ void readSerialData(void) {
 
     while(true) { // remain here until told to break
         if (Serial.available() > 0) {
-            rc = Serial.read();
-            int asciiVal = (int) rc;
+            chr = Serial.read();
+            int asciiVal = (int) chr;
 
             if (asciiVal == endMarker) {
                 receivedChars[ndx] = '\0'; // terminate the string
                 break;
             }
 
-            else {// END char
-                receivedChars[ndx] = rc;
-                ndx++;
+            else if (len != 0) { // specific char
+                for (int i = 0; i < len; i++) {
+                    if (chars[i] == chr) {
+                        receivedChars[ndx++] = chr;
+                        // ndx++;
+                        Serial.print(chr);
+                        break;
+                    }
+                }
             }
 
+            else { // any char
+                receivedChars[ndx++] = chr;
+                Serial.print(chr);
+            }
+
+
             // if numchar reached exit
-            if (ndx >= numChars) {
-                receivedChars[numChars] = '\0'; // terminate the string
-                ndx = numChars;
+            if (ndx >= max_chars) {
+                receivedChars[max_chars] = '\0'; // terminate the string
+                ndx = max_chars;
                 break;
             }
         }
 
     }
+    Serial.printf("\n");
+    return ndx; // numero di caratteri catturati
+}
+
+// prototypes
+// int32_t readSerialChar(void);
+// int32_t readSerialInt(void);
+// bool waitForChar(char chr);
+
+int32_t readSerialInt() {
+    readSerialData();
+    return atoi(receivedChars); // convert data to integer
 }
 
 
-
-int8_t recvWithEndMarker() {
-    Serial.printf("Waiting for 2 chars [ENTER to confirm]\n");
-    return readSerialData();
+// #################################################
+// # wait for 'chr' input
+// #################################################
+bool waitForChar(char chr) {
+    const char appo[] = {chr};
+    readSerialData(&appo[0], 1);
+    if (receivedChars[0] == chr) {
+        return true;
+    }
+    return false;
 }
-
-int32_t ReadSerialInt() {
-    Serial.printf("Please enter integer value [ENTER to confirm]\n");
-    int8_t count = readSerialData();
-    return atoi(receivedChars);
+// #################################################
+// # wait for 'chr' input
+// #################################################
+char waitForAnyChar(const char *chars) {
+    uint8_t count = readSerialData(chars, 1);
+    if (count > 0) {
+        return receivedChars[0];
+    }
+    return 0;
 }
-
-
-
-
-
-
-
-
-
 
 
 
@@ -84,10 +149,24 @@ void setup() {
     Serial.println("<Arduino is ready>");
 }
 
+int first_run = 0;
 void loop() {
-    recvWithEndMarker();
-    Serial.printf("[%s] - lenght0: %d\n", receivedChars, strlen(receivedChars));
+    if (first_run == 0) {
+        Serial.printf("Please enter 'c' char or ENTER to skip\n");
+        waitForChar('c');
+        Serial.printf("[%s] - lenght0: %d\n", receivedChars, strlen(receivedChars));
+        first_run++;
+    }
 
-    int32_t value = ReadSerialInt();
-    Serial.println(value);
+
+    Serial.printf("Please enter one of following chars [2468] or ENTER to skip\n");
+    char choice = waitForAnyChar("abcdef");
+    Serial.printf("choice: %c ascii: %d \n", char(choice), choice);
+    Serial.printf("\n");
+
+    Serial.printf("Please enter integer value [ENTER to confirm]\n");
+    int32_t value = readSerialInt();
+    Serial.printf("value: %li \n", value);
+    Serial.printf("\n");
+
 }
