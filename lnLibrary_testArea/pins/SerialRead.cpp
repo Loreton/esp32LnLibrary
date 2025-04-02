@@ -1,55 +1,16 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 31-03-2025 20.23.12
+// Date .........: 02-04-2025 17.13.52
 //
 
 #include <Arduino.h> // in testa anche per le definizioni dei type
 
 
 // Example 2 - Receive with an end-marker
-
 const byte MAX_NUMCHARS = 20;
 char receivedChars[MAX_NUMCHARS+1];   // an array to store the received data
 
 
-// uint8_t readSerialData1(uint8_t max_chars=MAX_NUMCHARS) {
-//     if (max_chars > MAX_NUMCHARS) {max_chars = MAX_NUMCHARS; }
-
-//     char   endMarker = 13; // char endMarker = '\n';
-//     char   chr;
-//     int8_t ndx = 0;
-
-//     // Flash buffer
-//     while (Serial.available() > 0) {
-//         Serial.read();
-//     }
-
-//     while(true) { // remain here until told to break
-//         if (Serial.available() > 0) {
-//             chr = Serial.read();
-//             int asciiVal = (int) chr;
-
-//             if (asciiVal == endMarker) {
-//                 receivedChars[ndx] = '\0'; // terminate the string
-//                 break;
-//             }
-
-//             else {// END char
-//                 receivedChars[ndx] = chr;
-//                 ndx++;
-//             }
-
-//             // if numchar reached exit
-//             if (ndx >= max_chars) {
-//                 receivedChars[max_chars] = '\0'; // terminate the string
-//                 ndx = max_chars;
-//                 break;
-//             }
-//         }
-
-//     }
-//     return ndx; // numero di caratteri catturati
-// }
 
 uint8_t readSerialData(const char *chars="", uint8_t max_chars=MAX_NUMCHARS) {
     if (max_chars > MAX_NUMCHARS) {max_chars = MAX_NUMCHARS; }
@@ -143,14 +104,14 @@ char waitForAnyChar(const char *chars) {
 
 
 
-void setup() {
+void setup_() {
     Serial.begin(115200);
     delay(2200);
     Serial.println("<Arduino is ready>");
 }
 
 int first_run = 0;
-void loop() {
+void loop_() {
     if (first_run == 0) {
         Serial.printf("Please enter 'c' char or ENTER to skip\n");
         waitForChar('c');
