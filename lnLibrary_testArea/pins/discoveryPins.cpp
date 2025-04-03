@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 03-04-2025 14.55.24
+// Date .........: 03-04-2025 14.59.02
 //
 
 #include <Arduino.h> // in testa anche per le definizioni dei type
@@ -97,28 +97,14 @@ uint8_t all_pins[] =    { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 
 
 
 
-void copyArray(uint8_t  *src, uint8_t *dest, uint8_t len) {
+uint8_t copyArray(uint8_t  *src, uint8_t *dest, uint8_t len) {
     for (int i = 0; i < len; i++) {
         dest[i] = src[i];
-}
-
-
-bool checkPin(uint8_t  *pins, uint8_t count, uint8_t match_pin, char pin_type) {
-    bool found=false;
-    for (int i = 0; i < count; i++) {
-        if (pins[i] == match_pin) {
-            if (pin_type == 'i') {
-                _checkInputPin(pins[i]);
-            }
-            else {
-                _checkOutputPin(pins[i]);
-            }
-            found=true;
-            break;
-        }
     }
-    return found;
+    return i;
 }
+
+
 
 
 
@@ -140,38 +126,42 @@ void setup() {
     if (choice == '1') {
         Serial.printf("testing pins of board: AZ_DELIVERY_ESP32_WROOM_32\n");
         uint8_t i_pins[] =  { 0,    2,    4, 5,                     12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33, 34, 35, 36, 39};
+        pins->input_count = copyArray(i_pins, pins->input, sizeof(i_pins));
 
-        pins->input_count = sizeof(i_pins);
-        len = pins->input_count;
-        for (int i = 0; i < len; i++) {
-            pins->input[i] = i_pins[i];
-        }
+        // pins->input_count = sizeof(i_pins);
+        // len = pins->input_count;
+        // for (int i = 0; i < len; i++) {
+        //     pins->input[i] = i_pins[i];
+        // }
 
         // len = sizeof(o_pins);
         uint8_t o_pins[] =  { 0,    2, 3, 4, 5,                     12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33, 99 };
-        pins->output_count = sizeof(o_pins);
-        len = pins->output_count;
-        for (int i = 0; i < len; i++) {
-            pins->output[i] = o_pins[i];
-        }
+        pins->output_count = copyArray(o_pins, pins->output, sizeof(o_pins));
+        // pins->output_count = sizeof(o_pins);
+        // len = pins->output_count;
+        // for (int i = 0; i < len; i++) {
+            // pins->output[i] = o_pins[i];
+        // }
 
     }
     else if (choice == '2') {
         Serial.printf("testing pins of board: ESP32_WROOM_32E_2_RELAYs\n");
 
         uint8_t i_pins[] =  { 0,    2,    4, 5,                     12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33, 34, 35, 36, 39};
-        pins->input_count = sizeof(i_pins);
-        len = pins->input_count;
-        for (int i = 0; i < len; i++) {
-            pins->input[i] = i_pins[i];
-        }
+        pins->input_count = copyArray(i_pins, pins->input, sizeof(i_pins));
+        // pins->input_count = sizeof(i_pins);
+        // len = pins->input_count;
+        // for (int i = 0; i < len; i++) {
+        //     pins->input[i] = i_pins[i];
+        // }
 
         uint8_t o_pins[] =  { 0,    2, 3, 4, 5,                     12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33, 99};
-        pins->output_count = sizeof(o_pins);
-        len = pins->output_count;
-        for (int i = 0; i < len; i++) {
-            pins->output[i] = o_pins[i];
-        }
+        pins->output_count = copyArray(o_pins, pins->output, sizeof(o_pins));
+        // pins->output_count = sizeof(o_pins);
+        // len = pins->output_count;
+        // for (int i = 0; i < len; i++) {
+        //     pins->output[i] = o_pins[i];
+        // }
     }
 
 
