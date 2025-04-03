@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 02-04-2025 17.13.52
+// Date .........: 03-04-2025 15.08.01
 //
 
 #include <Arduino.h> // in testa anche per le definizioni dei type
@@ -71,7 +71,10 @@ uint8_t readSerialData(const char *chars="", uint8_t max_chars=MAX_NUMCHARS) {
 // bool waitForChar(char chr);
 
 int32_t readSerialInt() {
-    readSerialData();
+    uint8_t count = readSerialData();
+    if (count<1) {
+        return -1;
+    }
     return atoi(receivedChars); // convert data to integer
 }
 
