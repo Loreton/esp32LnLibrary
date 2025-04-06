@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 03-04-2025 15.08.01
+// Date .........: 06-04-2025 16.21.25
 //
 
 #include <Arduino.h> // in testa anche per le definizioni dei type
@@ -12,7 +12,7 @@ char receivedChars[MAX_NUMCHARS+1];   // an array to store the received data
 
 
 
-uint8_t readSerialData(const char *chars="", uint8_t max_chars=MAX_NUMCHARS) {
+uint8_t readSerialData(const char *chars="", uint8_t max_chars=MAX_NUMCHARS, const char exits='x') {
     if (max_chars > MAX_NUMCHARS) {max_chars = MAX_NUMCHARS; }
 
     char   endMarker = 13; // char endMarker = '\n';
@@ -20,10 +20,12 @@ uint8_t readSerialData(const char *chars="", uint8_t max_chars=MAX_NUMCHARS) {
     int8_t ndx = 0;
     uint8_t len = strlen(chars);
 
+
     // Flash buffer
     while (Serial.available() > 0) {
         Serial.read();
     }
+
 
     while(true) { // remain here until told to break
         if (Serial.available() > 0) {
@@ -35,11 +37,18 @@ uint8_t readSerialData(const char *chars="", uint8_t max_chars=MAX_NUMCHARS) {
                 break;
             }
 
+            else if (exits == chr) {
+                Serial.print(chr);
+                receivedChars[0] = chr;
+                receivedChars[1] = '\0'; // terminate the string
+                ndx=0;
+                break;
+            }
+
             else if (len != 0) { // specific char
                 for (int i = 0; i < len; i++) {
                     if (chars[i] == chr) {
                         receivedChars[ndx++] = chr;
-                        // ndx++;
                         Serial.print(chr);
                         break;
                     }
@@ -71,7 +80,7 @@ uint8_t readSerialData(const char *chars="", uint8_t max_chars=MAX_NUMCHARS) {
 // bool waitForChar(char chr);
 
 int32_t readSerialInt() {
-    uint8_t count = readSerialData();
+    uint8_t count = readSerialData("0123456789");
     if (count<1) {
         return -1;
     }

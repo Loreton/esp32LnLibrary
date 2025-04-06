@@ -1,14 +1,19 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 03-04-2025 15.29.56
+// Date .........: 06-04-2025 16.59.43
 //
 
 #include <Arduino.h> // in testa anche per le definizioni dei type
 #include "@SerialRead.h"
-
+#define ESP32_WROOM_32E_2RELAY_MODULE   1
+#define ESP32_WROOM_32_MODULE           2
 
 // const uint8_t my_pins[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33, 34, 35, 36, 39};
 // const uint8_t my_pins_[] = { 0, 2, 3, 4, 5, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33};
+
+#if ESP32_BOARD_TYPE == ESP32_WROOM_32E_2RELAY_MODULE
+#elif ESP32_BOARD_TYPE == ESP32_WROOM_32_MODULE
+#endif
 
 typedef struct {
     uint8_t input[40];
@@ -213,11 +218,12 @@ bool checkPin(uint8_t  *pins, uint8_t count, uint8_t match_pin, char pin_type) {
 // #
 // ################################################################
 void loop() {
-    static char choice = 'x';
+    static char choice = 0;
     bool found=false;
     // schegle input/output
-    if (choice == 'x') {
+    if (choice == 0) {
         Serial.printf("\n\tplease enter pin type i[nput] o[utput]: ");
+        // Serial.printf("\n\tchoice: %c", choice);
         choice = waitForAnyChar("io");
         if (choice == 'i') {
             Serial.printf("Following available:\n\t");
@@ -233,12 +239,19 @@ void loop() {
             }
         }
 
+        else {
+            // Serial.printf("\n\treturning: %c", choice);
+            choice = 0;
+            return;
+        }
+
     }
 
+    // Serial.printf("\n\tchoice2: %c", choice);
     Serial.printf("\n\n\tplease enter pin number (choice: %c): ", choice);
     int32_t pin_nr = readSerialInt();
     if (pin_nr < 0) { // return no pin
-        choice = 'x';
+        choice = 0;
         return; // loop
     }
 
