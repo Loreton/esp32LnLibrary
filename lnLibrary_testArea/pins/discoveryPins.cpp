@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 06-04-2025 16.59.43
+// Date .........: 07-04-2025 09.25.14
 //
 
 #include <Arduino.h> // in testa anche per le definizioni dei type
@@ -29,9 +29,9 @@ PINS myPins;
 PINS *pins = &myPins;
 
 // prototypes
-int32_t readSerialChar(void);
-int32_t readSerialInt(void);
-bool waitForChar(char chr);
+// int32_t readSerialChar(void);
+// int32_t readSerialInt(void);
+// bool waitForChar(char chr);
 
 
 // ################################################################
@@ -80,8 +80,8 @@ void _checkInputPin(uint8_t pin) {
     // Serial.printf("working on INPUT_PULLUP pin: %d\n", pin);
     pinMode(pin, INPUT_PULLUP);
 
-    Serial.printf("\t[pin: %d] - status: %s", pin, str_pinLevel[digitalRead(pin)]); Serial.printf(" - change pin setting ['c' to continue]: "); waitForChar('c');
-    Serial.printf("\t[pin: %d] - status: %s", pin, str_pinLevel[digitalRead(pin)]); Serial.printf(" - reset  pin setting ['c' to continue]: "); waitForChar('c');
+    Serial.printf("\t[pin: %d] - status: %s", pin, str_pinLevel[digitalRead(pin)]); waitForChar(" - change pin setting ['c' to continue]: ", 'c');
+    Serial.printf("\t[pin: %d] - status: %s", pin, str_pinLevel[digitalRead(pin)]); waitForChar(" - reset  pin setting ['c' to continue]: ", 'c');
     Serial.printf("\t[pin: %d] - status: %s", pin, str_pinLevel[digitalRead(pin)]);
     Serial.printf("\n\n");
 }
@@ -223,24 +223,24 @@ void loop() {
     // schegle input/output
     if (choice == 0) {
         Serial.printf("\n\tplease enter pin type i[nput] o[utput]: ");
-        // Serial.printf("\n\tchoice: %c", choice);
         choice = waitForAnyChar("io");
+        Serial.printf("\n\tchoice: %c\n", choice);
         if (choice == 'i') {
-            Serial.printf("Following available:\n\t");
+            Serial.printf("available INPUT pins:\n\t");
             for (int i = 0; i < pins->input_count; i++) {
                 Serial.printf("%d, ", pins->input[i]);
             }
         }
 
         else if (choice == 'o') {
-            Serial.printf("Following available:\n\t");
+            Serial.printf("available OUTPUT pins:\n\t");
             for (int i = 0; i < pins->output_count; i++) {
                 Serial.printf("%d, ", pins->output[i]);
             }
         }
 
         else {
-            // Serial.printf("\n\treturning: %c", choice);
+            Serial.printf("\n\trno choice, up-level: %c", choice);
             choice = 0;
             return;
         }

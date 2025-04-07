@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 06-04-2025 16.21.25
+// Date .........: 07-04-2025 09.15.06
 //
 
 #include <Arduino.h> // in testa anche per le definizioni dei type
@@ -91,8 +91,9 @@ int32_t readSerialInt() {
 // #################################################
 // # wait for 'chr' input
 // #################################################
-bool waitForChar(char chr) {
+bool waitForChar(const char *descr, char chr) {
     const char appo[] = {chr};
+    Serial.printf(descr);
     readSerialData(&appo[0], 1);
     if (receivedChars[0] == chr) {
         return true;
@@ -125,8 +126,8 @@ void setup_() {
 int first_run = 0;
 void loop_() {
     if (first_run == 0) {
-        Serial.printf("Please enter 'c' char or ENTER to skip\n");
-        waitForChar('c');
+        // Serial.printf("Please enter 'c' char or ENTER to skip\n");
+        waitForChar("Please enter 'c' char or ENTER to skip\n", 'c');
         Serial.printf("[%s] - lenght0: %d\n", receivedChars, strlen(receivedChars));
         first_run++;
     }
