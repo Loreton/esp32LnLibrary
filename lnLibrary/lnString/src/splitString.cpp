@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 27-02-2025 19.25.42
+// Date .........: 07-04-2025 18.47.01
 */
 
 
@@ -132,3 +132,15 @@ int32_t stringToSeconds(char *input_str, const char *delim) {
 }
 
 
+char *getSubString(char *source, char *dest, char left, char right) {
+    char *myFrom = strrchr(source, left) ? strrchr(source, left)+1 : source;
+    char *myTo = strrchr(myFrom, right);
+    int len = strlen(myFrom);
+    if (myTo != NULL) {
+        len=myTo - myFrom;
+    }
+    printf("len: %d\n", len);
+    snprintf(dest, len+1, "%s", myFrom);
+    printf("From: %s\n", dest);
+    return dest;
+}
