@@ -1,13 +1,12 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 08-04-2025 15.26.36
+// Date .........: 09-04-2025 17.16.21
 */
 
-#if 0
 #include <Arduino.h>
 
-#ifndef __LN_MACROS_H__
-    #define __LN_MACROS_H__
+#ifndef __LOG_MACROS_H__
+    #define __LOG_MACROS_H__
 
     #ifndef  __FILENAME__
         // per Arduino
@@ -25,45 +24,15 @@
     #define m_FNAME1                     Serial.printf(PSTR("[%-20s:%04d] "), __FILENAME__, __LINE__)
     // - insert one of these if defined otherwise BLANK...,
     #define m_NOW1                       Serial.printf("[%s]: ", nowTime())
-    // #define m_NOW                       Serial.printf("[%s]: ", nowTimeDummy())
-    // #define m_NOW
     // -------------------------------------------------
 
-
-    // #define DEBUG_MSG_FAUXMO(fmt, ...) { DEBUG_FAUXMO.printf(fmt, ## __VA_ARGS__); }
-
-    // #define SERIAL_DEBUG
-    // #ifdef SERIAL_DEBUG
-    //     #define SERIAL_BEGIN(...)           Serial.begin(__VA_ARGS__)
-    //     #define LN_PRINT(...)               Serial.print(__VA_ARGS__)
-    //     #define lnPrintLN(...)             Serial.println(__VA_ARGS__)
-    //     #define lnPrintF(...)              Serial.printf(__VA_ARGS__, __VA_ARGS__)
-    //     #define lnPrintF_FN(...)           m_FNAME; Serial.printf( __VA_ARGS__, __VA_ARGS__)
-    //     #define lnPrintF_Now(...)          m_NOW;   Serial.printf( __VA_ARGS__, __VA_ARGS__)
-    //     // #define lnPrintF_NowFN(...)        m_NOW;   m_FNAME; Serial.printf( __VA_ARGS__, __VA_ARGS__)
-    // #else
-    //     #define SERIAL_BEGIN(...)
-    //     #define LN_PRINT(...)
-    //     #define lnPrintLN(...)
-    //     #define lnPrintF(...)
-    //     #define lnPrintF_FN(...)
-    //     #define lnPrintF_Now(...)
-    //     #define lnPrintF_NowFN(...)
-    // #endif
 
 
 
     #define lnSERIAL Serial
 
     #ifdef lnSERIAL
-        extern char __appo__[];
         #if defined(ARDUINO_ARCH_ESP32)
-            // #warning "Sono in ARDUINO_ARCH_ESP32"
-            // #define m_FullName                                    snprintf(__appo__, 100, "%-10s.%-10s:%04d", __FILENAME__, __func__, __LINE__)
-            // #define __FILENAME_NO_EXT__ (strchr(__FILE__, '.') ? strchr(__FILE__, '.')  : __FILE__) // remove path
-            // #define __FILENAME_NO_EXT__ (__FILENAME__.substr(0, __FILENAME__.find_last_of("."));) // remove path
-            // #define __FILENAME_NO_EXT__ (__FILE__.substr(0, __FILE__.find_last_of("."));) // remove path
-
             #define m_FNAME                                         lnSERIAL.printf((PGM_P) PSTR("[%-20s:%04d] "), __FILENAME__, __LINE__)
             #define m_Func                                          lnSERIAL.printf((PGM_P) PSTR("[%-20s:%04d] "), __func__, __LINE__)
             #define m_FUNCTION                                      lnSERIAL.printf((PGM_P) PSTR("[%-20s:%04d] "), __FUNCTION__, __LINE__)
@@ -75,9 +44,9 @@
             #define lnPrint(...)                                    lnSERIAL.print(__VA_ARGS__)
             #define lnPrintLN(...)                                  lnSERIAL.println(__VA_ARGS__)
             #define lnPrintF(fmt, ...)       {                      lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
-            #define lnPrintF_FN(fmt, ...)    {        m_FILE_FUNC;   lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
+            #define lnPrintF_FN(fmt, ...)    {        m_FNAME;   lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
             #define lnPrintF_now(fmt, ...)   {        m_NOW;        lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
-            #define lnPrintF_NowFN(fmt, ...) { m_NOW; m_FILE_FUNC;   lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
+            #define lnPrintF_NowFN(fmt, ...) { m_NOW; m_FNAME;   lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
         #else
             #error "Non sono in ARDUINO_ARCH_ESP32"
             #define lnPrint(...)                                    lnSERIAL.print(__VA_ARGS__)
@@ -98,10 +67,79 @@
     #endif
 
 
-    // ============================
-    // --- END  M A C R O S
-    // ============================
+
+    // #ifdef  LOG_LEVEL1
+    //     #define printf1_NFN         lnPrintF_NowFN
+    //     #define printf1_FN          lnPrintF_FN
+    //     #define printf1             lnPrintF
+    // #else
+    //     #define printf1_NFN
+    //     #define printf1_FN
+    //     #define printf1
+    // #endif
 
 
-#endif
+
+
+
+
+
+    #if  LOG_LEVEL >= 4
+        #define printf4_NFN          lnPrintF_NowFN
+        #define printf4              lnPrintF
+    #else
+        #define printf4_NFN
+        #define printf4
+    #endif
+
+
+    #if  LOG_LEVEL >= 3
+        #define printf3_NFN          lnPrintF_NowFN
+        #define printf3              lnPrintF
+    #else
+        #define printf3_NFN
+        #define printf3
+    #endif
+
+
+    #if  LOG_LEVEL >= 2
+        #define printf2_NFN          lnPrintF_NowFN
+        #define printf2              lnPrintF
+    #else
+        #define printf2_NFN
+        #define printf2
+    #endif
+
+
+    #if  LOG_LEVEL >= 1
+        #define printf1_NFN          lnPrintF_NowFN
+        #define printf1_FN          lnPrintF_FN
+        #define printf1              lnPrintF
+    #else
+        #define printf1_NFN
+        #define printf1_FN
+        #define printf1
+    #endif
+
+
+    #if  LOG_LEVEL  == 0
+        #define printf1
+        #define printf2
+        #define printf3
+        #define printf4
+
+        #define printf1_FN
+        #define printf2_FN
+        #define printf3_FN
+        #define printf4_FN
+
+        #define printf1_NFN
+        #define printf2_NFN
+        #define printf3_NFN
+        #define printf4_NFN
+    #endif
+
+
+
+
 #endif

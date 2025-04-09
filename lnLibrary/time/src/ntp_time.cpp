@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 23-02-2025 18.53.55
+// Date .........: 09-04-2025 19.57.35
 */
 
 #include "Arduino.h"
@@ -15,8 +15,20 @@
 // --- others
 #include "@lnMacros.h"
 
-#define printf0_Now                  lnPrintF_NowFN
-#define x_printf0_Now
+// ---------------------------------
+// macros Aliases for LOG
+// ---------------------------------
+#define LOG_LEVEL_0
+#include "@logMacros.h"
+
+
+// #if  LOG_LEVEL >= 1
+//     #define printf1_NFN lnPrintF_NowFN
+// #else
+//     #define printf1_NFN
+// #endif
+
+
 
 #define EUROPE_ROME_TZ "CET-1CEST,M3.5.0,M10.5.0/3" // https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv
 
@@ -33,7 +45,7 @@ const char* PROGMEM sntp_status[] = {   "SNTP_SYNC_STATUS_RESET",
 // #####################################################################
 void cbSyncTime(struct timeval *tv)  { // callback function to show when NTP was synchronized
     uint8_t status = sntp_get_sync_status();
-    x_printf0_Now("NTP time synched: %d [%s]\n", status, sntp_status[status]);
+    printf1_NFN("NTP time synched: %d [%s]\n", status, sntp_status[status]);
         // * sntp_get_sync_status(void) //
         // *    0  SNTP_SYNC_STATUS_RESET: Reset status.
         // *    1  SNTP_SYNC_STATUS_COMPLETED: Time is synchronized.

@@ -33,12 +33,13 @@ const char PROGMEM *ssid_NRs = "nr_ssids";
 ssid_t mySSID[MAX_SSIDS]; // MAX_SSIDS defined in @ssidsTypeChars.h
 
 
+// ---------------------------------
+// macros Aliases for LOG
+// ---------------------------------
+#define LOG_LEVEL_0
+#include "@logMacros.h"
 
 
-// ---------------------------------
-// macros Aliases
-// ---------------------------------
-#define printf0        /*lnPrintF_FN*/
 
 /* ----------------------------------
     Siccome non è possibile avere una lista delle keyValue nel namespace
@@ -66,9 +67,9 @@ void writeSSIDs(Preferences ns) {
     for (int i = 0; i < SSID_ELEMENTS; ++i) {
         sprintf(buf, "%02x", i);
         // write index
-        printf0("writing: %s, String = %s\n", buf, base_SSIDs[i]);
+        printf1_NFN("writing: %s, String = %s\n", buf, base_SSIDs[i]);
         ns.putString(buf, base_SSIDs[i]);
-        printf0("writing: %s, String = %s\n", base_SSIDs[i], base_PASSWORDs[i]);
+        printf1_NFN("writing: %s, String = %s\n", base_SSIDs[i], base_PASSWORDs[i]);
         // write ssid-psw
         ns.putString(base_SSIDs[i], base_PASSWORDs[i]);
      }
@@ -90,11 +91,11 @@ void readSSIDs_struct_char(Preferences ns) {
         ptr = &mySSID[i];
         sprintf(buf, "%02x", i);
         size_t len = ns.getString(buf, ptr->ssid, LN_MAX_SSID_LEN);
-        printf0("read: %s, value = %s (len: %d)\n", buf, ptr->ssid, len);
+        printf1_NFN("read: %s, value = %s (len: %d)\n", buf, ptr->ssid, len);
 
         len = ns.getString(ptr->ssid, ptr->password, LN_MAX_PASSPHRASE_LEN);
-        printf0("read: %s, value = %s (len: %d)\n", buf, ptr->password, len);
-        printf0("\n");
+        printf1_NFN("read: %s, value = %s (len: %d)\n", buf, ptr->password, len);
+        printf1_NFN("\n");
      }
 }
 

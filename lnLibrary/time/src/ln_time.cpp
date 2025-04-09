@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 03-03-2025 17.26.21
+// Date .........: 09-04-2025 19.57.26
 */
 
 #include "Arduino.h"
@@ -22,23 +22,29 @@ char PROGMEM buffer_time[TIME_BUFFER_LENGTH];
 #define EUROPE_ROME_TZ "CET-1CEST,M3.5.0,M10.5.0/3" // https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv
 #define MYTZ "CET-1CEST,M3.5.0,M10.5.0/3"
 
+
+
 // ---------------------------------
-// macros Aliases
+// macros Aliases for LOG
 // ---------------------------------
-#define print_ln    lnPrintLN
+#define LOG_LEVEL_1
+#include "@logMacros.h"
 
-#define printf0     lnPrintF
-#define printf0_FN  lnPrintF_FN
-#define printf0_NFN lnPrintF_NowFN
 
-#define printf2     /*lnPrintF*/
-#define printf2_FN  /*lnPrintF_FN*/
-#define printf2_NFN /*lnPrintF_NowFN*/
+// #if  LOG_LEVEL >= 1
+//     #define printf1    lnPrin\ntLN
+//     #define printf1     lnPrintF
+//     #define printf1_FN  lnPrintF_FN
+//     #define printf1_NFN lnPrintF_NowFN
+// #else
+//     #define prin\ntf1
+//     #define printf1
+//     #define printf1_FN
+//     #define printf1_NFN
+// #endif
 
-#define printf3     /*lnPrintF*/
-#define printf3_FN  /*lnPrintF_FN*/
 
-#define printf4     /*lnPrintF*/
+
 
 
 
@@ -58,7 +64,7 @@ void time_setup() {
     // tzset();
     configTzTime(EUROPE_ROME_TZ, "time.google.com", "time.windows.com", "pool.ntp.org");
 
-    printf0_NFN("RTC local time set\n");
+    printf1_NFN("RTC local time set\n");
 }
 
 
@@ -93,17 +99,17 @@ void to_HHMMSS(uint32_t mseconds, char *outStr, uint8_t maxlen) {
 // #
 // #########################################
 // void printTime(void) {
-    // printf0_FN("\tnow: %s\n\tepoch: %ull\n\tsecondsOfDay: %d\n\tminutesOfDay: %d\n", Now(), getEpoch(), secondsOfDay(), minutesOfDay());
+    // printf1_FN("\tnow: %s\n\tepoch: %ull\n\tsecondsOfDay: %d\n\tminutesOfDay: %d\n", Now(), getEpoch(), secondsOfDay(), minutesOfDay());
 // }
 
 // allineamento al minuto ...
 void alignToMinute() {
-    printf0_NFN("waiting for minute o'clock\n");
+    printf1_NFN("waiting for minute o'clock\n");
     timeinfo = rtc.getTimeStruct();
     while (timeinfo.tm_sec != 0) {
         timeinfo = rtc.getTimeStruct();
     }
-    printf0_NFN("ready...\n");
+    printf1_NFN("ready...\n");
 }
 
 
@@ -160,7 +166,7 @@ int secondsToMinute() {
     timeinfo = rtc.getTimeStruct();
     int sec_of_day=(timeinfo.tm_hour*3600) + (timeinfo.tm_min*60)  + timeinfo.tm_sec;
     int rest = sec_of_day % 60;
-    printf0_FN("sec_of_day: %d rest: %d\n", sec_of_day, rest);
+    printf1_FN("sec_of_day: %d rest: %d\n", sec_of_day, rest);
     return rest;
 }
 
@@ -218,55 +224,55 @@ unsigned long getEpoch(unsigned long offset) {
 // #
 // #########################################
 void printLocalTime(struct tm *timeinfo) {
-    print_ln(timeinfo, "%A, %B %d %Y %H:%M:%S");
-    printf0_FN("Day of week: ");           print_ln(timeinfo, "%A");
-    printf0_FN("Month: ");                 print_ln(timeinfo, "%B");
-    printf0_FN("Day of Month: ");          print_ln(timeinfo, "%d");
-    printf0_FN("Year: ");                  print_ln(timeinfo, "%Y");
-    printf0_FN("Hour: ");                  print_ln(timeinfo, "%H");
-    printf0_FN("Hour (12 hour format): "); print_ln(timeinfo, "%I");
-    printf0_FN("Minute: ");                print_ln(timeinfo, "%M");
-    printf0_FN("Second: ");                print_ln(timeinfo, "%S");
+    printf1(timeinfo, "%A, %B %d %Y %H:%M:%S\n");
+    printf1_FN("Day of week: ");           printf1(timeinfo, "%A\n");
+    printf1_FN("Month: ");                 printf1(timeinfo, "%B\n");
+    printf1_FN("Day of Month: ");          printf1(timeinfo, "%d\n");
+    printf1_FN("Year: ");                  printf1(timeinfo, "%Y\n");
+    printf1_FN("Hour: ");                  printf1(timeinfo, "%H\n");
+    printf1_FN("Hour (12 hour format): "); printf1(timeinfo, "%I\n");
+    printf1_FN("Minute: ");                printf1(timeinfo, "%M\n");
+    printf1_FN("Second: ");                printf1(timeinfo, "%S\n");
     // formating options  http://www.cplusplus.com/reference/ctime/strftime/
 
-    printf0_FN("     Time variables");
-    char timeHour[3]; strftime(timeHour, 3, "%H", timeinfo); printf0_FN(timeHour);
-    char timeWeekDay[10]; strftime(timeWeekDay, 10, "%A", timeinfo); printf0_FN(timeWeekDay);
-    printf0_FN("\n");
+    printf1_FN("     Time variables");
+    char timeHour[3]; strftime(timeHour, 3, "%H", timeinfo); printf1_FN(timeHour);
+    char timeWeekDay[10]; strftime(timeWeekDay, 10, "%A", timeinfo); printf1_FN(timeWeekDay);
+    printf1_FN("\n");
 }
 
 void print_rtc_time() {
-    printf0_FN("\t%-20s: %s\n",   "getDate(short)",     ((char*)rtc.getDate(false).c_str()));          // (String) Sun, Jan 17 2021        false = short date format
-    printf0_FN("\t%-20s: %s\n",   "getDate(long)",      rtc.getDate(true).c_str());                    // (String) Sunday, January 17 2021 true = Long date format
-    printf0_FN("\t%-20s: %s\n",   "getTime()",          rtc.getTime());                                // (String) 15:24:38
-    printf0_FN("\t%-20s: %s\n",   "getDateTime(short)", rtc.getDateTime(false).c_str());               // (String) Sun, Jan 17 2021 15:24:38
-    printf0_FN("\t%-20s: %s\n",   "getDateTime(long)",  rtc.getDateTime(true).c_str());                // (String) Sunday, January 17 2021 15:24:38
-    printf0_FN("\t%-20s: %s\n",   "getTimeDate(short)", rtc.getTimeDate(false).c_str());               // (String) 15:24:38 Sun, Jan 17 2021
-    printf0_FN("\t%-20s: %s\n",   "getTimeDate(long)",  rtc.getTimeDate(true).c_str());                // (String) 15:24:38 Sunday, January 17 2021
+    printf1_FN("\t%-20s: %s\n",   "getDate(short)",     ((char*)rtc.getDate(false).c_str()));          // (String) Sun, Jan 17 2021        false = short date format
+    printf1_FN("\t%-20s: %s\n",   "getDate(long)",      rtc.getDate(true).c_str());                    // (String) Sunday, January 17 2021 true = Long date format
+    printf1_FN("\t%-20s: %s\n",   "getTime()",          rtc.getTime());                                // (String) 15:24:38
+    printf1_FN("\t%-20s: %s\n",   "getDateTime(short)", rtc.getDateTime(false).c_str());               // (String) Sun, Jan 17 2021 15:24:38
+    printf1_FN("\t%-20s: %s\n",   "getDateTime(long)",  rtc.getDateTime(true).c_str());                // (String) Sunday, January 17 2021 15:24:38
+    printf1_FN("\t%-20s: %s\n",   "getTimeDate(short)", rtc.getTimeDate(false).c_str());               // (String) 15:24:38 Sun, Jan 17 2021
+    printf1_FN("\t%-20s: %s\n",   "getTimeDate(long)",  rtc.getTimeDate(true).c_str());                // (String) 15:24:38 Sunday, January 17 2021
 
-    printf0_FN("\t%-20s: %ul\n",  "getEpoch()",         rtc.getEpoch());                               // (long)    1609459200
-    printf0_FN("\t%-20s: %d\n",   "getHour()",          rtc.getHour());                                // (int)     3     (1-12)
-    printf0_FN("\t%-20s: %d\n",   "getMinute()",        rtc.getMinute());                              // (int)     24    (0-59)
-    printf0_FN("\t%-20s: %d\n",   "getSecond()",        rtc.getSecond());                              // (int)     38    (0-59)
-    printf0_FN("\t%-20s: %ul\n",  "getMillis()",        rtc.getMillis());                              // (long)    723
-    printf0_FN("\t%-20s: %ul\n",  "getMicros()",        rtc.getMicros());                              // (long)    723546
+    printf1_FN("\t%-20s: %ul\n",  "getEpoch()",         rtc.getEpoch());                               // (long)    1609459200
+    printf1_FN("\t%-20s: %d\n",   "getHour()",          rtc.getHour());                                // (int)     3     (1-12)
+    printf1_FN("\t%-20s: %d\n",   "getMinute()",        rtc.getMinute());                              // (int)     24    (0-59)
+    printf1_FN("\t%-20s: %d\n",   "getSecond()",        rtc.getSecond());                              // (int)     38    (0-59)
+    printf1_FN("\t%-20s: %ul\n",  "getMillis()",        rtc.getMillis());                              // (long)    723
+    printf1_FN("\t%-20s: %ul\n",  "getMicros()",        rtc.getMicros());                              // (long)    723546
 
-    printf0_FN("\t%-20s: %d\n",   "getHour(true)",      rtc.getHour(true));                            // (int)     15    (0-23)
-    printf0_FN("\t%-20s: %s\n",   "getAmPm(uppercase)", rtc.getAmPm(false).c_str());                   // (String)  PM
-    printf0_FN("\t%-20s: %s\n",   "getAmPm(lowcase)",   rtc.getAmPm(true).c_str());                    // (String)  pm
+    printf1_FN("\t%-20s: %d\n",   "getHour(true)",      rtc.getHour(true));                            // (int)     15    (0-23)
+    printf1_FN("\t%-20s: %s\n",   "getAmPm(uppercase)", rtc.getAmPm(false).c_str());                   // (String)  PM
+    printf1_FN("\t%-20s: %s\n",   "getAmPm(lowcase)",   rtc.getAmPm(true).c_str());                    // (String)  pm
 
-    printf0_FN("\t%-20s: %d\n",   "getYear()",          rtc.getYear());                                // (int)     2021
-    printf0_FN("\t%-20s: %d\n",   "getMonth()",         rtc.getMonth());                               // (int)     0     (0-11)
-    printf0_FN("\t%-20s: %d\n",   "getDay()",           rtc.getDay());                                 // (int)     17    (1-31)
-    printf0_FN("\t%-20s: %d\n",   "getDayofWeek()",     rtc.getDayofWeek());                           // (int)     0     (0-6)
-    printf0_FN("\t%-20s: %d\n",   "getDayofYear()",     rtc.getDayofYear());                           // (int)     16    (0-365)
-    printf0_FN("\t%-20s: %ull\n", "getLocalEpoch()",    rtc.getLocalEpoch());                          // (long)    1609459200 epoch without offset
-    printf0_FN("\t%-20s: %s\n",   "getAmPm()",          rtc.getTime("%A, %B %d %Y %H:%M:%S").c_str()); // (String) returns time with specified format
+    printf1_FN("\t%-20s: %d\n",   "getYear()",          rtc.getYear());                                // (int)     2021
+    printf1_FN("\t%-20s: %d\n",   "getMonth()",         rtc.getMonth());                               // (int)     0     (0-11)
+    printf1_FN("\t%-20s: %d\n",   "getDay()",           rtc.getDay());                                 // (int)     17    (1-31)
+    printf1_FN("\t%-20s: %d\n",   "getDayofWeek()",     rtc.getDayofWeek());                           // (int)     0     (0-6)
+    printf1_FN("\t%-20s: %d\n",   "getDayofYear()",     rtc.getDayofYear());                           // (int)     16    (0-365)
+    printf1_FN("\t%-20s: %ull\n", "getLocalEpoch()",    rtc.getLocalEpoch());                          // (long)    1609459200 epoch without offset
+    printf1_FN("\t%-20s: %s\n",   "getAmPm()",          rtc.getTime("%A, %B %d %Y %H:%M:%S").c_str()); // (String) returns time with specified format
     // formating options  http://www.cplusplus.com/reference/ctime/strftime/
 
 
     struct tm timeinfo = rtc.getTimeStruct();
-    printf0_FN("\t%-20s: %s\n", "time struct", (&timeinfo, "%A, %B %d %Y %H:%M:%S"));   //  (tm struct) Sunday, January 17 2021 07:24:38
+    printf1_FN("\t%-20s: %s\n", "time struct", (&timeinfo, "%A, %B %d %Y %H:%M:%S"));   //  (tm struct) Sunday, January 17 2021 07:24:38
 
 }
 

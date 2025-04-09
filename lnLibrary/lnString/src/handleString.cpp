@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 26-02-2025 18.27.17
+// Date .........: 09-04-2025 19.57.52
 */
 
 
@@ -13,10 +13,20 @@
 
 // ---------------------------------
 #include "@lnMacros.h"
-// macros Aliases
 // ---------------------------------
-#define printf0_NFN          lnPrintF_NowFN
-#define x_printf0_NFN
+// ---------------------------------
+// macros Aliases for LOG
+// ---------------------------------
+#define LOG_LEVEL_0
+#include "@logMacros.h"
+
+
+// #if  LOG_LEVEL >= 1
+//     #define printf1_NFN lnPrintF_NowFN
+// #else
+//     #define printf1_NFN
+// #endif
+
 
 
 /*
@@ -72,13 +82,13 @@ bool ln_isString(const char *str) {
     bool isValid = false;
 
     if (!str) {
-        x_printf0_NFN("null\n");
+        printf1_NFN("null\n");
     }
     else if (str[0] == '\0') {
-        x_printf0_NFN("empty\n");
+        printf1_NFN("empty\n");
     }
     else if (str ) {
-        x_printf0_NFN("%s\n", str);
+        printf1_NFN("%s\n", str);
         isValid=true;
     }
     return isValid;

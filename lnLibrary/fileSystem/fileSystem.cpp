@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 06-02-2025 08.55.46
+// Date .........: 09-04-2025 19.58.08
 //
 
 // Adapted from: https://github.com/espressif/arduino-esp32/blob/master/libraries/LittleFS/examples/LITTLEFS_test/LITTLEFS_test.ino
@@ -11,7 +11,7 @@
 #include <LittleFS.h>
 
 
-// #include <../lnMacros/@lnMacros.h>    // per debug0_nowfn()
+// #include <../lnMacros/@lnMacros.h>    // per printf1_NFN()
 #include "@lnMacros.h"
 #include "@fileSystem.h"    // per Lisdir() di openFilesystem()
 
@@ -24,10 +24,27 @@
 #define FORMAT_LITTLEFS_IF_FAILED true
 
 
+// ---------------------------------
+// macros Aliases for LOG
+// ---------------------------------
+#define LOG_LEVEL_1
+#include "@logMacros.h"
 
-// --- essentials
-#define debug0_nowfn                //  ln_printf_NowFN
-#define debug0_fn                 ln_printf_FN
+
+// #if  LOG_LEVEL >= 1
+//     #define printf1_NFN lnPrintF_NowFN
+// #else
+//     #define printf1_NFN
+// #endif
+
+
+// #if  LOG_LEVEL >= 2
+//     #define printf2_NFN lnPrintF_NowFN
+// #else
+//     #define printf2_NFN
+// #endif
+
+
 
 
 // #############################################################
@@ -36,12 +53,12 @@
 bool openLittleFS() {
 
     // if (!fs.begin(FORMAT_LITTLEFS_IF_FAILED)) {
-    //     debug0_nowfn("LittleFS Mount Failed\n");
+    //     printf1_NFN("LittleFS Mount Failed\n");
     //     return false;
     // }
 
     if (!LittleFS.begin(FORMAT_LITTLEFS_IF_FAILED)) {
-        debug0_fn("LittleFS Mount Failed\n");
+        printf2_NFN("LittleFS Mount Failed\n");
         return false;
     }
     listDir(LittleFS, "/", 1); // List the directories up to one level beginning at the root directory
@@ -54,27 +71,27 @@ bool openLittleFS() {
 // #  list dir
 // #############################################################
 void listDir(fs::FS &fs, const char * dirname, uint8_t levels){
-    debug0_nowfn("Listing directory: %s\n", dirname);
+    printf1_NFN("Listing directory: %s\n", dirname);
 
     File root = fs.open(dirname);
     if(!root){
-        debug0_fn("- failed to open directory\n");
+        printf2_NFN("- failed to open directory\n");
         return;
     }
     if(!root.isDirectory()){
-        debug0_fn(" - not a directory\n");
+        printf2_NFN(" - not a directory\n");
         return;
     }
 
     File file = root.openNextFile();
     while(file){
         if(file.isDirectory()){
-            debug0_nowfn("  DIR : %s\n", file.name());
+            printf1_NFN("  DIR : %s\n", file.name());
             if(levels){
                 listDir(fs, file.path(), levels -1);
             }
         } else {
-            debug0_nowfn("  FILE: %s\tSIZE: %d\n", file.name(), file.size());
+            printf1_NFN("  FILE: %s\tSIZE: %d\n", file.name(), file.size());
         }
         file = root.openNextFile();
     }
@@ -88,24 +105,24 @@ void listDir(fs::FS &fs, const char * dirname, uint8_t levels){
 const char * readTextFile(fs::FS &fs, const char * path){
     const char *fileContent;
 
-    debug0_nowfn("Reading file: %s\n", path);
+    printf1_NFN("Reading file: %s\n", path);
 
     File file = fs.open(path);
     if(!file || file.isDirectory()){
-        debug0_fn("- failed to open file for reading");
+        printf2_NFN("- failed to open file for reading");
         return "";
     }
 
     size_t filesize = file.size();
-    debug0_nowfn(" [%d bytes]\n", filesize);
-    debug0_nowfn("- read from file:\n");
+    printf1_NFN(" [%d bytes]\n", filesize);
+    printf1_NFN("- read from file:\n");
     String data;
     if (file.available()) {
         data = file.readString();
         fileContent = data.c_str(); // Converts the contents of a String as a C-style, null-terminated string.
-        // debug0_nowfn("type of data: %s - %s\n", typeStr(fileContent), fileContent);
+        // printf1_NFN("type of data: %s - %s\n", typeStr(fileContent), fileContent);
         /*
-        debug0_nowfn("type of data: %s - %s\n", typeStr(data), data);
+        printf1_NFN("type of data: %s - %s\n", typeStr(data), data);
         */
     }
     file.close();
@@ -161,18 +178,18 @@ void writeBinData(fs::FS &fs, const char * path, byte *data, size_t size) {
 void renameFile(fs::FS &fs, const char * path1, const char * path2) {
     Serial.printf("Renaming file %s to %s\n", path1, path2);
     if (fs.rename(path1, path2)) {
-        debug0_nowfn("- file renamed\n");
+        printf1_NFN("- file renamed\n");
     } else {
-        debug0_fn("- rename failed\n");
+        printf2_NFN("- rename failed\n");
     }
 }
 
 void deleteFile(fs::FS &fs, const char * path) {
-    debug0_nowfn("Deleting file: %s\n", path);
+    printf1_NFN("Deleting file: %s\n", path);
     if (fs.remove(path)) {
-        debug0_nowfn("- file deleted\n");
+        printf1_NFN("- file deleted\n");
     } else {
-        debug0_fn("- delete failed\n");
+        printf2_NFN("- delete failed\n");
     }
 }
 

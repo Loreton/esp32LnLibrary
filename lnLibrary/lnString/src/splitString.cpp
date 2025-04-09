@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 07-04-2025 18.47.01
+// Date .........: 08-04-2025 15.19.31
 */
 
 
@@ -12,7 +12,20 @@
 
 // char msg[] = "1,20,300,4000,50000";
 
-#define printf0_NFN   //    lnPrintF_NowFN
+// ---------------------------------
+// macros Aliases for LOG
+// ---------------------------------
+#define NO_LOG 0
+#define LOG_LEVEL NO_LOG
+#include "@logMacros.h"
+
+
+// #if  LOG_LEVEL >= 1
+//     #define printf1_NFN lnPrintF_NowFN
+// #else
+//     #define printf1_NFN
+// #endif
+
 
 
 /*
@@ -25,15 +38,15 @@
 const PROGMEM char *splittedResult[100];
 
 uint8_t splitString(char *input_str, const char *delim) {
-    printf0_NFN("Parsing String: %s\n", input_str);
+    printf1_NFN("Parsing String: %s\n", input_str);
 
 
     char* ptr = strtok(input_str, delim); // get first word
-    printf0_NFN("index\ttext\n");
+    printf1_NFN("index\ttext\n");
     int8_t i = 0;
     while (ptr) {
         splittedResult[i]=ptr;
-        printf0_NFN("%d - '%s'\n", i, ptr);  // this is the ASCII text we want to transform into an integer
+        printf1_NFN("%d - '%s'\n", i, ptr);  // this is the ASCII text we want to transform into an integer
         ptr = strtok(NULL, delim);
         i++;
     }
@@ -85,7 +98,7 @@ char *getWord(char *input_str, const char *delim, int8_t word_nr) {
             if (curr_word == word_nr) {
                 break;
             }
-            printf0_NFN("%d - '%s'\n", curr_word, ptr);
+            printf1_NFN("%d - '%s'\n", curr_word, ptr);
             ptr = strtok(NULL, delim);
             curr_word++;
         }
@@ -100,7 +113,7 @@ char *getWord(char *input_str, const char *delim, int8_t word_nr) {
 // #    char myString[]="12:34:55";
 // #    char delim[] = ":";
 // #    int32_t seconds = stringToSeconds(myString, delim);
-// #    printf0_NFN("seconds: %d\n", seconds);
+// #    printf1_NFN("seconds: %d\n", seconds);
 // ######################################################################
 int32_t stringToSeconds(char *input_str, const char *delim) {
     int words = splitString(input_str, delim);
@@ -127,7 +140,7 @@ int32_t stringToSeconds(char *input_str, const char *delim) {
             seconds = 0;
 
     }
-    printf0_NFN("seconds [switch]: %d\n", seconds);
+    printf1_NFN("seconds [switch]: %d\n", seconds);
     return seconds;
 }
 
