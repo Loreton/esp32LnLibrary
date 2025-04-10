@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 15-02-2025 11.06.05
+// Date .........: 10-04-2025 14.00.19
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -53,5 +53,13 @@ void checkMillisTimer(structMillisTimer_t *t) {
     }
 }
 
-
+void mTimerIsExpired(structMillisTimer_t *t) {
+    if (t->enabled) {
+        if ( (millis() - t->start) > t->duration) {
+            t->running = false;
+            t->expired = true;
+            t->enabled = true;
+        }
+    }
+}
 
