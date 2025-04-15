@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 09-04-2025 19.57.00
+// Date .........: 15-04-2025 18.49.41
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -15,7 +15,7 @@
 
 
 // --- others
-#include "@lnMacros.h"
+// #include "@lnMacros.h"
 
 
 

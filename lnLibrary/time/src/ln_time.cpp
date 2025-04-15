@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 09-04-2025 19.57.26
+// Date .........: 15-04-2025 18.49.23
 */
 
 #include "Arduino.h"
@@ -10,7 +10,7 @@
 #include "@ln_time.h"
 
 // --- others
-#include "@lnMacros.h"
+// #include "@lnMacros.h"
 
 #define TIME_BUFFER_LENGTH 10
 

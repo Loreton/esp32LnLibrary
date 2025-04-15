@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 09-04-2025 19.57.35
+// Date .........: 15-04-2025 18.49.31
 */
 
 #include "Arduino.h"
@@ -13,7 +13,7 @@
 #include "@ln_time.h"
 
 // --- others
-#include "@lnMacros.h"
+// #include "@lnMacros.h"
 
 // ---------------------------------
 // macros Aliases for LOG

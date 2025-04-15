@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 09-04-2025 19.58.08
+// Date .........: 15-04-2025 18.50.17
 //
 
 // Adapted from: https://github.com/espressif/arduino-esp32/blob/master/libraries/LittleFS/examples/LITTLEFS_test/LITTLEFS_test.ino
@@ -12,7 +12,7 @@
 
 
 // #include <../lnMacros/@lnMacros.h>    // per printf1_NFN()
-#include "@lnMacros.h"
+// #include "@lnMacros.h"
 #include "@fileSystem.h"    // per Lisdir() di openFilesystem()
 
 

@@ -17,7 +17,7 @@
 #include "@ssidsTypeChar.h" // contiene le password degli SSIDs /home/loreto/lnProfile/envars/include/@ssidsTypeChar.h
 
 // ---  others
-#include "@lnMacros.h"
+// #include "@lnMacros.h"
 
 
 

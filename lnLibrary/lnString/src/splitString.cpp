@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 08-04-2025 15.19.31
+// Date .........: 15-04-2025 18.50.34
 */
 
 
@@ -8,7 +8,7 @@
 
 // --- correlati
 #include "@lnString.h"
-#include "@lnMacros.h"
+// #include "@lnMacros.h"
 
 // char msg[] = "1,20,300,4000,50000";
 
