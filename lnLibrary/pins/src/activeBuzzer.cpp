@@ -1,19 +1,16 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 15-04-2025 18.48.33
+// Date .........: 18-04-2025 12.46.49
 */
 
 #include <ESP32Time.h> // per definire ESP32Time rtc;
 
-// --- others
-// #include "@lnMacros.h"
-#include "@pinStructures.h"
-
 // ---------------------------------
-// macros Aliases for LOG
+// - lnLibrary headers files
 // ---------------------------------
 #define LOG_LEVEL_x
 #include "@logMacros.h"
+#include "@mainStructures.h"
 
 
 

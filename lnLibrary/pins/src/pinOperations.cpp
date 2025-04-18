@@ -1,19 +1,18 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 15-04-2025 18.48.45
+// Date .........: 18-04-2025 11.34.13
 */
 
 
-// --- others
-// #include "@lnMacros.h"
-#include "@structures.h"
-#include "@pinOperations.h"
 
 // ---------------------------------
-// macros Aliases for LOG
+// - lnLibrary headers files
 // ---------------------------------
 #define LOG_LEVEL_0
 #include "@logMacros.h"
+#include "@mainStructures.h"
+#include "@pinOperations.h"
+
 
 
 // #########################################

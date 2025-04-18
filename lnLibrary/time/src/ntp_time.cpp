@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 15-04-2025 18.49.31
+// Date .........: 16-04-2025 18.40.10
 */
 
 #include "Arduino.h"
@@ -9,11 +9,11 @@
 #include <ESP32Time.h> // ESP32Time.cpp
 
 
-// --- correlati
+// ---------------------------------
+// loreto headers files
+// ---------------------------------
 #include "@ln_time.h"
 
-// --- others
-// #include "@lnMacros.h"
 
 // ---------------------------------
 // macros Aliases for LOG
@@ -21,12 +21,6 @@
 #define LOG_LEVEL_0
 #include "@logMacros.h"
 
-
-// #if  LOG_LEVEL >= 1
-//     #define printf1_NFN lnPrintF_NowFN
-// #else
-//     #define printf1_NFN
-// #endif
 
 
 

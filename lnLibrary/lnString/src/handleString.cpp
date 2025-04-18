@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 15-04-2025 18.50.30
+// Date .........: 18-04-2025 10.08.32
 */
 
 
@@ -9,33 +9,11 @@
 // char msg[] = "1,20,300,4000,50000";
 
 
-
-
 // ---------------------------------
-// #include "@lnMacros.h"
-// ---------------------------------
-// ---------------------------------
-// macros Aliases for LOG
+// lnLibrary headers files
 // ---------------------------------
 #define LOG_LEVEL_0
 #include "@logMacros.h"
-
-
-// #if  LOG_LEVEL >= 1
-//     #define printf1_NFN lnPrintF_NowFN
-// #else
-//     #define printf1_NFN
-// #endif
-
-
-
-/*
-####################################################
-#    input; char *
-#    modifica input string
-####################################################
-*/
-
 
 
 /*

@@ -1,11 +1,11 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 15-04-2025 18.26.05
+// Date .........: 18-04-2025 13.00.57
 */
 
 #ifndef __PIN_OPERATIONS_FUNCTIONS_H__
     #define __PIN_OPERATIONS_FUNCTIONS_H__
-    #include "@structures.h"
+    #include "@mainStructures.h"
 
 
 

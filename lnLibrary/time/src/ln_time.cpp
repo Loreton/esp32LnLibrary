@@ -1,16 +1,24 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 15-04-2025 18.49.23
+// Date .........: 16-04-2025 18.39.53
 */
 
 #include "Arduino.h"
 #include <ESP32Time.h> // ESP32Time.cpp
 
-#define __LN_TIME_CPP__
+
+// ---------------------------------
+// loreto headers files
+// ---------------------------------
 #include "@ln_time.h"
 
-// --- others
-// #include "@lnMacros.h"
+// ---------------------------------
+// macros Aliases for LOG
+// ---------------------------------
+#define LOG_LEVEL_1
+#include "@logMacros.h"
+
+
 
 #define TIME_BUFFER_LENGTH 10
 
@@ -24,11 +32,6 @@ char PROGMEM buffer_time[TIME_BUFFER_LENGTH];
 
 
 
-// ---------------------------------
-// macros Aliases for LOG
-// ---------------------------------
-#define LOG_LEVEL_1
-#include "@logMacros.h"
 
 
 // #if  LOG_LEVEL >= 1

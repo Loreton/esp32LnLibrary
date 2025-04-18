@@ -12,12 +12,15 @@
 #include <Arduino.h>
 #include <Preferences.h>
 
-// --- correlate
+// ---------------------------------
+// - lnLibrary headers files
+// ---------------------------------
+#define LOG_LEVEL_0
+#include "@logMacros.h"
 #include "@ln_wifi.h"
 #include "@ssidsTypeChar.h" // contiene le password degli SSIDs /home/loreto/lnProfile/envars/include/@ssidsTypeChar.h
 
-// ---  others
-// #include "@lnMacros.h"
+
 
 
 
@@ -33,11 +36,6 @@ const char PROGMEM *ssid_NRs = "nr_ssids";
 ssid_t mySSID[MAX_SSIDS]; // MAX_SSIDS defined in @ssidsTypeChars.h
 
 
-// ---------------------------------
-// macros Aliases for LOG
-// ---------------------------------
-#define LOG_LEVEL_0
-#include "@logMacros.h"
 
 
 

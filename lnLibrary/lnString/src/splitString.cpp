@@ -1,32 +1,18 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 15-04-2025 18.50.34
+// Date .........: 18-04-2025 10.08.56
 */
 
 
 #include <Arduino.h>
 
-// --- correlati
-#include "@lnString.h"
-// #include "@lnMacros.h"
-
-// char msg[] = "1,20,300,4000,50000";
 
 // ---------------------------------
-// macros Aliases for LOG
+// lnLibrary headers files
 // ---------------------------------
-#define NO_LOG 0
-#define LOG_LEVEL NO_LOG
+#define LOG_LEVEL_0
 #include "@logMacros.h"
-
-
-// #if  LOG_LEVEL >= 1
-//     #define printf1_NFN lnPrintF_NowFN
-// #else
-//     #define printf1_NFN
-// #endif
-
-
+#include "@lnString.h"
 
 /*
 ####################################################

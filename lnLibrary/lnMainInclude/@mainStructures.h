@@ -1,15 +1,12 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 15-04-2025 16.43.50
+// Date .........: 18-04-2025 12.44.59
 //
 
 #include <Arduino.h>
 
-#ifndef __LN_PIN_STRUCTURES_H__
-    #define __LN_PIN_STRUCTURES_H__
-
-
-
+#ifndef __LN_MAIN_STRUCTURES_H__
+    #define __LN_MAIN_STRUCTURES_H__
 
     struct PINtimer {
         bool       enabled    = false;
@@ -40,8 +37,8 @@
                 uint8_t          pin                 = 0;
                 char             pinID[21];  // contiene [pin:%02d.%-15s] p->pin, p->name,
                 uint8_t          mode                = INPUT_PULLUP; // ${HOME}/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp32-hal-gpio.h
-                bool             ON                  = LOW;
-                bool             OFF                 = HIGH;
+                bool             ON                  = LOW;     // ON_level
+                bool             OFF                 = HIGH;        // OFF_level
                 bool             active_level        = LOW;
 
                 // si modificano ad ogni cambio di stato
@@ -50,7 +47,6 @@
 
                 bool             lastState           = HIGH;
                 bool             isPressed           = false;
-                // bool             is_acted            = false; // per compatibilità con output pin (sinonimo di isPressed )
                 bool             is_ON               = false;
                 bool             is_OFF              = false;
                 bool             isReleased          = false;
@@ -74,20 +70,17 @@
                 char             pinID[20];  // contiene [pin:%02d.%-15s] p->pin, p->name,
                 uint8_t          mode         = OUTPUT; // ${HOME}/.platformio/packages/framework-arduinoespressif32/cores/esp32/esp32-hal-gpio.h
                 bool             active_level = LOW;
-                bool             ON           = LOW;
-                bool             OFF          = HIGH;
+                bool             ON           = LOW;    // ON_level
+                bool             OFF          = HIGH;   // OFF_level
 
                 // si modificano ad ogni cambio di stato
                 bool             changedState = false;
                 bool             lastState    = HIGH;
                 bool             ph_state     = HIGH;
                 bool             is_acted      = HIGH;
-                // bool             is_ON         = false;
-                // bool             is_OFF        = false;
-                // bool             isON         = HIGH;
                 bool             is_ON        = false;
                 bool             is_OFF       = false;
-                bool             isReleased   = HIGH;
+                // bool             isReleased   = HIGH;
 
                 bool             alexa_request   = false;
                 bool             alexa_status  = false;
@@ -95,8 +88,41 @@
                 PINpulsetime     pulsetime;
     } io_output_pin_struct_t;
 
+    enum PressType   : uint8_t { NO_BUTTON_PRESSED = 0,
+                                PRESSED_TIME_01,
+                                PRESSED_TIME_02,
+                                PRESSED_TIME_03,
+                                PRESSED_TIME_04,
+                                PRESSED_TIME_05,
+                                PRESSED_TIME_06,
+                                OVERFLOW_TIME};
 
-
+    #ifdef __I_AM_MAIN_CPP__
+        const char PROGMEM *str_action[]     = {"released", "pressed"};
+        const char PROGMEM *str_pinLevel[]   = {"LOW", "HIGH"};
+        const char PROGMEM *str_TrueFalse[]  = {"FALSE", "TRUE"};
+        const char PROGMEM *str_OffOn[]      = {"OFF", "ON"};
+        const char PROGMEM *str_ON           = "ON";
+        const char PROGMEM *str_OFF          = "OFF";
+        const char PROGMEM *str_INPUT        = "INPUT";
+        const char PROGMEM *str_INPUT_PULLUP = "INPUT_PULLUP";
+        const char PROGMEM *str_OUTPUT       = "OUTPUT";
+        // ------- in pinInitialization.cpp ....devo capire perché non posso spostarli
+        // const char * PROGMEM THRESHOLD_LEVEL_TYPES[] = {"NO_PRESSED_BUTTON", "PRESSED_LEVEL_01", "PRESSED_LEVEL_02", "PRESSED_LEVEL_03", "PRESSED_LEVEL_04", "PRESSED_LEVEL_05", "PRESSED_LEVEL_06", "OVERFLOW_TIME"};
+        // const int8_t THRESHOLDS_LEVELS_TYPES_length = sizeof(THRESHOLD_LEVEL_TYPES)/sizeof(char *);
+    #else
+        extern const char PROGMEM *str_action[];
+        extern const char PROGMEM *str_pinLevel[];
+        extern const char PROGMEM *str_TrueFalse[];
+        extern const char PROGMEM *str_OffOn[];
+        extern const char PROGMEM *str_ON;
+        extern const char PROGMEM *str_OFF;
+        extern const char PROGMEM *str_INPUT;
+        extern const char PROGMEM *str_INPUT_PULLUP;
+        extern const char PROGMEM *str_OUTPUT;
+        extern const char * PROGMEM THRESHOLD_LEVEL_TYPES[];
+        extern const int8_t THRESHOLDS_LEVELS_TYPES_length;
+    #endif
 
 
 #endif

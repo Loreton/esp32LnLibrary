@@ -1,65 +1,21 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 15-04-2025 18.49.41
+// Date .........: 18-04-2025 12.51.27
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
 #include "Arduino.h" // in testa anche per le definizioni dei type
 #include <WiFi.h>
-// #include <ArduinoJson.h>
-
-
-// --- correlati
-#include "@ln_wifi.h"
-#include "@wifiCredentials.h"
-
-
-// --- others
-// #include "@lnMacros.h"
 
 
 
 // ---------------------------------
-// macros Aliases for LOG
+// - lnLibrary headers files
 // ---------------------------------
 #define LOG_LEVEL_1
 #include "@logMacros.h"
-
-
-
-
-// #if  LOG_LEVEL >= 4
-//     #define printf4_NFN          lnPrintF_NowFN
-//     #define printf4              lnPrintF
-// #else
-//     #define printf4_NFN
-//     #define printf4
-// #endif
-
-
-// #if  LOG_LEVEL >= 3
-//     #define printf3_NFN          lnPrintF_NowFN
-//     #define printf3              lnPrintF
-// #else
-//     #define printf3_NFN
-//     #define printf3
-// #endif
-
-
-// #if  LOG_LEVEL >= 2
-//     #define printf2_NFN          lnPrintF_NowFN
-// #else
-//     #define printf2_NFN
-// #endif
-
-
-// #if  LOG_LEVEL >= 1
-//     #define printf1_NFN          lnPrintF_NowFN
-//     #define printf1_FN          lnPrintF_FN
-// #else
-//     #define printf1_NFN
-//     #define printf1_FN
-// #endif
+#include "@ln_wifi.h"
+#include "@wifiCredentials.h"
 
 
 

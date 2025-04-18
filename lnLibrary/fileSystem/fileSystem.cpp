@@ -1,49 +1,27 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 15-04-2025 18.50.17
+// Date .........: 18-04-2025 11.37.50
 //
 
 // Adapted from: https://github.com/espressif/arduino-esp32/blob/master/libraries/LittleFS/examples/LITTLEFS_test/LITTLEFS_test.ino
 // Project details: https://RandomNerdTutorials.com/esp32-write-data-littlefs-arduino/
 
 #include <Arduino.h>
-#include "FS.h"
-#include <LittleFS.h>
-
-
-// #include <../lnMacros/@lnMacros.h>    // per printf1_NFN()
-// #include "@lnMacros.h"
-#include "@fileSystem.h"    // per Lisdir() di openFilesystem()
-
-
-
 
 //  You only need to format LittleFS the first time you run a
 //  test or else use the LITTLEFS plugin to create a partition
 //  https://github.com/lorol/arduino-esp32littlefs-plugin
 #define FORMAT_LITTLEFS_IF_FAILED true
+#include "FS.h"
+#include <LittleFS.h>
 
 
 // ---------------------------------
-// macros Aliases for LOG
+// lnLibrary headers files
 // ---------------------------------
-#define LOG_LEVEL_1
+#define LOG_LEVEL_4
 #include "@logMacros.h"
-
-
-// #if  LOG_LEVEL >= 1
-//     #define printf1_NFN lnPrintF_NowFN
-// #else
-//     #define printf1_NFN
-// #endif
-
-
-// #if  LOG_LEVEL >= 2
-//     #define printf2_NFN lnPrintF_NowFN
-// #else
-//     #define printf2_NFN
-// #endif
-
+#include "@fileSystem.h"    // per Lisdir() di openFilesystem()
 
 
 
