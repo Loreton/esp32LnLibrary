@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 09-04-2025 17.24.41
+// Date .........: 19-04-2025 14.19.34
 */
 
 #include <Arduino.h>
@@ -44,9 +44,9 @@
             #define lnPrint(...)                                    lnSERIAL.print(__VA_ARGS__)
             #define lnPrintLN(...)                                  lnSERIAL.println(__VA_ARGS__)
             #define lnPrintF(fmt, ...)       {                      lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
-            #define lnPrintF_FN(fmt, ...)    {        m_FNAME;   lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
+            #define lnPrintF_FN(fmt, ...)    {        m_FNAME;      lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
             #define lnPrintF_now(fmt, ...)   {        m_NOW;        lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
-            #define lnPrintF_NowFN(fmt, ...) { m_NOW; m_FNAME;   lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
+            #define lnPrintF_NowFN(fmt, ...) { m_NOW; m_FNAME;      lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
         #else
             #error "Non sono in ARDUINO_ARCH_ESP32"
             #define lnPrint(...)                                    lnSERIAL.print(__VA_ARGS__)
@@ -109,11 +109,5 @@
         #define printf4_FN
         #define printf4_NFN
     #endif
-
-
-
-
-
-
 
 #endif

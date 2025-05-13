@@ -1,12 +1,15 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 18-04-2025 11.36.36
+// Date .........: 19-04-2025 12.46.00
 */
 
 
 // ---------------------------------
 // - lnLibrary headers files
 // ---------------------------------
+#define LOG_LEVEL_1x
+#define LOG_LEVEL_2x
+#define LOG_LEVEL_3x
 #define LOG_LEVEL_4x
 #include "@logMacros.h"
 #include "@mainStructures.h"
@@ -20,7 +23,7 @@
 // # Ex.: setting del pulsetime;
 // #########################################
 void stopPulsetime(io_output_pin_struct_t *p) {
-    printf1_NFN("%s stopping pulsetime\n", p->pinID);
+    printf2_NFN("%s stopping pulsetime\n", p->pinID);
     p->pulsetime.enabled = false;
     p->pulsetime.cur_duration = 0;
     p->pulsetime.msecs_start  = 0;
@@ -31,9 +34,9 @@ void stopPulsetime(io_output_pin_struct_t *p) {
 // # Ex.: start del pulsetime;
 // #########################################
 void startPulsetime(io_output_pin_struct_t *p, int32_t msec_pulseLength, bool autoOnOff) {
-    printf4_NFN("%s processing pulse %ld mSec on pin - autoStart=%d\n", p->pinID, msec_pulseLength, autoOnOff);
+    printf3_NFN("%s processing pulse %ld mSec on pin - autoStart=%d\n", p->pinID, msec_pulseLength, autoOnOff);
     if (p->pulsetime.cur_duration != 0) {
-        printf4_NFN("%s pulse is already running. new request discarded.\n", p->pinID);
+        printf3_NFN("%s pulse is already running. new request discarded.\n", p->pinID);
         return;
     }
 
@@ -51,12 +54,12 @@ void startPulsetime(io_output_pin_struct_t *p, int32_t msec_pulseLength, bool au
 
     else {
         p->pulsetime.cur_duration = 0; // no pulseTime
-        printf4_NFN("%s no value for pulse %ld\n", p->pinID, p->pulsetime.cur_duration);
+        printf2_NFN("%s no value for pulse %ld\n", p->pinID, p->pulsetime.cur_duration);
     }
 
     if (p->pulsetime.cur_duration != 0) {
         p->pulsetime.enabled = true;
-        printf4_NFN("%s starting pulsetime: %ld msecs\n", p->pinID, p->pulsetime.cur_duration);
+        printf2_NFN("%s starting pulsetime: %ld msecs\n", p->pinID, p->pulsetime.cur_duration);
         p->pulsetime.msecs_start = millis(); // in millisecondi l'orario di fine
         if (p->pulsetime.auto_on_off) {
             // digitalWrite(p->pin, p->ON);
@@ -78,7 +81,7 @@ bool isPulsetimeExpired(io_output_pin_struct_t *p) {
         pt->remaining = pt->cur_duration - pt->elapsed;
 
         if ( pt->elapsed > pt->cur_duration ) {
-            printf4_NFN("%s pulsetime expired (elapsed: %ld msec)\n", p->pinID, pt->elapsed);
+            printf2_NFN("%s pulsetime expired (elapsed: %ld msec)\n", p->pinID, pt->elapsed);
             expired = true;
         }
         else {
@@ -114,7 +117,7 @@ void pinPulseON(io_output_pin_struct_t *p, int32_t msec_pulseLength, bool autoOf
     startPulsetime(p, msec_pulseLength, true);
 
     // else {
-    //     printf4_NFN("%s pulsetime NOT expired (remaining msec: %ld)\n", p->pinID, remaining);
+    //     printf2_NFN("%s pulsetime NOT expired (remaining msec: %ld)\n", p->pinID, remaining);
     // }
 
 }

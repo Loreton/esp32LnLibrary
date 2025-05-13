@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 18-04-2025 11.34.13
+// Date .........: 08-05-2025 17.09.45
 */
 
 
@@ -8,11 +8,16 @@
 // ---------------------------------
 // - lnLibrary headers files
 // ---------------------------------
-#define LOG_LEVEL_0
+#define LOG_LEVEL_1
+#define LOG_LEVEL_2x
+#define LOG_LEVEL_3x
+#define LOG_LEVEL_4x
 #include "@logMacros.h"
 #include "@mainStructures.h"
 #include "@pinOperations.h"
 
+const char * PROGMEM THRESHOLD_LEVEL_TYPES[] = {"NO_PRESSED_BUTTON", "PRESSED_LEVEL_01", "PRESSED_LEVEL_02", "PRESSED_LEVEL_03", "PRESSED_LEVEL_04", "PRESSED_LEVEL_05", "PRESSED_LEVEL_06", "OVERFLOW_TIME"};
+const int8_t THRESHOLDS_LEVELS_TYPES_length  = sizeof(THRESHOLD_LEVEL_TYPES)/sizeof(char *);
 
 
 // #########################################
@@ -145,9 +150,9 @@ int8_t readLongPressPin(io_input_pin_struct_t *p) {
 // #    NON funziona se ad esempio in un LED non si mette la resistenza.
 // #########################################
 void pinToggle(io_output_pin_struct_t *p) {
-    printf2_NFN("%s status before %d\n", p->pinID, digitalRead(p->pin));
+    printf4_NFN("%s status before %d\n", p->pinID, digitalRead(p->pin));
     digitalWrite(p->pin ,!digitalRead(p->pin));
-    printf2_NFN("%s status after %d\n", p->pinID, digitalRead(p->pin));
+    printf4_NFN("%s status after %d\n", p->pinID, digitalRead(p->pin));
 }
 
 
@@ -161,13 +166,13 @@ void pinToggle(io_output_pin_struct_t *p) {
 void pinOFF(io_output_pin_struct_t *p) {
     digitalWrite(p->pin, p->OFF);
     stopPulsetime(p);
-    printf1_NFN("%s to OFF: %d\n", p->pinID, digitalRead(p->pin));
+    printf4_NFN("%s to OFF: %d\n", p->pinID, digitalRead(p->pin));
 }
 
 
 void pinON(io_output_pin_struct_t *p) {
     digitalWrite(p->pin, p->ON);
-    printf1_NFN("%s to ON: %d\n", p->pinID, digitalRead(p->pin));
+    printf4_NFN("%s to ON: %d\n", p->pinID, digitalRead(p->pin));
 }
 
 

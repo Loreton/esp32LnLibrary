@@ -1,12 +1,14 @@
 /*
-  Name:        lightBot.ino
-  Created:     26/03/2021
-  Author:      Tolentino Cotesta <cotestatnt@yahoo.com>
-  Description: a simple example that do:
-             1) parse incoming messages
-             2) if "LIGHT ON" message is received, turn on the onboard LED
-             3) if "LIGHT OFF" message is received, turn off the onboard LED
-             4) otherwise, reply to sender with a welcome message
+    ref: https://github.com/cotestatnt/AsyncTelegram2/tree/master
+
+    Name:        lightBot.ino
+    Created:     26/03/2021
+    Author:      Tolentino Cotesta <cotestatnt@yahoo.com>
+    Description: a simple example that do:
+                1) parse incoming messages
+                2) if "LIGHT ON" message is received, turn on the onboard LED
+                3) if "LIGHT OFF" message is received, turn off the onboard LED
+                4) otherwise, reply to sender with a welcome message
 
 */
 
@@ -17,6 +19,8 @@
     You can use AsyncTelegram2 even with other MCUs or transport layer (ex. Ethernet)
     With SSLClient, be sure "certificates.h" file is present in sketch folder
 */ 
+
+#define USE_CLIENTSSL false
 
 #include <AsyncTelegram2.h>
 // Timezone definition

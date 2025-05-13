@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 18-04-2025 12.44.59
+// Date .........: 19-04-2025 20.53.05
 //
 
 #include <Arduino.h>
@@ -88,6 +88,9 @@
                 PINpulsetime     pulsetime;
     } io_output_pin_struct_t;
 
+
+
+
     enum PressType   : uint8_t { NO_BUTTON_PRESSED = 0,
                                 PRESSED_TIME_01,
                                 PRESSED_TIME_02,
@@ -96,6 +99,12 @@
                                 PRESSED_TIME_05,
                                 PRESSED_TIME_06,
                                 OVERFLOW_TIME};
+
+    enum outo_on     : bool { fAUTO_ON_OFF = true, fNO_AUTO_ON_OFF = false};
+
+
+
+
 
     #ifdef __I_AM_MAIN_CPP__
         const char PROGMEM *str_action[]     = {"released", "pressed"};
@@ -107,7 +116,7 @@
         const char PROGMEM *str_INPUT        = "INPUT";
         const char PROGMEM *str_INPUT_PULLUP = "INPUT_PULLUP";
         const char PROGMEM *str_OUTPUT       = "OUTPUT";
-        // ------- in pinInitialization.cpp ....devo capire perché non posso spostarli
+        // ------- in pinOperations.cpp ....devo capire perché non posso spostarli
         // const char * PROGMEM THRESHOLD_LEVEL_TYPES[] = {"NO_PRESSED_BUTTON", "PRESSED_LEVEL_01", "PRESSED_LEVEL_02", "PRESSED_LEVEL_03", "PRESSED_LEVEL_04", "PRESSED_LEVEL_05", "PRESSED_LEVEL_06", "OVERFLOW_TIME"};
         // const int8_t THRESHOLDS_LEVELS_TYPES_length = sizeof(THRESHOLD_LEVEL_TYPES)/sizeof(char *);
     #else
