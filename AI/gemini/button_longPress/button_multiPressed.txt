@@ -1,0 +1,23 @@
+Esp32 una funzione per leggere un pulsante con un debounce di 300ms
+
+RELAY_PIN    = gpio 16
+BUTTON_PIN   = gpio 21
+
+parametri per  il setup del pulsante:
+- pin nr passato come parametro
+- array per i livelli
+- stringa contenente il nome del pin
+- il livello fisico da considerare come pressed level
+
+
+funzione di lettura:
+- struttura come parametro
+- leggere il pin
+- deve tornare true solo se il pulstante è stato rilasciato
+- deve permettere il riconoscimento del tempo di pressione a più livelli (minimo 1)
+- deve tenere un indicatore del ivello di pressione raggiunto
+- deve indicare se abbiamo raggiunto il massimo livello ed oltre quello non deve aumentare
+
+Inseriamo un test:
+Alla pressione del pulstante BUTTON_PIN, livello MEDIUM_PRESS, facciamo il toggle di RELAY_PIN
+il reset de parametri di livello raggiunti spettano alla funzione chiamante

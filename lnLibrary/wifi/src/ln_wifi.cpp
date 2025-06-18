@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 18-04-2025 12.51.27
+// Date .........: 28-05-2025 09.33.41
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -12,7 +12,7 @@
 // ---------------------------------
 // - lnLibrary headers files
 // ---------------------------------
-#define LOG_LEVEL_1
+#define LOG_LEVEL_0
 #include "@logMacros.h"
 #include "@ln_wifi.h"
 #include "@wifiCredentials.h"
@@ -47,7 +47,10 @@ int16_t wifi_scanComplete(void) {
 // #########################################
 // inline bool wifi_isConnected() {
 bool wifi_isConnected() {
-    return WiFi.isConnected();
+    if ( (WiFi.status() != WL_CONNECTED) || (! WiFi.isConnected()) ) {
+        return false;
+    }
+    return true;
 }
 
 
@@ -62,7 +65,7 @@ void wifi_scanDelete() {
 
 // inline void wifi_asyncScan() {
 void wifi_asyncScan() {
-    printf1_NFN("async_Scan started\n");
+    printf0_NFN("async_Scan started\n");
     WiFi.scanNetworks(true);  // 'true' turns Async Mode ON
     // return true;
 }
@@ -119,12 +122,12 @@ void displayNetwork(int i, int16_t networksFound) {
 // #
 // #########################################
 void printConnection() {
-    printf4("\tSSID:    %2s\n",  WiFi.SSID());
-    printf4("\tRSSI:    %4ld\n", WiFi.RSSI());
-    printf4("\tCHANNEL: %2ld\n", WiFi.channel());
-    printf4("\tBSSID:   %s\n",   WiFi.BSSIDstr().c_str());
-    printf4("\tIP:      %s\n",   WiFi.localIP().toString().c_str());
-    printf4("\n");
+    printf0_NFN("\tSSID:    %2s\n",  WiFi.SSID());
+    printf0_NFN("\tRSSI:    %4ld\n", WiFi.RSSI());
+    printf0_NFN("\tCHANNEL: %2ld\n", WiFi.channel());
+    printf0_NFN("\tBSSID:   %s\n",   WiFi.BSSIDstr().c_str());
+    printf0_NFN("\tIP:      %s\n",   WiFi.localIP().toString().c_str());
+    printf0_NFN("\n");
 }
 
 
@@ -136,7 +139,7 @@ void printConnection() {
 // # not used... comodo dall'esterno....
 // #########################################
 void wifi_disconnect(bool force) {
-    printf1_NFN("Disconnecting wifi %s\n", WiFi.SSID());
+    printf0_NFN("Disconnecting wifi %s\n", WiFi.SSID());
     bestssid->is_better = false; // remove flag
     bestssid->rssi=-127; //forziamo un valore basso per permettere l'analisi deele reti
     WiFi.scanDelete();
@@ -160,7 +163,7 @@ void wifi_connect() {
 
     WiFi.mode(WIFI_STA); // Set WIFI module to STA mode
 
-    printf1_NFN("connecting to SSID: %s  on channel: %d\n", bestssid->ssid, bestssid->channel);
+    printf0_NFN("connecting to SSID: %s  on channel: %d\n", bestssid->ssid, bestssid->channel);
     WiFi.begin(bestssid->ssid, bestssid->password, bestssid->channel, bestssid->bssid);
     // if (WiFi.setAutoReconnect(true)) {}
 
@@ -169,15 +172,15 @@ void wifi_connect() {
     while (WiFi.status() != WL_CONNECTED) {
         delay(100);
         if(++notConnectedCounter > 150) { // Reset board if not connected after 5s
-            printf1_NFN("ERROR connecting to Wifi...\n");
-             // delay(10000);
+            printf0_NFN("ERROR connecting to Wifi...\n");
+            // delay(10000);
             // ESP.restart();
             break;
         }
     }
 
     if (WiFi.isConnected()) {
-        printf1_NFN("connected to: %s\n", WiFi.SSID());
+        printf0_NFN("connected to: %s\n", WiFi.SSID());
         printConnection();
     }
 
@@ -193,7 +196,7 @@ void wifi_connect() {
 void wifi_reconnect() {
     wifi_disconnect(true);
 
-    printf1_NFN("syncronous_Scan start\n");
+    printf0_NFN("syncronous_Scan start\n");
     // int16_t networksFound = WiFi.scanNetworks(false);  // 'false' turns Async Mode OFF
     connectOnScanResult(); // verifica le  network
 }
@@ -233,14 +236,12 @@ bool isNewRssiBetter(int8_t curr_rssi, int8_t best_rssi)  {
 bool checkForBestSSID(int16_t networksFound) {
     bestssid->is_better = false;
     int8_t curr_rssi = WiFi.RSSI(); // set current RSSI
-    // bestssid->rssi = curr_rssi; // set current RSSI
     bestssid->rssi = -127; // set current RSSI
 
     for (int i = 0; i < networksFound; ++i) {
         // displayNetwork(i, networksFound);
 
         int8_t ssid_index = isInMyList(WiFi.SSID(i).c_str(), &mySSID[0]);
-        // printf1_FN("[%d] %s - found: %d:\n", i, WiFi.SSID(i).c_str(), ssid_index);
         printf1_FN("[%d] %-15s - RSSI: %d (mylist_inx: %d)\n", i, WiFi.SSID(i).c_str(), WiFi.RSSI(i), ssid_index);
 
         // - cerchiamo SSID con il miglior RSSI (valori negativi fino a -100)
@@ -261,17 +262,6 @@ bool checkForBestSSID(int16_t networksFound) {
     if (!WiFi.isConnected()) {
         bestssid->is_better = true; // necessary to connect
     }
-
-    // return false;
-
-/*    else if (bestssid->is_better) { // new RSSI better than 10 points than current
-        printf1_FN("new SSID %s (RSSI %d) is better than:\n", bestssid->ssid, bestssid->rssi);
-        printf1_FN("cur SSID %s (RSSI %d) (start re-connection)\n", WiFi.SSID().c_str(),  curr_rssi);
-        // bestssid->available = true; // flag for new best SSID available
-    } else {
-        printf1_FN("new SSID %s (RSSI %d) is not enough better than:\n", bestssid->ssid, bestssid->rssi);
-        printf1_FN("cur SSID %s (RSSI %d) (NO reconnection necessary)\n", WiFi.SSID().c_str(),  curr_rssi);
-    }*/
 
     return bestssid->is_better;
 }
@@ -304,24 +294,18 @@ bool connectOnScanResult(int16_t networksFound) {
 
         default:
             int8_t curr_rssi = WiFi.RSSI(); // set current RSSI
-            printf1_FN("checking for best SSID %d\n", networksFound);
-            // if (checkForBestSSID(networksFound)) // verifica le  network
-                // wifi_connect(); // connetti se trovata rete valida
-            checkForBestSSID(networksFound); // verifica le  network
+            printf1_FN("checking for best SSID (networks found: %d)\n", networksFound);
+            bool is_better = checkForBestSSID(networksFound); // verifica le  network
 
             if (!WiFi.isConnected()) {
                 wifi_connect(); // connetti se trovata rete valida
 
-
-
-            } else if (bestssid->is_better) { // new RSSI better than 10 points than current
-                printf1_FN("new_SSID: %s.RSSI: %d > cur_SSID %s (RSSI %d) (diff: %d) start reconnection\n", bestssid->ssid,
+            } else if (is_better) { // new RSSI better than 10 points than current
+                printf0_FN("new_SSID: %s.RSSI: %d > cur_SSID %s (RSSI %d) (diff: %d) start reconnection\n", bestssid->ssid,
                                                                                                             bestssid->rssi,
                                                                                                             WiFi.SSID().c_str(),
                                                                                                             curr_rssi,
                                                                                                             bestssid->rssi_diff);
-                // printf1_FN("new SSID: %s RSSI: %d is better (value: %d) than:\n", bestssid->ssid, bestssid->rssi, bestssid->rssi_diff);
-                // printf1_FN("cur SSID: %s RSSI: %d (start re-connection)\n", WiFi.SSID().c_str(),  curr_rssi);
                 wifi_connect(); // connetti se trovata rete valida
 
             } else {
@@ -330,8 +314,6 @@ bool connectOnScanResult(int16_t networksFound) {
                                                                                                             WiFi.SSID().c_str(),
                                                                                                             curr_rssi,
                                                                                                             bestssid->rssi_diff);
-                // printf1_FN("new SSID %s (RSSI %d) is not enough better (value: %d) than:\n", bestssid->ssid, bestssid->rssi, bestssid->rssi_diff);
-                // printf1_FN("cur SSID %s (RSSI %d) (NO reconnection necessary)\n", WiFi.SSID().c_str(),  curr_rssi);
             }
 
 
@@ -358,7 +340,7 @@ void wifi_Start() {
 
         // ---- read ssid json file "loadSsid.cpp"
         SSID_ARRAY_COUNT = load_ssidArray(LittleFS, "/ssids.json");
-        printf1_NFN("loaded  %d ssid network definitions\n", SSID_ARRAY_COUNT);
+        printf0_NFN("loaded  %d ssid network definitions\n", SSID_ARRAY_COUNT);
         if (SSID_ARRAY_COUNT < 0) {return;}
     #else
         setWifiCredentials();
@@ -367,7 +349,7 @@ void wifi_Start() {
     #endif
 
 
-    printf1_NFN("syncronous_Scan start\n");
+    printf0_NFN("syncronous_Scan start\n");
     // int16_t networksFound = WiFi.scanNetworks(false);  // 'false' turns Async Mode OFF
     connectOnScanResult();
 }

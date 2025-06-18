@@ -1,12 +1,12 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 19-04-2025 20.53.05
+// Date .........: 18-06-2025 20.00.46
 //
 
 #include <Arduino.h>
-
-#ifndef __LN_MAIN_STRUCTURES_H__
-    #define __LN_MAIN_STRUCTURES_H__
+#pragma once
+// #ifndef __LN_MAIN_STRUCTURES_H__
+//     #define __LN_MAIN_STRUCTURES_H__
 
     struct PINtimer {
         bool       enabled    = false;
@@ -43,7 +43,7 @@
 
                 // si modificano ad ogni cambio di stato
                 bool             changedState        = false;
-                bool             ph_state            = HIGH;
+                bool             phys_state            = HIGH;
 
                 bool             lastState           = HIGH;
                 bool             isPressed           = false;
@@ -76,7 +76,7 @@
                 // si modificano ad ogni cambio di stato
                 bool             changedState = false;
                 bool             lastState    = HIGH;
-                bool             ph_state     = HIGH;
+                bool             phys_state     = HIGH;
                 bool             is_acted      = HIGH;
                 bool             is_ON        = false;
                 bool             is_OFF       = false;
@@ -98,7 +98,7 @@
                                 PRESSED_TIME_04,
                                 PRESSED_TIME_05,
                                 PRESSED_TIME_06,
-                                OVERFLOW_TIME};
+                                OVERFLOW_TIME=PRESSED_TIME_06};
 
     enum outo_on     : bool { fAUTO_ON_OFF = true, fNO_AUTO_ON_OFF = false};
 
@@ -134,4 +134,4 @@
     #endif
 
 
-#endif
+// #endif

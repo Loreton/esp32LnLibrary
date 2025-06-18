@@ -15,7 +15,7 @@
 // ---------------------------------
 // - lnLibrary headers files
 // ---------------------------------
-#define LOG_LEVEL_0
+#define LOG_LEVEL_0x
 #include "@logMacros.h"
 #include "@ln_wifi.h"
 #include "@ssidsTypeChar.h" // contiene le password degli SSIDs /home/loreto/lnProfile/envars/include/@ssidsTypeChar.h

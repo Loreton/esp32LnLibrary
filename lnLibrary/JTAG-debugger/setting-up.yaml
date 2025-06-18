@@ -1,0 +1,27 @@
+debugger JTAG:
+    debugger_image:     JTAG-debugger.webp
+    debugger_pins:      JTAG-pin-connection.webp
+    ref:                https://www.instructables.com/How-to-Use-a-Debugger-on-an-ESP32/
+    platformio-guide:   https://docs.platformio.org/en/latest/plus/debug-tools/esp-prog.html#drivers
+    video-tutorial:     https://www.hackster.io/brian-lough/use-the-platformio-debugger-on-the-esp32-using-an-esp-prog-f633b6
+
+
+
+
+Requirements:
+    Hardware:
+        - ESP32 board with JTAG pins exposed (e.g., ESP32-DevKitC)
+        - JTAG debugger (e.g., FTDI FT2232H, ESP-Prog, or J-Link)
+        - Proper wiring between ESP32 and debugger:
+            TDI, TDO, TCK, TMS, GND, 3.3V
+
+    Software:
+        - Visual Studio Code
+        - ESP-IDF
+        - OpenOCD for ESP32 (comes with ESP-IDF)
+        - ESP-IDF VS Code Extension
+
+    ESP-IDF:
+        https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/
+        https://github.com/espressif/vscode-esp-idf-extension/blob/master/README.md
+

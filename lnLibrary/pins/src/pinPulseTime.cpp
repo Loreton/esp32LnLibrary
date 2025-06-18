@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 19-04-2025 12.46.00
+// Date .........: 28-05-2025 08.41.13
 */
 
 
@@ -121,3 +121,26 @@ void pinPulseON(io_output_pin_struct_t *p, int32_t msec_pulseLength, bool autoOf
     // }
 
 }
+
+
+// #########################################
+// # Va chiamato in continuazione per verificae lo stato e spegnerlo quando finito
+// #########################################
+void pinPeriodPulse(io_output_pin_struct_t *p, uint32_t msec_pulse_on, uint32_t msec_pulse_off) {
+    static uint32_t previousMillis = 0;
+    static bool isOn = false;
+
+    uint32_t currentMillis = millis();
+
+    if (isOn && currentMillis - previousMillis >= msec_pulse_on) {
+        pinOFF(p);
+        previousMillis = currentMillis;
+        isOn = false;
+    }
+    else if (!isOn && currentMillis - previousMillis >= msec_pulse_off) {
+        previousMillis = currentMillis;
+        pinON(p);
+        isOn = true;
+    }
+}
+

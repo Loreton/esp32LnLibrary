@@ -1,12 +1,37 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 19-04-2025 14.19.34
+// Date .........: 06-06-2025 08.29.32
 */
 
 #include <Arduino.h>
 
 #ifndef __LOG_MACROS_H__
     #define __LOG_MACROS_H__
+
+
+    /* Some test definition here */
+    // #define DEFINED_BUT_NO_VALUE
+    // #define DEFINED_INT 3
+    // #define DEFINED_STR "ABC"
+
+
+    // ref: https://stackoverflow.com/questions/1562074/how-do-i-show-the-value-of-a-define-at-compile-time
+    // #define LORETO
+    // #define LORETO2 5
+    /* definition to expand macro then apply to pragma message */
+    #define VALUE_TO_STRING(x) #x
+    #define VALUE(x) VALUE_TO_STRING(x)
+    #define VAR_NAME_VALUE(var) #var "="  VALUE(var)
+    #define PRINT_MACRO(var) #var "="  VALUE(var)
+    // #define PRINT_MACRO(var) #var "='" VALUE(var) "'"
+
+    /* Some example here */
+    // #pragma message(VAR_NAME_VALUE(NOT_DEFINED))
+    // #pragma message(VAR_NAME_VALUE(DEFINED_BUT_NO_VALUE))
+    // #pragma message(VAR_NAME_VALUE(DEFINED_INT))
+    // #pragma message(VAR_NAME_VALUE(DEFINED_STR))
+    // #pragma message(VAR_NAME_VALUE(LORETO))
+    // #pragma message(VAR_NAME_VALUE(LORETO2))
 
     #ifndef  __FILENAME__
         // per Arduino
@@ -66,6 +91,17 @@
         #define lnPrintF_NowFN(fmt, ...)
     #endif
 
+
+
+    #ifdef  LOG_LEVEL_0
+        #define printf0             lnPrintF
+        #define printf0_FN          lnPrintF_FN
+        #define printf0_NFN         lnPrintF_NowFN
+    #else
+        #define printf0
+        #define printf0_FN
+        #define printf0_NFN
+    #endif
 
 
     #ifdef  LOG_LEVEL_1

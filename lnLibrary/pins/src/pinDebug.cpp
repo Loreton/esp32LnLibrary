@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 18-04-2025 11.36.27
+// Date .........: 10-06-2025 07.42.00
 */
 
 
@@ -8,7 +8,7 @@
 // ---------------------------------
 // lnLibrary headers files
 // ---------------------------------
-#define LOG_LEVEL_0
+#define LOG_LEVEL_0x
 #include "@logMacros.h"
 #include "@mainStructures.h"
 #include "@pinOperations.h"
@@ -19,7 +19,7 @@
 void displayPinStatus(io_input_pin_struct_t *p) {
     // printf2_NFN("\t%-18s: %2d - (%d)\n" , "pin nr"         , p->pin                   , p->mode);
     printf2_NFN("[%s mode %d:\n", p->pinID, p->mode);
-    printf2_NFN("\t%-18s: %2d . %s\n" , "curr phys state" , p->ph_state     , str_pinLevel[p->ph_state]);
+    printf2_NFN("\t%-18s: %2d . %s\n" , "curr phys state" , p->phys_state     , str_pinLevel[p->phys_state]);
     printf2_NFN("\t%-18s: %2d - %s\n" , "active level"    , p->active_level , str_pinLevel[p->active_level]);
     printf2_NFN("\t%-18s: %2d . %s\n" , "is_ON"           , p->is_ON        , str_action[p->is_ON] );
     printf2_NFN("\t%-18s: %2d . %s\n" , "isPressed"       , p->isPressed    , str_action[p->isPressed] );
@@ -46,7 +46,7 @@ void displayPinStatus(io_input_pin_struct_t *p) {
 
 void displayPinStatus(io_output_pin_struct_t *p) {
     printf2_NFN("[%s mode %d:\n", p->pinID, p->mode);
-    printf2_NFN("\t%-18s: %2d . %s\n" , "curr phys state" , p->ph_state     , str_pinLevel[p->ph_state]);
+    printf2_NFN("\t%-18s: %2d . %s\n" , "curr phys state" , p->phys_state     , str_pinLevel[p->phys_state]);
     printf2_NFN("\t%-18s: %2d - %s\n" , "active level"    , p->active_level , str_pinLevel[p->active_level]);
     printf2_NFN("\t%-18s: %2d . %s\n" , "is_acted"        , p->is_acted     , str_OffOn[p->is_acted]);
     printf2_NFN("\t%-18s: %2d . %s\n" , "ON level"        , p->ON           , str_pinLevel[p->ON]);
@@ -61,7 +61,7 @@ void checkPin_forDebug(io_input_pin_struct_t *p, bool first_run) {
     uint8_t is_ON = readInputPin(p);
     if (p->changedState || first_run) {
         p->changedState = false;
-        printf1_NFN("%s ph_state %d - isActed: %d [%s]\n", p->pinID, p->ph_state, p->is_ON, str_OffOn[p->is_ON]);
+        printf1_NFN("%s phys_state %d - isActed: %d [%s]\n", p->pinID, p->phys_state, p->is_ON, str_OffOn[p->is_ON]);
         // displayPinStatus(p);
         // printf0("\n");
     }
@@ -72,7 +72,7 @@ void checkPin_forDebug(io_output_pin_struct_t *p, bool first_run) {
 
     if (p->changedState || first_run) {
         p->changedState = false;
-        printf1_NFN("%s ph_state %d - isActed: %d [%s]\n", p->pinID, p->ph_state, p->is_acted, str_OffOn[p->is_acted]);
+        printf1_NFN("%s phys_state %d - isActed: %d [%s]\n", p->pinID, p->phys_state, p->is_acted, str_OffOn[p->is_acted]);
         // displayPinStatus(p);
         // printf0("\n");
     }

@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 17-03-2025 08.45.48
+// Date .........: 27-05-2025 18.56.09
 */
 
 #ifndef __LN_WIFI__
@@ -61,9 +61,12 @@
     // inline void wifi_scanDelete(void);
     // inline int16_t wifi_scanComplete(void);
 
+    void printConnection(void);
     bool wifi_isConnected(void);
     void wifi_asyncScan(void);
     void wifi_scanDelete(void);
     int16_t wifi_scanComplete(void);
+
+    bool pingHost(const char *remote_host );
 
 #endif

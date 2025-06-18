@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 18-04-2025 12.49.55
+// Date .........: 28-05-2025 08.05.37
 */
 
 #include <ESP32Time.h> // per definire ESP32Time rtc;
@@ -9,7 +9,7 @@
 // ---------------------------------
 // - lnLibrary headers files
 // ---------------------------------
-#define LOG_LEVEL_0
+#define LOG_LEVEL_0x
 #include "@logMacros.h"
 #include "@mainStructures.h"
 #include "@ln_time.h" // per rtc

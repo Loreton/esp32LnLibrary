@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 16-04-2025 18.40.10
+// Date .........: 28-05-2025 08.05.52
 */
 
 #include "Arduino.h"
@@ -18,7 +18,7 @@
 // ---------------------------------
 // macros Aliases for LOG
 // ---------------------------------
-#define LOG_LEVEL_0
+#define LOG_LEVEL_0x
 #include "@logMacros.h"
 
 

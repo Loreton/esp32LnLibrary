@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 18-04-2025 13.00.57
+// Date .........: 28-05-2025 08.39.32
 */
 
 #ifndef __PIN_OPERATIONS_FUNCTIONS_H__
@@ -40,10 +40,12 @@
 
 
     // pinPulseTime.cpp
+    void        pinPeriodPulse(io_output_pin_struct_t *p, uint32_t msec_pulse_on, uint32_t msec_pulse_off);
     void        startPulsetime(io_output_pin_struct_t *p, int32_t msec_pulseLength=0, bool auto_off=false);
     void        stopPulsetime(io_output_pin_struct_t *p);
     bool        isPulsetimeExpired(io_output_pin_struct_t *p);
     uint32_t    remainingPulseTime(io_output_pin_struct_t *p);
+
 
 
 
