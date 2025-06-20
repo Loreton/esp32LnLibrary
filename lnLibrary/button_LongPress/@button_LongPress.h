@@ -1,7 +1,9 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 20-06-2025 11.24.46
+// Date .........: 20-06-2025 16.18.56
 */
+
+#include <Arduino.h>
 
 #pragma once
 #include "@SerialRead.h"
@@ -9,32 +11,11 @@
 #define RELAY_PIN           16
 #define startButton_pin     21
 #define pumpState_pin       19  // INPUT
+#define activeBuzzer_pin    23  // OUTPUT
+#define passiveBuzzer_pin   22  // OUTPUT
 
+#define fPROMPT             true
 
-#define m_FNAME                  Serial.printf((PGM_P) PSTR("[%-20s:%04d] "), __FILENAME__, __LINE__)
-#define lnPrintF(fmt, ...)       {               Serial.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
-#define lnPrintF_FN(fmt, ...)    { m_FNAME;      Serial.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
-#define printf0_FN              lnPrintF_FN
-#define printf0                 lnPrintF
-
-
-
-
-    // Definisce i possibili tipi di pressione del pulsante.
-    // enum ButtonPressedLevel_ {
-    //     NO_PRESS = 0, // Nessuna pressione rilevata o ancora in corso.
-    //     PRESSED_LEVEL_1,     // Pressione breve (il primo livello valido dopo il debounce).
-    //     PRESSED_LEVEL_2,     // Pressione media.
-    //     PRESSED_LEVEL_3,     // Pressione lunga.
-    //     PRESSED_LEVEL_4,     // Pressione molto lunga.
-    //     PRESSED_LEVEL_5,     // Pressione molto lunga.
-    //     PRESSED_LEVEL_6,     // Pressione molto lunga.
-    //     PRESSED_LEVEL_7,     // Pressione molto lunga.
-    //     PRESSED_LEVEL_8,     // Pressione molto lunga.
-    //     PRESSED_LEVEL_9,     // Pressione molto lunga.
-    //     // ... aggiungi altri livelli se necessario
-    //     MAX_DEFINED_PRESS_LEVELS // Utile per scopi interni, non un vero "tipo di pressione".
-    // } ;
 
 
     // Definisce i possibili tipi di pressione del pulsante.
@@ -83,9 +64,35 @@
 
 
 
+    // #ifdef __I_AM_MAIN_CPP__
+    //     const char PROGMEM *str_action[]     = {"released", "pressed"};
+    //     const char PROGMEM *str_pinLevel[]   = {"LOW", "HIGH"};
+    //     const char PROGMEM *str_TrueFalse[]  = {"FALSE", "TRUE"};
+    //     const char PROGMEM *str_OffOn[]      = {"OFF", "ON"};
+    //     const char PROGMEM *str_ON           = "ON";
+    //     const char PROGMEM *str_OFF          = "OFF";
+    //     const char PROGMEM *str_INPUT        = "INPUT";
+    //     const char PROGMEM *str_INPUT_PULLUP = "INPUT_PULLUP";
+    //     const char PROGMEM *str_OUTPUT       = "OUTPUT";
+    // #else
+    //     extern const char PROGMEM *str_action[];
+    //     extern const char PROGMEM *str_pinLevel[];
+    //     extern const char PROGMEM *str_TrueFalse[];
+    //     extern const char PROGMEM *str_OffOn[];
+    //     extern const char PROGMEM *str_ON;
+    //     extern const char PROGMEM *str_OFF;
+    //     extern const char PROGMEM *str_INPUT;
+    //     extern const char PROGMEM *str_INPUT_PULLUP;
+    //     extern const char PROGMEM *str_OUTPUT;
+    // #endif
+
+
+
+
+
 // functions prototypes
 bool readButton(ButtonState_t *btn);
-void notifyCurrentButtonLevel(ButtonState_t *btn);
+void notifyCurrentButtonLevel(ButtonState_t *btn, uint8_t buzzer_pin=99);
 void setupButton(ButtonState_t *btn,
                 int pin,
                 const char* name,
@@ -94,33 +101,12 @@ void setupButton(ButtonState_t *btn,
                 size_t thresholdsCount);
 
 void processButton(ButtonState_t *btn);
+void buttonLP_pinStatus(ButtonState_t *p, bool prompt);
 
 
 
+void attachBuzzer(uint8_t buzzer_pin, uint8_t resolution, uint8_t channel=0) ;
+void playTone(int frequency, int duration, uint8_t channel=0);
+void noTone(uint8_t channel);
+void detachBuzzer(uint8_t buzzer_pin);
 
-    #ifdef __I_AM_MAIN_CPP__
-        const char PROGMEM *str_action[]     = {"released", "pressed"};
-        const char PROGMEM *str_pinLevel[]   = {"LOW", "HIGH"};
-        const char PROGMEM *str_TrueFalse[]  = {"FALSE", "TRUE"};
-        const char PROGMEM *str_OffOn[]      = {"OFF", "ON"};
-        const char PROGMEM *str_ON           = "ON";
-        const char PROGMEM *str_OFF          = "OFF";
-        const char PROGMEM *str_INPUT        = "INPUT";
-        const char PROGMEM *str_INPUT_PULLUP = "INPUT_PULLUP";
-        const char PROGMEM *str_OUTPUT       = "OUTPUT";
-        // ------- in pinOperations.cpp ....devo capire perché non posso spostarli
-        // const char * PROGMEM THRESHOLD_LEVEL_TYPES[] = {"NO_PRESSED_BUTTON", "PRESSED_LEVEL_01", "PRESSED_LEVEL_02", "PRESSED_LEVEL_03", "PRESSED_LEVEL_04", "PRESSED_LEVEL_05", "PRESSED_LEVEL_06", "OVERFLOW_TIME"};
-        // const int8_t THRESHOLDS_LEVELS_TYPES_length = sizeof(THRESHOLD_LEVEL_TYPES)/sizeof(char *);
-    #else
-        extern const char PROGMEM *str_action[];
-        extern const char PROGMEM *str_pinLevel[];
-        extern const char PROGMEM *str_TrueFalse[];
-        extern const char PROGMEM *str_OffOn[];
-        extern const char PROGMEM *str_ON;
-        extern const char PROGMEM *str_OFF;
-        extern const char PROGMEM *str_INPUT;
-        extern const char PROGMEM *str_INPUT_PULLUP;
-        extern const char PROGMEM *str_OUTPUT;
-        // extern const char * PROGMEM THRESHOLD_LEVEL_TYPES[];
-        // extern const int8_t THRESHOLDS_LEVELS_TYPES_length;
-    #endif

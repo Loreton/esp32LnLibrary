@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 06-06-2025 08.29.32
+// Date .........: 20-06-2025 19.02.33
 */
 
 #include <Arduino.h>
@@ -32,7 +32,7 @@
     // #pragma message(VAR_NAME_VALUE(DEFINED_STR))
     // #pragma message(VAR_NAME_VALUE(LORETO))
     // #pragma message(VAR_NAME_VALUE(LORETO2))
-
+/*
     #ifndef  __FILENAME__
         // per Arduino
         #include <string.h>
@@ -50,7 +50,33 @@
     // - insert one of these if defined otherwise BLANK...,
     #define m_NOW1                       Serial.printf("[%s]: ", nowTime())
     // -------------------------------------------------
+*/
 
+    // -------------------------------------------------
+    #ifndef  __FILENAME__
+        // per Arduino
+        #include <string.h>
+        #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__) // remove path
+        //#define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
+    #endif
+
+    #define __FILE_NO_EXT__ ({ \
+                                static char buffer[128]; /* Adjust size as needed, ensure it's large enough for your longest filename */ \
+                                strncpy(buffer, __FILENAME__, sizeof(buffer) - 1); \
+                                buffer[sizeof(buffer) - 1] = '\0'; /* Ensure null-termination */ \
+                                char *dot = strrchr(buffer, '.'); \
+                                if (dot) { \
+                                    *dot = '\0'; /* Null-terminate at the dot */ \
+                                } \
+                                buffer; \
+                            })
+
+
+    #define lnSERIAL Serial
+    char * nowTime(void); // se è definita in time o ntptime commentare quella presente nin main.cpp
+    // #define m_NOW                                           lnSERIAL.printf((PGM_P) "[%s]: ", nowTime())
+
+    // -------------------------------------------------
 
 
 
@@ -58,10 +84,13 @@
 
     #ifdef lnSERIAL
         #if defined(ARDUINO_ARCH_ESP32)
-            #define m_FNAME                                         lnSERIAL.printf((PGM_P) PSTR("[%-20s:%04d] "), __FILENAME__, __LINE__)
+            #define __ln_FNAME__ __FILENAME__
+            #define __ln_FNAME__ __FILE_NO_EXT__
+
+            #define m_FNAME                                         lnSERIAL.printf((PGM_P) PSTR("[%-20s:%04d] "), __ln_FNAME__, __LINE__)
             #define m_Func                                          lnSERIAL.printf((PGM_P) PSTR("[%-20s:%04d] "), __func__, __LINE__)
             #define m_FUNCTION                                      lnSERIAL.printf((PGM_P) PSTR("[%-20s:%04d] "), __FUNCTION__, __LINE__)
-            #define m_FILE_FUNC                                     lnSERIAL.printf((PGM_P) PSTR("[%s.%-10s:%04d] "), __FILENAME__, __func__, __LINE__)
+            #define m_FILE_FUNC                                     lnSERIAL.printf((PGM_P) PSTR("[%s.%-10s:%04d] "), __ln_FNAME__, __func__, __LINE__)
 
 
             // #define m_FULLNAME                                      lnSERIAL.printf((PGM_P) "[%s]: ", extractFileName((char*)__FILE__, __appo__))
@@ -70,6 +99,7 @@
             #define lnPrintLN(...)                                  lnSERIAL.println(__VA_ARGS__)
             #define lnPrintF(fmt, ...)       {                      lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
             #define lnPrintF_FN(fmt, ...)    {        m_FNAME;      lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
+            #define lnPrintF_FF(fmt, ...)    {        m_FILE_FUNC;  lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
             #define lnPrintF_now(fmt, ...)   {        m_NOW;        lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
             #define lnPrintF_NowFN(fmt, ...) { m_NOW; m_FNAME;      lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
         #else
@@ -145,5 +175,42 @@
         #define printf4_FN
         #define printf4_NFN
     #endif
+
+    #ifdef  LOG_LEVEL_99  // come debug solo durante i test di uno specifico modulo
+        #define printf99             lnPrintF
+        #define printf99_FN          lnPrintF_FN
+        #define printf99_NFN         lnPrintF_NowFN
+    #else
+        #define printf99
+        #define printf99_FN
+        #define printf99_NFN
+    #endif
+
+
+
+
+    #ifdef __I_AM_MAIN_CPP__
+        const char PROGMEM *str_action[]     = {"released", "pressed"};
+        const char PROGMEM *str_pinLevel[]   = {"LOW", "HIGH"};
+        const char PROGMEM *str_TrueFalse[]  = {"FALSE", "TRUE"};
+        const char PROGMEM *str_OffOn[]      = {"OFF", "ON"};
+        const char PROGMEM *str_ON           = "ON";
+        const char PROGMEM *str_OFF          = "OFF";
+        const char PROGMEM *str_INPUT        = "INPUT";
+        const char PROGMEM *str_INPUT_PULLUP = "INPUT_PULLUP";
+        const char PROGMEM *str_OUTPUT       = "OUTPUT";
+    #else
+        extern const char PROGMEM *str_action[];
+        extern const char PROGMEM *str_pinLevel[];
+        extern const char PROGMEM *str_TrueFalse[];
+        extern const char PROGMEM *str_OffOn[];
+        extern const char PROGMEM *str_ON;
+        extern const char PROGMEM *str_OFF;
+        extern const char PROGMEM *str_INPUT;
+        extern const char PROGMEM *str_INPUT_PULLUP;
+        extern const char PROGMEM *str_OUTPUT;
+    #endif
+
+
 
 #endif

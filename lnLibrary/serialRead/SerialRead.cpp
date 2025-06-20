@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 13-05-2025 16.25.18
+// Date .........: 20-06-2025 16.30.07
 //
 
 #include <Arduino.h> // in testa anche per le definizioni dei type
@@ -99,6 +99,18 @@ bool waitForChar(const char *descr, char chr) {
         return true;
     }
     return false;
+}
+
+
+// #################################################
+// # wait for 'chr' input
+// #################################################
+bool waitForEnter(const char *descr) {
+    if (!descr) {
+        descr = "please ENTER to continue";
+    }
+    waitForChar(descr, ' ');
+    return true;
 }
 
 

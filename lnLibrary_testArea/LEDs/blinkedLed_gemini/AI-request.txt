@@ -1,0 +1,5 @@
+Esp32 lampeggio di un led o più con duty cycle variable
+con codice no-blocking e definizione di una struttura
+prevedere di lavorare con logica inversa.
+creare delle funzioni specifiche in modo da creare un modulo dedicato al led
+le funzioni devono lavorare su led passandogli il puntatore alla struttura come parametro
