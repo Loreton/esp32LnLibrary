@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 20-06-2025 17.19.28
+// Date .........: 21-06-2025 19.07.46
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -11,7 +11,7 @@
 #include "@logMacros.h" // printf:XFN()
 #include "@SerialRead.h" // waitForEnter()
 
-#include "LCD_Buzzer.h"
+#include "ledc_buzzer.h"
 
 #define passiveBuzzer_pin   22  // OUTPUT
 

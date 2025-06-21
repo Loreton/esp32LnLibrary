@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 20-06-2025 17.18.43
+// Date .........: 21-06-2025 18.44.29
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -183,28 +183,9 @@ void notifyCurrentButtonLevel(ButtonState_t *btn, uint8_t buzzer_pin) {
                     case PRESSED_LEVEL_5:
                         printf99_FN("notify PRESSED_LEVEL: %d\n", btn->currentPressLevel);
                         notifyBuzzer(buzzer_pin, 300);
-                        // if (btn->maxLevelReachedAndNotified) {
-                        //     notifyBuzzer(buzzer_pin);
-                        // }
-                        // se mi trovo qui è perché il pin non è ancora stato rilasciato
-                        // se mi trovo qui è perché il pin è ancora pressed
-                        // se volessi mandare un allarme continuo....
-                        // devo inserirlo nell'ultimo livello previsto per lo specifico pin
-                        // if (btn->pin == startButton_pin && btn->maxLevelReachedAndNotified == true) {
-                        //     btn->maxLevelReachedAndNotified = false; // reset del flag
-                        //     btn->currentPressLevel--;
-                        //     // btn->currentPressLevel = MAX_DEFINED_PRESS_LEVELS;
-                        // }
                         break;
 
                     default:
-                        // printf99_FN("notify MAX_DEFINED_PRESS_LEVELS: %d\n", btn->currentPressLevel);
-                        // notifyBuzzer(buzzer_pin, 300);
-                        // // se mi trovo qui è perché il pin non è ancora stato rilasciato
-                        // // se volessi mandare un allarme....:
-                        // btn->currentPressLevel--;
-                        // btn->maxLevelReachedAndNotified = false; // reset del flag
-                        // buttonLP_pinStatus(btn, true);
                         break;
 
                 }
@@ -222,12 +203,9 @@ void notifyCurrentButtonLevel(ButtonState_t *btn, uint8_t buzzer_pin) {
         }
 
     } else { // (btn->buttonPressed != btn->pressedLogicLevel)
-        // btn->lastPrintedLevel = NO_PRESS;
         btn->lastPrintedLevel = NO_PRESS; // Reset per il prossimo ciclo di pressione
-        // Resetta il timer del beep quando il pulsante non è più premuto al livello massimo
-        lastBeepTime = 0;
+        lastBeepTime = 0; // Resetta il timer del beep quando il pulsante non è più premuto al livello massimo
         noTone(0);
-        // detachBuzzer(activeBuzzer_pin);
     }
 
 
