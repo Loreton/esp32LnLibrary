@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 20-06-2025 16.18.56
+// Date .........: 21-06-2025 15.53.50
 */
 
 #include <Arduino.h>
@@ -61,31 +61,6 @@
         const unsigned long*    pressThresholds;
         size_t                  numThresholds;
     } ButtonState_t;
-
-
-
-    // #ifdef __I_AM_MAIN_CPP__
-    //     const char PROGMEM *str_action[]     = {"released", "pressed"};
-    //     const char PROGMEM *str_pinLevel[]   = {"LOW", "HIGH"};
-    //     const char PROGMEM *str_TrueFalse[]  = {"FALSE", "TRUE"};
-    //     const char PROGMEM *str_OffOn[]      = {"OFF", "ON"};
-    //     const char PROGMEM *str_ON           = "ON";
-    //     const char PROGMEM *str_OFF          = "OFF";
-    //     const char PROGMEM *str_INPUT        = "INPUT";
-    //     const char PROGMEM *str_INPUT_PULLUP = "INPUT_PULLUP";
-    //     const char PROGMEM *str_OUTPUT       = "OUTPUT";
-    // #else
-    //     extern const char PROGMEM *str_action[];
-    //     extern const char PROGMEM *str_pinLevel[];
-    //     extern const char PROGMEM *str_TrueFalse[];
-    //     extern const char PROGMEM *str_OffOn[];
-    //     extern const char PROGMEM *str_ON;
-    //     extern const char PROGMEM *str_OFF;
-    //     extern const char PROGMEM *str_INPUT;
-    //     extern const char PROGMEM *str_INPUT_PULLUP;
-    //     extern const char PROGMEM *str_OUTPUT;
-    // #endif
-
 
 
 

@@ -1,12 +1,13 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 20-06-2025 19.02.33
+// Date .........: 21-06-2025 17.17.59
 */
+#pragma once
 
 #include <Arduino.h>
 
-#ifndef __LOG_MACROS_H__
-    #define __LOG_MACROS_H__
+// #ifndef __LOG_MACROS_H__
+//     #define __LOG_MACROS_H__
 
 
     /* Some test definition here */
@@ -72,7 +73,6 @@
                             })
 
 
-    #define lnSERIAL Serial
     char * nowTime(void); // se è definita in time o ntptime commentare quella presente nin main.cpp
     // #define m_NOW                                           lnSERIAL.printf((PGM_P) "[%s]: ", nowTime())
 
@@ -84,7 +84,7 @@
 
     #ifdef lnSERIAL
         #if defined(ARDUINO_ARCH_ESP32)
-            #define __ln_FNAME__ __FILENAME__
+            // #define __ln_FNAME__ __FILENAME__
             #define __ln_FNAME__ __FILE_NO_EXT__
 
             #define m_FNAME                                         lnSERIAL.printf((PGM_P) PSTR("[%-20s:%04d] "), __ln_FNAME__, __LINE__)
@@ -189,28 +189,5 @@
 
 
 
-    #ifdef __I_AM_MAIN_CPP__
-        const char PROGMEM *str_action[]     = {"released", "pressed"};
-        const char PROGMEM *str_pinLevel[]   = {"LOW", "HIGH"};
-        const char PROGMEM *str_TrueFalse[]  = {"FALSE", "TRUE"};
-        const char PROGMEM *str_OffOn[]      = {"OFF", "ON"};
-        const char PROGMEM *str_ON           = "ON";
-        const char PROGMEM *str_OFF          = "OFF";
-        const char PROGMEM *str_INPUT        = "INPUT";
-        const char PROGMEM *str_INPUT_PULLUP = "INPUT_PULLUP";
-        const char PROGMEM *str_OUTPUT       = "OUTPUT";
-    #else
-        extern const char PROGMEM *str_action[];
-        extern const char PROGMEM *str_pinLevel[];
-        extern const char PROGMEM *str_TrueFalse[];
-        extern const char PROGMEM *str_OffOn[];
-        extern const char PROGMEM *str_ON;
-        extern const char PROGMEM *str_OFF;
-        extern const char PROGMEM *str_INPUT;
-        extern const char PROGMEM *str_INPUT_PULLUP;
-        extern const char PROGMEM *str_OUTPUT;
-    #endif
 
-
-
-#endif
+// #endif
