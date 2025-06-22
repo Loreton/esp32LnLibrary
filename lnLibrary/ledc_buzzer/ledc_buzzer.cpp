@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 21-06-2025 19.07.52
+// Date .........: 21-06-2025 19.13.48
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -72,4 +72,54 @@ void buzzer_detach(Buzzer_t* b) {
         b->isAttached = false;
         printf0_FN("Buzzer detached.\n");
     }
+}
+
+
+
+// Funzione di esempio per suonare una semplice scala
+void playScale() {
+  int notes[] = {262, 294, 330, 349, 392, 440, 494, 523}; // Frequenze di Do, Re, Mi, Fa, Sol, La, Si, Do (ottava successiva)
+  int noteDuration = 200; // Durata di ogni nota in ms
+
+  for (int i = 0; i < 8; i++) {
+    playTone(notes[i], noteDuration);
+    delay(50); // Breve pausa tra le note
+  }
+  noTone();
+}
+
+
+// Funzione di esempio per suonare una scala in modo non bloccante
+void playScaleNonBlocking() {
+  static int notes[] = {262, 294, 330, 349, 392, 440, 494, 523}; // Frequenze di Do, Re, Mi, Fa, Sol, La, Si, Do
+  static int noteDuration = 200; // Durata di ogni nota in ms
+  static int currentNoteIndex = 0;
+  static unsigned long lastNoteChangeTime = 0;
+  static bool scaleActive = false; // Stato per gestire l'inizio e la fine della scala
+
+  // Inizializza la scala se non è attiva
+  if (!scaleActive) {
+    currentNoteIndex = 0;
+    lastNoteChangeTime = millis();
+    scaleActive = true;
+    isTonePlaying = true; // Indica che qualcosa sta suonando (la scala)
+    Serial.println("Inizio scala non bloccante...");
+    playToneNonBlocking(notes[currentNoteIndex], noteDuration);
+  }
+
+  // Se la scala è attiva, gestisci il passaggio alla nota successiva
+  if (scaleActive) {
+    if (millis() - lastNoteChangeTime >= (noteDuration + 50)) { // 50ms di pausa tra le note
+      currentNoteIndex++;
+      if (currentNoteIndex < (sizeof(notes) / sizeof(notes[0]))) {
+        playToneNonBlocking(notes[currentNoteIndex], noteDuration);
+        lastNoteChangeTime = millis();
+      } else {
+        // Scala finita
+        noTone();
+        scaleActive = false;
+        Serial.println("Scala terminata.");
+      }
+    }
+  }
 }
