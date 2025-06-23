@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 23-06-2025 18.09.45
+// Date .........: 23-06-2025 20.23.15
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -92,26 +92,47 @@ void setup() {
 
 void loop() {
     static bool first_run=true;
-    if (first_run) {
-        activeBuzzer.blinking_dc(300, .25, 3);
-        first_run=false;
-    }
+    static uint32_t startedMillis;
+    uint32_t elapsed;
+    uint32_t now;
 
-    // Notifica continua del livello raggiunto mentre il pulsante è premuto (opzionale)
-    // notifyCurrentButtonLevel(&startButton, &activeBuzzer);
-    notifyCurrentButtonLevel(&startButton);
-    notifyCurrentButtonLevel(&pumpState, &activeBuzzer);
+    if (first_run) {
+        first_run=false;
+        // activeBuzzer.blinking_dc(400, .75, 4);
+        startedMillis=millis();
+    }
+    now = millis() - startedMillis;
     activeBuzzer.update();
 
+    /*
+    elapsed=5000;
+    if (now > elapsed && now < (elapsed+100)) {
+        // myLed2.startBlinkingDC(1000, 10);
+        activeBuzzer.off();
+    }
+
+    elapsed=10000;
+    if (now > elapsed && now < (elapsed+100)) {
+        // myLed2.startBlinkingDC(1000, 10);
+        activeBuzzer.blinking(300, 100, 4);
+    }
+
+*/
+    notifyCurrentButtonLevel(&pumpState, &activeBuzzer);
+    notifyCurrentButtonLevel(&startButton, &activeBuzzer);
     if (startButton.read()) { // state is changed
         processButton(&startButton);
     }
     if (pumpState.read()) { // state is changed
         processButton(&pumpState);
     }
+/*
+    // Notifica continua del livello raggiunto mentre il pulsante è premuto (opzionale)
+    // notifyCurrentButtonLevel(&startButton);
 
+*/
 
-    delay(100);
+    delay(10);
 }
 
 #endif // #ifdef __ln_MODULE_DEBUG_TEST__

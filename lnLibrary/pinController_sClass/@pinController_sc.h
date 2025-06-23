@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 23-06-2025 17.31.27
+// Date .........: 23-06-2025 20.07.51
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 #pragma once
@@ -41,14 +41,12 @@ typedef struct pinController_sc {
     // Internals
     bool           _ledState        = false;
     uint32_t       _lastToggle      = 0;
+    // bool           _isBusy          = false;
 
 
 
     void init(const char *name, uint8_t pin, uint8_t active_level=HIGH);
     void update();
-    // void pulse(uint32_t duration); // single pulse
-    // void pulse(uint32_t onMs, uint32_t offMs, int8_t cycles=0); //onTIme and offTime
-    // void pulse(uint32_t period, float duty_cycle, int8_t cycles=0); // use duty_cycle
 
     void blinking(uint32_t onMs, uint32_t offMs, int8_t cycles=0);
     void blinking_dc(uint32_t period, float duty_cycle, int8_t cycles=0); // con duty_cycle

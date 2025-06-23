@@ -1,12 +1,12 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 23-06-2025 17.31.13
+// Date .........: 23-06-2025 20.13.08
 //
 
 #include <Arduino.h>    // in testa anche per le definizioni dei type
 
 
-
+#include "@SerialRead.h"
 #include "@pinController_sc.h"
 
 
@@ -81,15 +81,20 @@ void pinController_sc::blinking(uint32_t onMs, uint32_t offMs, int8_t cycles) {
         _lastToggle = millis();
         _setLed(true); // start on
         Serial.printf("%s blinking. ON: %lu ms, OFF: %lu ms (cycles: %d)\n", _pinID,  _onTime, _offTime, _num_cycles);
+        // waitForEnter();
+        // Serial.printf("%s blinking. ON: %lu ms, OFF: %lu ms (cycles: %d)\n", _pinID,  _onTime, _offTime, _num_cycles);
     }
 }
 
 // duty-cycle da 0.0 a 1.0
 void pinController_sc::blinking_dc(uint32_t period, float duty_cycle, int8_t cycles) {
-    float dutyCycle = constrain(duty_cycle, 0.0, 1.0); // importanti i decimali per avere un float point
-    uint32_t onTime1 = period*dutyCycle;
-    uint32_t offTime1 = period - onTime1;
-    blinking(onTime1, offTime1, cycles);
+    if (!_blinking) {
+        float dutyCycle = constrain(duty_cycle, 0.0, 1.0); // importanti i decimali per avere un float point
+        uint32_t on_duration = period*dutyCycle;
+        uint32_t off_duration = period - on_duration;
+        Serial.printf("%s duty_cycle: %.2f ON: %lums, OFF: %lums (cycles: %d)\n", _pinID, dutyCycle, on_duration, off_duration, cycles);
+        blinking(on_duration, off_duration, cycles);
+    }
 }
 
 

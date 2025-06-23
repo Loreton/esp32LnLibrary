@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 23-06-2025 18.07.20
+// Date .........: 23-06-2025 20.27.35
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -27,9 +27,10 @@ uint32_t lastBeepTime;
 void notifyBuzzer(pinController_sc *buzzer, uint8_t pulses=0) {
     if (buzzer) {
         if (pulses > 0) {
-            buzzer->blinking_dc(300, .7, pulses);
+            // buzzer->blinking_dc(100, .75, pulses);
+            buzzer->blinking(100, 50, pulses);
         } else{
-            buzzer->pulse(300);
+            buzzer->pulse(200);
         }
 
     }
@@ -96,7 +97,7 @@ void notifyCurrentButtonLevel(pinLongPress_sc *p, pinController_sc *buzzer) {
     } else { // (p->_buttonPressed != p->_pressedLogicLevel)
         p->_lastPrintedLevel = NO_PRESS; // Reset per il prossimo ciclo di pressione
         lastBeepTime = 0; // Resetta il timer del beep quando il pulsante non è più premuto al livello massimo
-        buzzer->off();
+        // buzzer->off(); siccome è usato per più pin rischiamo di chiudere un beep lanciato da un altra funzione
     }
 
 
@@ -232,9 +233,9 @@ void pinLongPressStatus(pinLongPress_sc *p, bool prompt) {
     // printf0_FN("\t%-18s: lvl: %s\n",      "default pressedLevel",     THRESHOLD_LEVEL_TYPES[p->pressedLevel]);
     // printf0_FN("%s is %s\n", p->pinID, str_OffOn[p->is_ON]);
     printf0("\n"); // blank line
-    if (prompt) {
-        waitForEnter();
-    }
+    // if (prompt) {
+    //     waitForEnter();
+    // }
 }
 
 
