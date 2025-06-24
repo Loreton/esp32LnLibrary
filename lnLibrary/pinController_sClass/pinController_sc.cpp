@@ -1,13 +1,16 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 23-06-2025 20.13.08
+// Date .........: 24-06-2025 08.45.53
 //
 
 #include <Arduino.h>    // in testa anche per le definizioni dei type
 
-
+#define LOG_LEVEL_0x
+#define LOG_LEVEL_99
+#include "@logMacros.h" // printf:XFN()
 #include "@SerialRead.h"
 #include "@pinController_sc.h"
+
 
 
 
@@ -23,7 +26,7 @@ void pinController_sc::init(const char *name, uint8_t pin, uint8_t active_level)
     digitalWrite(_pin, _off); // start off
     snprintf(_pinID, 20, "[%02d.%-14s]:", _pin, _name);
     pinMode(_pin, OUTPUT);
-    Serial.printf("%s inizializzato. active level: %s\n", _pinID,  _on_level ? "ON" : "OFF");
+    printf99_FN("%s inizializzato. active level: %s\n", _pinID,  _on_level ? "ON" : "OFF");
 }
 
 
@@ -36,7 +39,7 @@ void pinController_sc::update() {
     }
     else if (_pulseOn) {
         if (now - _pulseOnStart >= _pulseOnDuration) {
-            Serial.printf("%s pulseON on scaduto\n", _pinID); // Per debug
+            printf1_FN("%s pulseON on scaduto\n", _pinID); // Per debug
             _clearAll();
         }
     }
@@ -49,7 +52,7 @@ void pinController_sc::update() {
             _setLed(true);
             _lastToggle = now;
             if ( (_temporaryBlinking) && (--_num_cycles <= 0) ) {
-                Serial.printf("%s _temporaryBlinking scaduto\n", _pinID); // Per debug
+                printf1_FN("%s _temporaryBlinking scaduto\n", _pinID); // Per debug
                 _clearAll();
             }
         }
@@ -68,7 +71,7 @@ void pinController_sc::pulse(uint32_t duration) {
         _pulseOnDuration = duration;
         _pulseOnStart = millis();
         _setLed(true);
-        Serial.printf("%s pulseON. duration: %lu ms\n", _pinID,  _pulseOnDuration);
+        printf2_FN("%s pulseON. duration: %lu ms\n", _pinID,  _pulseOnDuration);
     }
 }
 
@@ -80,9 +83,7 @@ void pinController_sc::blinking(uint32_t onMs, uint32_t offMs, int8_t cycles) {
         _offTime = offMs;
         _lastToggle = millis();
         _setLed(true); // start on
-        Serial.printf("%s blinking. ON: %lu ms, OFF: %lu ms (cycles: %d)\n", _pinID,  _onTime, _offTime, _num_cycles);
-        // waitForEnter();
-        // Serial.printf("%s blinking. ON: %lu ms, OFF: %lu ms (cycles: %d)\n", _pinID,  _onTime, _offTime, _num_cycles);
+        printf2_FN("%s blinking. ON: %lu ms, OFF: %lu ms (cycles: %d)\n", _pinID,  _onTime, _offTime, _num_cycles);
     }
 }
 
@@ -92,20 +93,32 @@ void pinController_sc::blinking_dc(uint32_t period, float duty_cycle, int8_t cyc
         float dutyCycle = constrain(duty_cycle, 0.0, 1.0); // importanti i decimali per avere un float point
         uint32_t on_duration = period*dutyCycle;
         uint32_t off_duration = period - on_duration;
-        Serial.printf("%s duty_cycle: %.2f ON: %lums, OFF: %lums (cycles: %d)\n", _pinID, dutyCycle, on_duration, off_duration, cycles);
+        printf2_FN("%s duty_cycle: %.2f ON: %lums, OFF: %lums (cycles: %d)\n", _pinID, dutyCycle, on_duration, off_duration, cycles);
         blinking(on_duration, off_duration, cycles);
     }
 }
+
+
+
+
+
 
 
 void pinController_sc::set(uint8_t req_state) {
     _setFixed();
     _ledState = req_state;
     digitalWrite(_pin, req_state ? _on : _off);
+    printf99_FN("%s status: %d\n", _pinID, digitalRead(_pin));
 }
 
 void pinController_sc::on() {
     set(_on);
+}
+
+void pinController_sc::off_ifBlinking() {
+    if (_blinking) {
+        set(_off);
+    }
 }
 
 void pinController_sc::off() {

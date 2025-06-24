@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 23-06-2025 17.40.04
+// Date .........: 24-06-2025 10.01.00
 */
 
 #pragma once
@@ -23,9 +23,8 @@
 // - function ptototypes...
 // can be used as samples for other projects
 // -----------------------------
-    void pinLongPressStatus(pinLongPress_sc *p, bool prompt);
+    #include "@pinController_sc.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
+
     void pumpState_Action(pinLongPress_sc *p);
     void startButton_Action(pinLongPress_sc *p);
     void processButton(pinLongPress_sc *p);
-    // void notifyCurrentButtonLevel(pinLongPress_sc *p, uint8_t buzzer_pin);
-    void notifyCurrentButtonLevel(pinLongPress_sc *p, pinController_sc *activeBuzzer = nullptr);

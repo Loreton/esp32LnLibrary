@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 21-06-2025 16.58.46
+// Date .........: 24-06-2025 10.25.08
 */
 
 #include <Arduino.h>    // in testa anche per le definizioni dei type
@@ -20,7 +20,7 @@
  * - Usa LOW per un pulsante collegato tra pin e GND (con INPUT_PULLUP).
  * - Usa HIGH per un pulsante collegato tra pin e VCC (con INPUT, richiede pull-down esterno).
  */
-void deBouncedButton_func_inside::setup(int pin_nr, const char* name, int pressedLogicLevel) {
+void deBouncedButton_sc::init(int pin_nr, const char* name, int pressedLogicLevel) {
     _pin = pin_nr;
     _name = name;
     _pressedLogicLevel = pressedLogicLevel;
@@ -47,7 +47,7 @@ void deBouncedButton_func_inside::setup(int pin_nr, const char* name, int presse
  * @param btn Riferimento alla struttura ButtonState del pulsante da leggere.
  * @return true se il pulsante è stato RILASCIATO dopo una pressione valida; false altrimenti.
  */
-bool deBouncedButton_func_inside::read(unsigned long debounceDelay) {
+bool deBouncedButton_sc::read(unsigned long debounceDelay) {
 
     // Legge lo stato attuale del pin (lettura RAW).
     bool reading = digitalRead(_pin);
@@ -76,15 +76,4 @@ bool deBouncedButton_func_inside::read(unsigned long debounceDelay) {
     return false; // Il pulsante non è stato rilasciato in questo ciclo.
 }
 
-
-
-
-
-/*
-Checking size .pio/build/ln_esp32/firmware.elf
-Advanced Memory Usage is available via "PlatformIO Home > Project Inspect"
-RAM:   [=         ]   6.6% (used 21488 bytes from 327680 bytes)
-Flash: [==        ]  20.6% (used 269529 bytes from 1310720 bytes)
-6061940 Jun 21 16:23 .pio/build/ln_esp32/firmware.elf
-*/
 

@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 23-06-2025 20.23.15
+// Date .........: 24-06-2025 09.45.07
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -11,8 +11,10 @@
 
 
 #define __I_AM_MAIN_CPP__
-#include "@logMacros.h"
-#include "@SerialRead.h"
+#include "@globalVars.h" // printf:XFN()
+
+// #include "@logMacros.h"
+// #include "@SerialRead.h"
 #include "@pinController_sc.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
 #include "@pinLongPress_sc.h"
 

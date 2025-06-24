@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 21-06-2025 17.00.56
+// Date .........: 24-06-2025 10.21.41
 */
 
 #ifdef __ln_MODULE_DEBUG_TEST__   // definito in platformio.ini
@@ -26,16 +26,16 @@ Flash: [==        ]  20.6% (used 269529 bytes from 1310720 bytes)
 
 #define pressControlRelay_pin    16
 #define startButton_pin          21
-deBouncedButton_func_inside startButton;
-deBouncedButton_func_inside startButton2;
-deBouncedButton_func_inside startButton3;
+deBouncedButton_sc startButton;
+deBouncedButton_sc startButton2;
+deBouncedButton_sc startButton3;
 
 void debouncedButtonTest() {
     // Leggi il pulsante. La funzione restituirà `true` solo al momento del rilascio (dopo debounce).
     if (startButton.read(300)) {
         Serial.printf("[%s] Rilasciato!\n", startButton._name);
 
-        static bool relayState = false; // Stato attuale del relè (false = spento, true = acceso).
+        static bool relayState = true; // Stato attuale del relè
         // Toggle dello stato del relè.
         relayState = !relayState;
         if (relayState) {
@@ -54,9 +54,9 @@ void setup() {
     delay(1000);
 
     pinMode(pressControlRelay_pin, OUTPUT);
-    startButton.setup(startButton_pin, "startButton", LOW);
-    startButton2.setup(23, "startButton2", LOW);
-    startButton3.setup(23, "startButton3", LOW);
+    startButton.init(startButton_pin, "startButton", LOW);
+    startButton2.init(23, "startButton2", LOW);
+    startButton3.init(23, "startButton3", LOW);
 
     Serial.printf("%s: %d\n", startButton._name, startButton._pin);
 }

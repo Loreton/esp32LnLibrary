@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 23-06-2025 16.51.03
+// Date .........: 24-06-2025 10.01.09
 */
 
 #pragma once
@@ -59,7 +59,8 @@ typedef struct pinLongPress_sc { // io_input_pin_struct_t
     unsigned long           _pressDuration;              // Durata dell'ultima pressione (in ms).
 
     uint8_t                 _currentPressLevel;          // Livello di pressione attualmente raggiunto (aggiornato durante la pressione).
-    uint8_t                 _lastPrintedLevel;          // Livello di pressione attualmente raggiunto (aggiornato durante la pressione).
+    // uint8_t                 _lastPrintedLevel;          // Livello di pressione attualmente raggiunto (aggiornato durante la pressione).
+    uint8_t                 _lastPressedLevel;          // Livello di pressione precedentemente salvato.
     bool                    _maxLevelReachedAndNotified; // Flag per indicare se il massimo livello è stato già notificato.
 
     // Array e dimensione delle soglie specifiche per questo pulsante.
@@ -80,3 +81,16 @@ typedef struct pinLongPress_sc { // io_input_pin_struct_t
 
 } pinLongPress_sc;
 
+
+
+
+// ###########################################################################################
+// #  Funzioni esterne alla struttura ma comuncque correlate
+// #  Funzioni esterne alla struttura ma comuncque correlate
+// #  Funzioni esterne alla struttura ma comuncque correlate
+// #  Funzioni esterne alla struttura ma comuncque correlate
+// ###########################################################################################
+    #include "@pinController_sc.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
+
+    void notifyCurrentButtonLevel(pinLongPress_sc *p, pinController_sc *activeBuzzer = nullptr);
+    void pinLongPressStatus(pinLongPress_sc *p, bool prompt);
