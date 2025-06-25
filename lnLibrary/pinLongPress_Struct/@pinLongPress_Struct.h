@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 24-06-2025 10.01.09
+// Date .........: 25-06-2025 17.00.56
 */
 
 #pragma once
@@ -36,39 +36,39 @@ enum ButtonPressedLevel : uint8_t {
 } ;
 
 
-typedef void (*ButtonCallback)(struct pinLongPress_sc* self);
+typedef void (*ButtonCallback)(struct pinLongPress_Struct* self);
 // esempio di callback
-// void myButtonHandler_sample(pinLongPress_sc* btn) {
+// void myButtonHandler_sample(pinLongPress_Struct* btn) {
 //     Serial.printf("Hai premuto: %s\n", btn->_name);
 // }
 
 
 
 // Struttura per mantenere lo stato di ogni pulsante.
-typedef struct pinLongPress_sc { // io_input_pin_struct_t
-    int                     _pin;
-    const char*             _name;                       // Nome del pulsante per identificazione.
-    char                    _pinID[21];                  // contiene [pin:%02d.%-15s] p->pin, p->name,
-    int                     _pressedLogicLevel;          // Livello logico che indica il pulsante premuto (LOW o HIGH).
+typedef struct pinLongPress_Struct { // io_input_pin_struct_t
+    int                     pin_;
+    const char*             name_;                       // Nome del pulsante per identificazione.
+    char                    pinID_[21];                  // contiene [pin:%02d.%-15s] p->pin, p->name,
+    int                     pressedLogicLevel_;          // Livello logico che indica il pulsante premuto (LOW o HIGH).
 
-    bool                    _lastButtonState;            // Ultima lettura RAW del pin.
-    unsigned long           _lastDebounceTime;           // Ultimo momento in cui il pin ha cambiato stato RAW.
+    bool                    lastButtonState_;            // Ultima lettura RAW del pin.
+    unsigned long           lastDebounceTime_;           // Ultimo momento in cui il pin ha cambiato stato RAW.
 
-    bool                    _buttonPressed;              // Stato debounced: true se premuto, false se rilasciato.
-    unsigned long           _pressStartTime;             // Timestamp quando il pulsante è stato premuto.
-    unsigned long           _pressDuration;              // Durata dell'ultima pressione (in ms).
+    bool                    buttonPressed_;              // Stato debounced: true se premuto, false se rilasciato.
+    unsigned long           pressStartTime_;             // Timestamp quando il pulsante è stato premuto.
+    unsigned long           pressDuration_;              // Durata dell'ultima pressione (in ms).
 
-    uint8_t                 _currentPressLevel;          // Livello di pressione attualmente raggiunto (aggiornato durante la pressione).
-    // uint8_t                 _lastPrintedLevel;          // Livello di pressione attualmente raggiunto (aggiornato durante la pressione).
-    uint8_t                 _lastPressedLevel;          // Livello di pressione precedentemente salvato.
-    bool                    _maxLevelReachedAndNotified; // Flag per indicare se il massimo livello è stato già notificato.
+    uint8_t                 currentPressLevel_;          // Livello di pressione attualmente raggiunto (aggiornato durante la pressione).
+    // uint8_t                 lastPrintedLevel_;          // Livello di pressione attualmente raggiunto (aggiornato durante la pressione).
+    uint8_t                 lastPressedLevel_;          // Livello di pressione precedentemente salvato.
+    bool                    maxLevelReachedAndNotified_; // Flag per indicare se il massimo livello è stato già notificato.
 
     // Array e dimensione delle soglie specifiche per questo pulsante.
-    const unsigned long*    _pressThresholds;
-    size_t                  _numThresholds;
+    const unsigned long*    pressThresholds_;
+    size_t                  numThresholds_;
 
     //  Callback per la gestione della pressione
-    ButtonCallback          _onPressCallback;
+    ButtonCallback          onPressCallback_;
 
 
     // functions prototypes
@@ -79,7 +79,7 @@ typedef struct pinLongPress_sc { // io_input_pin_struct_t
     void _checkNewLevel();
     // void notifyCurrentButtonLevel(ButtonState_t *btn, uint8_t buzzer_pin=99);
 
-} pinLongPress_sc;
+} pinLongPress_Struct;
 
 
 
@@ -90,7 +90,7 @@ typedef struct pinLongPress_sc { // io_input_pin_struct_t
 // #  Funzioni esterne alla struttura ma comuncque correlate
 // #  Funzioni esterne alla struttura ma comuncque correlate
 // ###########################################################################################
-    #include "@pinController_sc.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
+    #include "@pinController_Struct.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
 
-    void notifyCurrentButtonLevel(pinLongPress_sc *p, pinController_sc *activeBuzzer = nullptr);
-    void pinLongPressStatus(pinLongPress_sc *p, bool prompt);
+    void notifyCurrentButtonLevel(pinLongPress_Struct *p, pinController_Struct *activeBuzzer = nullptr);
+    void pinLongPressStatus(pinLongPress_Struct *p, bool prompt);

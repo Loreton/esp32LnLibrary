@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 24-06-2025 08.15.10
+// Date .........: 25-06-2025 16.56.12
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 #pragma once
@@ -8,40 +8,40 @@
 
 // --- Definizione della Struttura del LED ---
 
-typedef void (*pinControllerCallback)(struct pinController_sc* self);  // se volessi usare una callback
+typedef void (*pinControllerCallback)(struct pinController_Struct* self);  // se volessi usare una callback
 /** esempio:
-void myLedControllerHandler(pinController_sc* led) {
+void myLedControllerHandler(pinController_Struct* led) {
     Serial.printf("ledController Callback: %s\n", led->_pinID);
 }
 */
 
 
-typedef struct pinController_sc {
-    uint8_t        _pin;
-    const   char*  _name;
-    char           _pinID[21];  // conterrà [pin:%02d.%-15s] p->pin, p->name,
+typedef struct pinController_Struct {
+    uint8_t        pin_;
+    const   char*  name_;
+    char           pinID_[21];  // conterrà [pin:%02d.%-15s] p->pin, p->name,
 
-    uint8_t        _on_level        = HIGH;
-    uint8_t        _on              = HIGH;
-    uint8_t        _off             = LOW;
+    uint8_t        on_level_        = HIGH;
+    uint8_t        on_              = HIGH;
+    uint8_t        off_             = LOW;
 
     // Blinking parameters
-    uint32_t       _onTime      = 500;
-    uint32_t       _offTime     = 500;
-    bool           _blinking        = false;
-    int8_t         _num_cycles       = 0;
-    int8_t         _temporaryBlinking       = false;
+    uint32_t       onTime_      = 500;
+    uint32_t       offTime_     = 500;
+    bool           blinking_        = false;
+    int8_t         num_cycles_       = 0;
+    int8_t         temporaryBlinking_       = false;
 
     // Fixed on parameters
-    bool           _fixed           = true;
-    bool           _pulseOn         = false;
-    uint32_t       _pulseOnStart    = 0;
-    uint32_t       _pulseOnDuration = 0;
+    bool           fixed_           = true;
+    bool           pulseOn_         = false;
+    uint32_t       pulseOnStart_    = 0;
+    uint32_t       pulseOnDuration_ = 0;
 
     // Internals
-    bool           _ledState        = false;
-    uint32_t       _lastToggle      = 0;
-    // bool           _isBusy          = false;
+    bool           ledState_        = false;
+    uint32_t       lastToggle_      = 0;
+    // bool           isBusy_          = false;
 
 
 
@@ -67,6 +67,6 @@ typedef struct pinController_sc {
     void _clearAll();
 
 
-} pinController_sc;
+} pinController_Struct;
 
 

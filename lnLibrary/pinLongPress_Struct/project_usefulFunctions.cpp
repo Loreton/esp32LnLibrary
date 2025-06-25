@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 24-06-2025 10.01.39
+// Date .........: 25-06-2025 17.02.20
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -11,7 +11,7 @@
 #define LOG_LEVEL_99
 #include "@globalVars.h" // printf:XFN()
 
-#include "@pinLongPress_sc.h"
+#include "@pinLongPress_Struct.h"
 
 #include "@main_test.h"
 
@@ -21,8 +21,8 @@
 //#
 //###########################################################################
 bool relayState = false;
-void pumpState_Action(pinLongPress_sc *p) {
-    switch (p->_currentPressLevel) {
+void pumpState_Action(pinLongPress_Struct *p) {
+    switch (p->currentPressLevel_) {
         case PRESSED_LEVEL_1:
             printf99_FN("PRESSED_LEVEL_1\n");
             break;
@@ -56,9 +56,9 @@ void pumpState_Action(pinLongPress_sc *p) {
 //###########################################################################
 //#
 //###########################################################################
-void startButton_Action(pinLongPress_sc *p) {
-    // printf99_FN("sono qui p->_currentPressLevel %d\n", p->_currentPressLevel);
-    switch (p->_currentPressLevel) {
+void startButton_Action(pinLongPress_Struct *p) {
+    // printf99_FN("sono qui p->currentPressLevel_ %d\n", p->currentPressLevel_);
+    switch (p->currentPressLevel_) {
         case PRESSED_LEVEL_1:
             printf99_FN("PRESSED_LEVEL_1\n");
             break;
@@ -95,25 +95,25 @@ void startButton_Action(pinLongPress_sc *p) {
 //###########################################################################
 //#
 //###########################################################################
-void processButton(pinLongPress_sc *p) {
-    printf0_FN("[%s[  Rilasciato! Durata: %ld ms\n", p->_name, p->_pressDuration);
+void processButton(pinLongPress_Struct *p) {
+    printf0_FN("[%s[  Rilasciato! Durata: %ld ms\n", p->name_, p->pressDuration_);
     // Serial.print("Livello finale raggiunto: ");
 
-    if (p->_pin == startButton_pin) {
+    if (p->pin_ == startButton_pin) {
         Serial.print("start button action\n");
         startButton_Action(p);
     }
-    else if (p->_pin == pumpState_pin) {
+    else if (p->pin_ == pumpState_pin) {
         pumpState_Action(p);
     }
 
 
     // *** RESET DEI PARAMETRI DI LIVELLO NELLA FUNZIONE CHIAMANTE ***
     // Dopo aver processato i dati, li resettiamo per la prossima pressione.
-    p->_currentPressLevel = NO_PRESS;
-    p->_lastPressedLevel = NO_PRESS;
-    p->_pressDuration = 0;
-    p->_maxLevelReachedAndNotified = false;
+    p->currentPressLevel_ = NO_PRESS;
+    p->lastPressedLevel_ = NO_PRESS;
+    p->pressDuration_ = 0;
+    p->maxLevelReachedAndNotified_ = false;
     // .pressStartTime non ha bisogno di essere resettato qui, è già fatto in readButton quando rilascia.
 }
 

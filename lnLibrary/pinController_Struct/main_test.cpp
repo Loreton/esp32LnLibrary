@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 23-06-2025 18.13.06
+// Date .........: 25-06-2025 16.54.57
 */
 
 
@@ -9,7 +9,7 @@
 
 #include <Arduino.h>
 
-#include "@pinController_sc.h"
+#include "@pinController_Struct.h"
 
 // --- Funzioni Principali (setup e loop) per dimostrazione ---
 
@@ -17,8 +17,8 @@
 // #define LED1_pin 25
 #define activeBuzzer_pin 23
 #define LED2_pin 26
-pinController_sc activeBuzzer;
-pinController_sc myLed2;
+pinController_Struct activeBuzzer;
+pinController_Struct myLed2;
 
 
 

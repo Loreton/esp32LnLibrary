@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 24-06-2025 10.01.00
+// Date .........: 25-06-2025 16.58.24
 */
 
 #pragma once
@@ -23,8 +23,8 @@
 // - function ptototypes...
 // can be used as samples for other projects
 // -----------------------------
-    #include "@pinController_sc.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
+    #include "@pinController_Struct.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
 
-    void pumpState_Action(pinLongPress_sc *p);
-    void startButton_Action(pinLongPress_sc *p);
-    void processButton(pinLongPress_sc *p);
+    void pumpState_Action(pinLongPress_Struct *p);
+    void startButton_Action(pinLongPress_Struct *p);
+    void processButton(pinLongPress_Struct *p);
