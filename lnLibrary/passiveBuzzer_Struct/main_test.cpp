@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 24-06-2025 16.42.20
+// Date .........: 25-06-2025 16.35.22
 // ref:
 // https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
@@ -13,7 +13,7 @@
 #define LOG_LEVEL_99x
 #include "@globalVars.h" // printf:XFN()
 
-#include "ledc_buzzer_sClass.h"
+#include "ledc_buzzer_Struct.h"
 
 #define passiveBuzzer_pin 22 // OUTPUT
 

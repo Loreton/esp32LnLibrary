@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 25-06-2025 12.12.06
+// Date .........: 25-06-2025 16.30.36
 //
 
 #include <Arduino.h> // Necessario per funzioni come pinMode, digitalWrite, millis
@@ -22,10 +22,10 @@ class RelayManager {
 
         // Avvia un pulsetime per il relè
         // duration_ms: Durata del pulsetime in millisecondi.
-        void startPulse(unsigned long duration_ms);
+        void startPulse(uint32_t duration_ms);
 
         // Ottiene il tempo rimanente del pulsetime (0 se non attivo o scaduto)
-        unsigned long getRemainingPulseTime();
+        uint32_t getRemainingPulseTime();
 
         // Deve essere chiamata regolarmente nel loop() per aggiornare lo stato del relè
         void update();
@@ -38,13 +38,14 @@ class RelayManager {
 
     private:
         // --- Membri Privati ---
-        int relayPin;
-        int pressedLevel; // Livello che attiva il relè (HIGH o LOW)
+        int         relayPin_;
+        int         pressedLevel_; //              Livello che attiva il relè (HIGH o LOW)
 
-        unsigned long pulseStartTime;
-        unsigned long pulseDuration;
-        bool pulseActive;
+        uint32_t    pulseStartTime_;
+        uint32_t    pulseDuration_;
 
-        bool relayState;
+        bool        pulseActive_;
+        bool        relayState_;
+
 };
 
