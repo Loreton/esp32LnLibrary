@@ -1,11 +1,11 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 24-06-2025 10.21.41
+// Date .........: 25-06-2025 16.45.27
 */
 
 #ifdef __ln_MODULE_DEBUG_TEST__   // definito in platformio.ini
 #include <Arduino.h>    // in testa anche per le definizioni dei type
-#include "@debouncedButton_sClass.h"
+#include "@debouncedButton_Struct.h"
 
 
 /*
@@ -33,7 +33,7 @@ deBouncedButton_sc startButton3;
 void debouncedButtonTest() {
     // Leggi il pulsante. La funzione restituirà `true` solo al momento del rilascio (dopo debounce).
     if (startButton.read(300)) {
-        Serial.printf("[%s] Rilasciato!\n", startButton._name);
+        Serial.printf("[%s] Rilasciato!\n", startButton.name_);
 
         static bool relayState = true; // Stato attuale del relè
         // Toggle dello stato del relè.
@@ -58,7 +58,7 @@ void setup() {
     startButton2.init(23, "startButton2", LOW);
     startButton3.init(23, "startButton3", LOW);
 
-    Serial.printf("%s: %d\n", startButton._name, startButton._pin);
+    Serial.printf("%s: %d\n", startButton.name_, startButton.pin_);
 }
 
 void loop() {

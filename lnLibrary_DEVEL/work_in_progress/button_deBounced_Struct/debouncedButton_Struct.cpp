@@ -1,10 +1,10 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 24-06-2025 10.25.08
+// Date .........: 25-06-2025 16.44.48
 */
 
 #include <Arduino.h>    // in testa anche per le definizioni dei type
-#include "@debouncedButton_sClass.h"
+#include "@debouncedButton_Struct.h"
 
 // ------------------------------------------------------
 // Struttura per mantenere lo stato di ogni pulsante.
@@ -21,20 +21,20 @@
  * - Usa HIGH per un pulsante collegato tra pin e VCC (con INPUT, richiede pull-down esterno).
  */
 void deBouncedButton_sc::init(int pin_nr, const char* name, int pressedLogicLevel) {
-    _pin = pin_nr;
-    _name = name;
-    _pressedLogicLevel = pressedLogicLevel;
+    pin_ = pin_nr;
+    name_ = name;
+    pressedLogicLevel_ = pressedLogicLevel;
 
     // Configura il pin in base al pressedLogicLevel.
     if (pressedLogicLevel == LOW) {
-        pinMode(_pin, INPUT_PULLUP); // Se premuto porta a LOW, usa pull-up interno.
+        pinMode(pin_, INPUT_PULLUP); // Se premuto porta a LOW, usa pull-up interno.
     } else {
-        pinMode(_pin, INPUT);        // Se premuto porta a HIGH, non usa pull-up interno (richiede pull-down esterno se flottante).
+        pinMode(pin_, INPUT);        // Se premuto porta a HIGH, non usa pull-up interno (richiede pull-down esterno se flottante).
     }
 
-    _lastButtonState = digitalRead(_pin); // Legge lo stato iniziale.
-    _lastDebounceTime = 0;
-    _buttonPressed = false; // Stato iniziale debounced.
+    lastButtonState_ = digitalRead(pin_); // Legge lo stato iniziale.
+    lastDebounceTime_ = 0;
+    buttonPressed_ = false; // Stato iniziale debounced.
 }
 
 
@@ -50,29 +50,29 @@ void deBouncedButton_sc::init(int pin_nr, const char* name, int pressedLogicLeve
 bool deBouncedButton_sc::read(unsigned long debounceDelay) {
 
     // Legge lo stato attuale del pin (lettura RAW).
-    bool reading = digitalRead(_pin);
+    bool reading = digitalRead(pin_);
 
     // Se la lettura RAW è cambiata rispetto all'ultima lettura RAW, resetta il timer di debounce.
-    if (reading != _lastButtonState) {
-        _lastDebounceTime = millis();
+    if (reading != lastButtonState_) {
+        lastDebounceTime_ = millis();
     }
 
     // Se è trascorso il tempo di debounce e lo stato RAW è stabile.
-    if ((millis() - _lastDebounceTime) > debounceDelay) {
+    if ((millis() - lastDebounceTime_) > debounceDelay) {
         // Se lo stato RAW stabile è diverso dallo stato debounced corrente, aggiorna lo stato debounced.
-        if (reading != _buttonPressed) {
-            _buttonPressed = reading; // Aggiorna lo stato debounced del pulsante.
+        if (reading != buttonPressed_) {
+            buttonPressed_ = reading; // Aggiorna lo stato debounced del pulsante.
 
             // Se il pulsante è stato RILASCIATO.
             // Il pulsante è rilasciato quando il suo stato debounced è DIVERSO da `pressedLogicLevel`.
-            if (_buttonPressed != _pressedLogicLevel) {
+            if (buttonPressed_ != pressedLogicLevel_) {
                 return true; // Il pulsante è stato rilasciato dopo una pressione valida.
             }
         }
     }
 
     // Salva la lettura RAW attuale per la prossima iterazione.
-    _lastButtonState = reading;
+    lastButtonState_ = reading;
     return false; // Il pulsante non è stato rilasciato in questo ciclo.
 }
 
