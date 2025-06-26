@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 25-06-2025 18.06.53
+// Date .........: 26-06-2025 17.10.39
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 #pragma once
@@ -27,43 +27,43 @@ class PinController_Class {
         void set(uint8_t state);
 
         // Optional: Getters for certain internal states if needed externally
-        bool isBlinking() const { return blinking_; }
-        bool isPulseOn() const { return pulseOn_; }
-        bool isFixed() const { return fixed_; }
-        bool getLedState() const { return ledState_; }
-        const char* getName() const { return name_; } // Added for consistency
-        const char* getPinID() const { return pinID_; } // Added for consistency
+        bool isBlinking() const { return m_blinking; }
+        bool isPulseOn() const { return m_pulseOn; }
+        bool isFixed() const { return m_fixed; }
+        bool getLedState() const { return m_ledState; }
+        const char* getName() const { return m_name; } // Added for consistency
+        const char* getPinID() const { return m_pinID; } // Added for consistency
 
     private: // Private members and methods (formerly struct members and internal functions)
-        uint8_t     pin_;
-        const char* name_;
-        char        pinID_[21];
+        uint8_t     m_pin;
+        const char* m_name;
+        char        m_pinID[21];
 
-        uint8_t     on_level_ = HIGH;
-        uint8_t     on_       = HIGH;
-        uint8_t     off_      = LOW;
+        uint8_t     m_on_level = HIGH;
+        uint8_t     m_on       = HIGH;
+        uint8_t     m_off      = LOW;
 
         // Blinking parameters
-        uint32_t    onTime_     = 500;
-        uint32_t    offTime_    = 500;
-        bool        blinking_   = false;
-        int8_t      num_cycles_ = 0;
-        bool        temporaryBlinking_ = false;
+        uint32_t    m_onTime     = 500;
+        uint32_t    m_offTime    = 500;
+        bool        m_blinking   = false;
+        int8_t      m_num_cycles = 0;
+        bool        m_temporaryBlinking = false;
 
         // Fixed on parameters
-        bool        fixed_           = true;
-        bool        pulseOn_         = false;
-        uint32_t    pulseOnStart_    = 0;
-        uint32_t    pulseOnDuration_ = 0;
+        bool        m_fixed           = true;
+        bool        m_pulseOn         = false;
+        uint32_t    m_pulseOnStart    = 0;
+        uint32_t    m_pulseOnDuration = 0;
 
         // Internals
-        bool        ledState_   = false;
-        uint32_t    lastToggle_ = 0;
+        bool        m_ledState   = false;
+        uint32_t    m_lastToggle = 0;
 
         // Internal helper functions (now private methods)
-        void _setLed(bool on);
-        void _setFixed();
-        void _setBlinking(int8_t cycles = 0);
-        void _setPulse();
-        void _clearAll();
+        void setLed(bool on);
+        void setFixed();
+        void setBlinking(int8_t cycles = 0);
+        void setPulse();
+        void clearAll();
 };

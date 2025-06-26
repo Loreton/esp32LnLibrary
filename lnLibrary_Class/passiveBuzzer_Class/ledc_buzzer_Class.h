@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 25-06-2025 17.11.35
+// Date .........: 26-06-2025 17.04.32
 //
 // file: ledc_buzzer_Class.h
 #pragma once
@@ -25,24 +25,24 @@ class passiveBuzzer_Class { // Changed from typedef struct to class
         bool isPlayingSomething();
 
     private: // Private members are only accessible from within the class
-        int pin_;
-        const char* name_;
-        char pinID_[PIN_ID_MAXLENGTH + 1];
-        int channel_;
-        int resolutionBits_;
-        int currentFrequency_;
+        int m_pin;
+        const char* m_name;
+        char m_pinID[PIN_ID_MAXLENGTH + 1];
+        int m_channel;
+        int m_resolutionBits;
+        int m_currentFrequency;
 
         // Variables for non-blocking single tone management
-        uint32_t toneStartTime_;
-        uint32_t toneDuration_;
-        bool isPlaying_;
+        uint32_t m_toneStartTime;
+        uint32_t m_toneDuration;
+        bool m_isPlaying;
 
         // Variables for non-blocking scale management
-        int* scaleNotes_;
-        int numNotes_;
-        int currentNoteIndex_;
-        uint32_t noteStartTime_;
-        uint32_t noteDuration_;
-        bool isPlayingScale_;
-        bool scaleDirectionUp_;
+        int* m_scaleNotes;
+        int m_numNotes;
+        int m_currentNoteIndex;
+        uint32_t m_noteStartTime;
+        uint32_t m_noteDuration;
+        bool m_isPlayingScale;
+        bool m_scaleDirectionUp;
 };

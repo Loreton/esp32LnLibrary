@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 25-06-2025 17.52.55
+// Date .........: 26-06-2025 16.56.33
 */
 #pragma once
 #include <Arduino.h>    // in testa anche per le definizioni dei type
@@ -17,15 +17,15 @@ class DebouncedButton_Class {
         bool read(unsigned long debounceDelay);
 
         // Metodo pubblico per accedere al nome del pulsante (utile per debugging).
-        const char* getName() const { return name_; }
-        int getPin() const { return pin_; }
+        const char* getName() const { return m_name; }
+        int getPin() const { return m_pin; }
 
 
     private:
-        int pin_;                   // Il pin GPIO a cui è collegato il pulsante.
-        const char* name_;          // Nome del pulsante per identificazione (opzionale, utile per debugging).
-        int pressedLogicLevel_;     // Livello logico che indica il pulsante premuto (LOW o HIGH).
-        bool lastButtonState_;      // Ultima lettura RAW del pin.
-        unsigned long lastDebounceTime_; // Ultimo momento in cui il pin ha cambiato stato RAW.
-        bool buttonPressed_;        // Stato debounced: true se premuto, false se rilasciato.
+        int m_pin;                   // Il pin GPIO a cui è collegato il pulsante.
+        const char* m_name;          // Nome del pulsante per identificazione (opzionale, utile per debugging).
+        int m_pressedLogicLevel;     // Livello logico che indica il pulsante premuto (LOW o HIGH).
+        bool m_lastButtonState;      // Ultima lettura RAW del pin.
+        unsigned long m_lastDebounceTime; // Ultimo momento in cui il pin ha cambiato stato RAW.
+        bool m_buttonPressed;        // Stato debounced: true se premuto, false se rilasciato.
 };

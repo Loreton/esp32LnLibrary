@@ -1,12 +1,12 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 25-06-2025 12.20.47
+// Date .........: 26-06-2025 17.17.34
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
 #include <Arduino.h>    // in testa anche per le definizioni dei type
 #include "@SerialRead.h"
-#include "relay_class.h"
+#include "relayManager_Class.h"
 
 
 // --- Esempio di utilizzo nel file .ino ---

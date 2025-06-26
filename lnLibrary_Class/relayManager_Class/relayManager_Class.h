@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 25-06-2025 16.30.36
+// Date .........: 26-06-2025 17.16.27
 //
 
 #include <Arduino.h> // Necessario per funzioni come pinMode, digitalWrite, millis
@@ -38,14 +38,14 @@ class RelayManager {
 
     private:
         // --- Membri Privati ---
-        int         relayPin_;
-        int         pressedLevel_; //              Livello che attiva il relè (HIGH o LOW)
+        int         m_relayPin;
+        int         m_pressedLevel; //              Livello che attiva il relè (HIGH o LOW)
 
-        uint32_t    pulseStartTime_;
-        uint32_t    pulseDuration_;
+        uint32_t    m_pulseStartTime;
+        uint32_t    m_pulseDuration;
 
-        bool        pulseActive_;
-        bool        relayState_;
+        bool        m_pulseActive;
+        bool        m_relayState;
 
 };
 
