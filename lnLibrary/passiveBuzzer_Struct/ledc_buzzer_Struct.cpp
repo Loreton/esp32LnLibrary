@@ -1,7 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 25-06-2025 16.39.08
-// ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
+// Date .........: 25-06-2025 17.06.09
 //
 
 #include <Arduino.h>    // in testa anche per le definizioni dei type

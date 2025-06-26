@@ -1,0 +1,6 @@
+Esp32, tramite struttura, gestione di un led no blocking con:
+1. intermittente con duty cycle variabile
+2. accensione fissa di durata variabile
+3. gestione logica inversa
+4. inseriamo le funzioni nella struttura
+5. controllo dello stato
