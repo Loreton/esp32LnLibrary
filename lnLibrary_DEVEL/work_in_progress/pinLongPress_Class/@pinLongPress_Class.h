@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 26-06-2025 15.30.57
+// Date .........: 26-06-2025 16.47.42
 */
 #pragma once
 #include <Arduino.h>
@@ -51,9 +51,9 @@ class PinLongPress_Class {
         // Constructor: replaces the init() function.
         // It's good practice to provide default arguments if some parameters are optional.
         // PinLongPress_Class(const char* name, int pin, int pressedLogicLevel,
-        //              const unsigned long thresholds[], size_t thresholdsCount, ButtonCallback callback=nullptr);
+        //              const uint32_t thresholds[], size_t thresholdsCount, ButtonCallback callback=nullptr);
         PinLongPress_Class(const char* name, int pin, int pressedLogicLevel,
-                     const unsigned long thresholds[], size_t thresholdsCount);
+                     const uint32_t thresholds[], size_t thresholdsCount);
 
         // Public methods to interact with the button object.
         bool read();
@@ -68,49 +68,49 @@ class PinLongPress_Class {
 
         // Getters for relevant private members if external access is needed.
         // These provide controlled read-only access to private data.
-        int getPin() const { return pin_; }
-        const char* getName() const { return name_; }
-        const char* getPinID() const { return pinID_; }
-        int getPressedLogicLevel() const { return pressedLogicLevel_; }
-        bool isButtonPressed() const { return buttonPressed_; }
-        unsigned long getPressDuration() const { return pressDuration_; }
-        uint8_t getCurrentPressLevel() const { return currentPressLevel_; }
-        uint8_t getLastPressedLevel() const { return lastPressedLevel_; }
-        bool hasMaxLevelReachedAndNotified() const { return maxLevelReachedAndNotified_; }
+        const char* getName() const { return m_name; }
+        const char* getPinID() const { return m_pinID; }
+        int         getPin() const { return m_pin; }
+        int         getPressedLogicLevel() const { return m_pressedLogicLevel; }
+        bool        isButtonPressed() const { return m_buttonPressed; }
+        uint32_t    getPressDuration() const { return m_pressDuration; }
+        uint8_t     getCurrentPressLevel() const { return m_currentPressLevel; }
+        uint8_t     getLastPressedLevel() const { return m_lastPressedLevel; }
+        bool        hasMaxLevelReachedAndNotified() const { return m_maxLevelReachedAndNotified; }
 
         // Consider adding a reset method if needed to clear states after an action.
-        void resetState();
+        void        resetState();
 
 
     private: // Private members (encapsulated, accessible only within the class)
-        int             pin_;
-        const char* name_;
-        char            pinID_[21];
-        int             pressedLogicLevel_;
+        int             m_pin;
+        const char*     m_name;
+        char            m_pinID[21];
+        int             m_pressedLogicLevel;
 
-        bool            lastButtonState_;
-        unsigned long   lastDebounceTime_; // Not explicitly used in the provided read(), but good to keep.
+        bool            m_lastButtonState;
+        uint32_t        m_lastDebounceTime; // Not explicitly used in the provided read(), but good to keep.
 
-        bool            buttonPressed_;
-        unsigned long   pressStartTime_;
-        unsigned long   pressDuration_;
+        bool            m_buttonPressed;
+        uint32_t        m_pressStartTime;
+        uint32_t        m_pressDuration;
 
-        uint8_t         currentPressLevel_;
-        uint8_t         lastPressedLevel_;
-        bool            maxLevelReachedAndNotified_;
+        uint8_t         m_currentPressLevel;
+        uint8_t         m_lastPressedLevel;
+        bool            m_maxLevelReachedAndNotified;
 
-        const unsigned long* pressThresholds_;
-        size_t               numThresholds_;
+        const uint32_t* m_pressThresholds;
+        size_t          m_numThresholds;
 
         // ButtonCallback       onPressCallback_;
 
         // Private helper methods
-        void checkNewLevel_();
+        void checkNewLevel();
 
         // Static member for beep timing, shared across all PinLongPress_Class instances
         // if beep logic is truly global. Otherwise, make it a non-static private member.
         // Given the previous static in notifyCurrentButtonLevel, this is likely intended.
-        static uint32_t lastBeepTime_;
+        static uint32_t m_lastBeepTime;
 };
 
 

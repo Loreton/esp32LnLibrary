@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 26-06-2025 16.18.19
+// Date .........: 26-06-2025 16.50.17
 //
 
 #ifdef __ln_MODULE_DEBUG_TEST__
@@ -22,14 +22,14 @@
 */
 
 
-const unsigned long START_BUTTON_THRESHOLDS[] = {
+const uint32_t START_BUTTON_THRESHOLDS[] = {
     200,
     800,
     2000,
     5000,
 };
 
-const unsigned long PUMP_STATE_THRESHOLDS[] = {
+const uint32_t PUMP_STATE_THRESHOLDS[] = {
     200,
     5000,
     15000,
