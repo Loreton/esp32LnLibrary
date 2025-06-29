@@ -1,10 +1,10 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 07-04-2025 09.25.14
+// Date .........: 29-06-2025 20.06.54
 //
 
 #include <Arduino.h> // in testa anche per le definizioni dei type
-#include "@SerialRead.h"
+#include "@serialRead.h"
 #define ESP32_WROOM_32E_2RELAY_MODULE   1
 #define ESP32_WROOM_32_MODULE           2
 

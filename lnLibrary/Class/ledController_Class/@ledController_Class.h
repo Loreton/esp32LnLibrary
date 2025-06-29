@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 26-06-2025 17.10.39
+// Date .........: 29-06-2025 18.22.05
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 #pragma once
@@ -11,10 +11,10 @@
 // For simplicity in this conversion, we'll remove the original typedef
 // as direct member functions are preferred in a class.
 
-class PinController_Class {
+class LedController_Class {
     public: // Public members and methods
         // Constructor
-        PinController_Class(const char* name, uint8_t pin, uint8_t active_level = HIGH);
+        LedController_Class(const char* name, uint8_t pin, uint8_t active_level = HIGH);
 
         // Public methods
         void update();
