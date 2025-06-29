@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 28-06-2025 17.21.26
+// Date .........: 29-06-2025 17.46.12
 */
 
 
@@ -12,9 +12,9 @@
     // lnLibrary headers files
     // ---------------------------------
     #include "@logMacros.h"
-    // #include "SerialRead.h" // waitForEnter()
-    #include "../serialRead/include/@SerialRead.h" // NON capisco perch* devo mettere il path relativo
-    #include "@lnString.h" // setPinID
+    // #include "@serialRead.h" // waitForEnter()
+    // #include "../serialRead/include/@SerialRead.h" // NON capisco perch* devo mettere il path relativo
+    // #include "@lnString.h" // setPinID
 
 
 
@@ -29,9 +29,17 @@
         const char PROGMEM *str_INPUT        = "INPUT";
         const char PROGMEM *str_INPUT_PULLUP = "INPUT_PULLUP";
         const char PROGMEM *str_OUTPUT       = "OUTPUT";
-        // ------- in pinOperations.cpp ....devo capire perché non posso spostarli
-        // const char * PROGMEM THRESHOLD_LEVEL_TYPES[] = {"NO_PRESSED_BUTTON", "PRESSED_LEVEL_01", "PRESSED_LEVEL_02", "PRESSED_LEVEL_03", "PRESSED_LEVEL_04", "PRESSED_LEVEL_05", "PRESSED_LEVEL_06", "OVERFLOW_TIME"};
-        // const int8_t THRESHOLDS_LEVELS_TYPES_length = sizeof(THRESHOLD_LEVEL_TYPES)/sizeof(char *);
+
+
+        // #ifdef __INCLUDE_LN_TIME__
+        //     #warning  "__INCLUDE_LN_TIME__ defines"
+        //     #include "@ln_time.h"
+        //     ESP32Time     rtc;
+        //     struct tm timeinfo; // capire se va bene uno per tutti i moduli oppure mantenerli separati per evitare overwrites
+        //     // time_setup();
+        // #endif
+
+
     #else
         extern const char PROGMEM *str_action[];
         extern const char PROGMEM *str_pinLevel[];
@@ -44,5 +52,15 @@
         extern const char PROGMEM *str_OUTPUT;
         extern const char * PROGMEM THRESHOLD_LEVEL_TYPES[];
         extern const int8_t THRESHOLDS_LEVELS_TYPES_length;
+
+
+        // #ifdef __INCLUDE_LN_TIME__
+        //     #warning  "extern __INCLUDE_LN_TIME__ defines"
+        //     #include "@ln_time.h"
+        //     extern ESP32Time     rtc;
+        //     extern struct tm timeinfo; // capire se va bene uno per tutti i moduli oppure mantenerli separati per evitare overwrites
+        //     // time_setup();
+        // #endif
+
     #endif
 

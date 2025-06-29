@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 28-06-2025 19.00.27
+// Date .........: 29-06-2025 16.49.49
 */
 #pragma once
 
@@ -46,7 +46,7 @@ extern int8_t debug_filename_length;
 
 
     char * nowTime(void); // se è definita in time o ntptime commentare quella presente nin main.cpp
-    const char*  setFnameLine(char buffer[], int MAXLENGTH, const char *path, int lineNo);
+    // const char*  setFnameLine(char buffer[], int MAXLENGTH, const char *path, int lineNo);
     // -------------------------------------------------
 
 
@@ -58,8 +58,9 @@ extern int8_t debug_filename_length;
             // #define __ln_FNAME__ __FILENAME__
             #define __ln_FNAME__ __FILE_NO_EXT__
 
-            #define m_FNAME                                         lnSERIAL.printf((PGM_P) PSTR("[%-20s:%04d] "), __ln_FNAME__, __LINE__)
-            #define m_FNAME_ext_non_funziona                                     lnSERIAL.printf((PGM_P) "[%s]:", setFnameLine(debug_filename, debug_filename_length, __FILENAME__, __LINE__) )
+            // #define m_FNAME                                         lnSERIAL.printf((PGM_P) PSTR("[%-20s:%04d] "), __ln_FNAME__, __LINE__)
+            #define m_FNAME                                         lnSERIAL.printf((PGM_P) PSTR("[%-20s:%04d] "), __FILENAME__, __LINE__)
+            // #define m_FNAME_ext_non_funziona                                     lnSERIAL.printf((PGM_P) "[%s]:", setFnameLine(debug_filename, debug_filename_length, __FILENAME__, __LINE__) )
             #define m_Func                                          lnSERIAL.printf((PGM_P) PSTR("[%-20s:%04d] "), __func__, __LINE__)
             #define m_FUNCTION                                      lnSERIAL.printf((PGM_P) PSTR("[%-20s:%04d] "), __FUNCTION__, __LINE__)
             #define m_FILE_FUNC                                     lnSERIAL.printf((PGM_P) PSTR("[%s.%-10s:%04d] "), __ln_FNAME__, __func__, __LINE__)

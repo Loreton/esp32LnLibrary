@@ -1,13 +1,13 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 03-03-2025 17.27.27
+// Date .........: 29-06-2025 17.49.56
 */
+
+#pragma once
 
 #include <ESP32Time.h> // per definire ESP32Time rtc;
 
-#ifndef __LN_TIME_H__
-    #define __LN_TIME_H__
-
+    #define __LN_TIME_INCLUDED__
 
 
     extern ESP32Time     rtc;
@@ -41,5 +41,3 @@
     // void printTime(void);
     void to_HHMMSS(uint32_t mseconds, char *outStr, uint8_t maxlen=10);
 
-
-#endif

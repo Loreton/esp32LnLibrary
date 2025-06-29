@@ -1,11 +1,15 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 27-06-2025 15.44.18
+// Date .........: 29-06-2025 18.03.29
 */
-#include "@debouncedButton_Class.h" // Include il nuovo header della classe
+#include "@buttonDebounced_Class.h" // Include il nuovo header della classe
+#include "@lnString.h" // per setPinID()
+
+
+void setPinID(char buffer[], int MAXLENGTH, const char *name, int pin); // in lnString.h
 
 // ------------------------------------------------------
-// Implementazione della classe DebouncedButton_Class.
+// Implementazione della classe ButtonDebounced_Class.
 // ------------------------------------------------------
 
 /**
@@ -17,7 +21,10 @@
  * - Usa LOW per un pulsante collegato tra pin e GND (con INPUT_PULLUP).
  * - Usa HIGH per un pulsante collegato tra pin e VCC (con INPUT, richiede pull-down esterno).
  */
-DebouncedButton_Class::DebouncedButton_Class(int pin_nr, const char* name, int pressedLogicLevel) :
+ButtonDebounced_Class::ButtonDebounced_Class(void){};
+
+/** --- l'ho eliminato preferisco la init()
+ButtonDebounced_Class::ButtonDebounced_Class(const char* name, uint8_t pin_nr, uint8_t pressedLogicLevel) :
                 m_pin(pin_nr),
                 m_name(name),
                 m_pressedLogicLevel(pressedLogicLevel),
@@ -32,9 +39,32 @@ DebouncedButton_Class::DebouncedButton_Class(int pin_nr, const char* name, int p
     }
     m_lastButtonState = digitalRead(m_pin); // Legge lo stato iniziale.
 
+    setPinID(m_pinID, sizeof(m_pinID)-1, m_name,  m_pin);
+
+}
+*/
+void ButtonDebounced_Class::init(const char* name, uint8_t pin_nr, uint8_t pressedLogicLevel) {
+    m_pin = pin_nr;
+    m_name = name;
+    m_pressedLogicLevel = pressedLogicLevel;
+    m_lastDebounceTime = 0;
+    m_buttonPressed = false;
+    // m_initialized=true;
+
+    // Configura il pin in base al pressedLogicLevel.
+    if (m_pressedLogicLevel == LOW) {
+        pinMode(m_pin, INPUT_PULLUP); // Se premuto porta a LOW, usa pull-up interno.
+    } else {
+        pinMode(m_pin, INPUT);        // Se premuto porta a HIGH, non usa pull-up interno (richiede pull-down esterno se flottante).
+    }
+    m_lastButtonState = digitalRead(m_pin); // Legge lo stato iniziale.
+
+    setPinID(m_pinID, sizeof(m_pinID)-1, m_name,  m_pin);
+    /**
     const size_t PIN_ID_MAXLENGTH = sizeof(m_pinID)-1;
     int cx = snprintf(m_pinID, PIN_ID_MAXLENGTH - 6, "[%s", m_name);
     snprintf(m_pinID + cx, PIN_ID_MAXLENGTH - cx, ".%02d]:", m_pin);
+    */
 }
 
 /**
@@ -44,7 +74,7 @@ DebouncedButton_Class::DebouncedButton_Class(int pin_nr, const char* name, int p
  * @param debounceDelay Il ritardo di debounce in millisecondi.
  * @return true se il pulsante è stato RILASCIATO dopo una pressione valida; false altrimenti.
  */
-bool DebouncedButton_Class::read(unsigned long debounceDelay) {
+bool ButtonDebounced_Class::read(unsigned long debounceDelay) {
     // Legge lo stato attuale del pin (lettura RAW).
     bool reading = digitalRead(m_pin);
 
@@ -71,3 +101,4 @@ bool DebouncedButton_Class::read(unsigned long debounceDelay) {
     m_lastButtonState = reading;
     return false; // Il pulsante non è stato rilasciato in questo ciclo.
 }
+

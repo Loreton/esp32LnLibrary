@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 16-04-2025 18.39.53
+// Date .........: 29-06-2025 17.45.03
 */
 
 #include "Arduino.h"
@@ -20,36 +20,15 @@
 
 
 
+
+
 #define TIME_BUFFER_LENGTH 10
-
-
 ESP32Time     rtc;
 char PROGMEM buffer_time[TIME_BUFFER_LENGTH];
 
 
 #define EUROPE_ROME_TZ "CET-1CEST,M3.5.0,M10.5.0/3" // https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv
 #define MYTZ "CET-1CEST,M3.5.0,M10.5.0/3"
-
-
-
-
-
-// #if  LOG_LEVEL >= 1
-//     #define printf1    lnPrin\ntLN
-//     #define printf1     lnPrintF
-//     #define printf1_FN  lnPrintF_FN
-//     #define printf1_NFN lnPrintF_NowFN
-// #else
-//     #define prin\ntf1
-//     #define printf1
-//     #define printf1_FN
-//     #define printf1_NFN
-// #endif
-
-
-
-
-
 
 
 struct tm timeinfo = rtc.getTimeStruct();
