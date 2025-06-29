@@ -1,12 +1,12 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-06-2025 18.03.29
+// Date .........: 29-06-2025 18.06.37
 */
 #include "@buttonDebounced_Class.h" // Include il nuovo header della classe
 #include "@lnString.h" // per setPinID()
 
 
-void setPinID(char buffer[], int MAXLENGTH, const char *name, int pin); // in lnString.h
+// void setPinID(char buffer[], int MAXLENGTH, const char *name, int pin); // in lnString.h
 
 // ------------------------------------------------------
 // Implementazione della classe ButtonDebounced_Class.
