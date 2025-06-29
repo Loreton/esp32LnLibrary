@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 25-06-2025 18.19.54
+// Date .........: 29-06-2025 18.09.36
 */
 
 #pragma once
@@ -23,14 +23,14 @@
 // - function prototypes...
 // -----------------------------
 #include "@pinController_Class.h" // Include the new PinController_Class header
-#include "@pinLongPress_Class.h"  // Include the new PinLongPress_Class_Class header
+#include "@buttonLongPress_Class.h"  // Include the new ButtonLongPress_Class_Class header
 
 
 // These functions will likely remain external as they operate on pointers
-// to your PinLongPress_Class objects, similar to how they did with the struct.
-// You might consider making them static members of the PinLongPress_Class class
+// to your ButtonLongPress_Class objects, similar to how they did with the struct.
+// You might consider making them static members of the ButtonLongPress_Class class
 // if they truly only relate to that class and don't need external access
 // or involve other classes.
-void pumpState_Action(PinLongPress_Class *p);
-void startButton_Action(PinLongPress_Class *p);
-void processButton(PinLongPress_Class *p);
+void pumpState_Action(ButtonLongPress_Class *p);
+void startButton_Action(ButtonLongPress_Class *p);
+void processButton(ButtonLongPress_Class *p);

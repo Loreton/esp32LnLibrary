@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 28-06-2025 18.46.42
+// Date .........: 29-06-2025 18.18.36
 //
 
 #ifdef __ln_MODULE_DEBUG_TEST__
@@ -10,10 +10,11 @@
 #define fKEYB_PROMPT true
 #define LOG_LEVEL_0
 #define __I_AM_MAIN_CPP__
-#include "@globalVars.h" // printf:XFN()
+#include "@logMacros.h" // printf:XFN()
+#include "@globalVars.h" // strXXX()
 
 #include "@pinController_Class.h" // Include the new PinController_Class header
-#include "@pinLongPress_Class.h"  // Include the new PinLongPress_Class_Class header
+#include "@buttonLongPress_Class.h"  // Include the new ButtonLongPress_Class_Class header
 
 
 #include "@main_test.h"
@@ -56,11 +57,11 @@ char *nowTime() {
 
 
 // Initialize objects using their constructors
-// PinLongPress_Class  startButton;
-// PinLongPress_Class  pumpState;
+// ButtonLongPress_Class  startButton;
+// ButtonLongPress_Class  pumpState;
 PinController_Class activeBuzzer("Buzzer", activeBuzzer_pin, HIGH);
-PinLongPress_Class  startButton("startButton", startButton_pin, LOW, START_BUTTON_THRESHOLDS, NUM_START_BUTTON_THRESHOLDS); // Now an object, not a struct
-PinLongPress_Class  pumpState("pumpState", pumpState_pin, LOW, PUMP_STATE_THRESHOLDS, NUM_PUMP_STATE_THRESHOLDS);   // Now an object, not a struct
+ButtonLongPress_Class  startButton("startButton", startButton_pin, LOW, START_BUTTON_THRESHOLDS, NUM_START_BUTTON_THRESHOLDS); // Now an object, not a struct
+ButtonLongPress_Class  pumpState("pumpState", pumpState_pin, LOW, PUMP_STATE_THRESHOLDS, NUM_PUMP_STATE_THRESHOLDS);   // Now an object, not a struct
 // PinController_Class activeBuzzer("Buzzer", activeBuzzer_pin, HIGH);
 
 void setup() {

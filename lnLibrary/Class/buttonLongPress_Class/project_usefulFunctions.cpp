@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 26-06-2025 15.42.55
+// Date .........: 29-06-2025 18.16.20
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -9,9 +9,9 @@
 
 #define LOG_LEVEL_0
 #define LOG_LEVEL_99
-#include "@globalVars.h" // printf:XFN()
+#include "@logMacros.h" // printf:XFN()
 
-#include "@pinLongPress_Class.h" // Use the new class header
+#include "@buttonLongPress_Class.h" // Use the new class header
 #include "@main_test.h" // Includes the function prototypes
 
 // This 'relayState' is a global variable. If it should be managed
@@ -22,7 +22,7 @@ bool relayState = false;
 //###########################################################################
 //# Action for the pumpState button
 //###########################################################################
-void pumpState_Action(PinLongPress_Class *p) { // Now accepts a pointer to PinLongPress_Class class
+void pumpState_Action(ButtonLongPress_Class *p) { // Now accepts a pointer to ButtonLongPress_Class class
     // Access members using getters or directly if they are public for a specific reason,
     // though getters are preferred for encapsulation.
     switch (p->getCurrentPressLevel()) { // Use getter for currentPressLevel
@@ -59,7 +59,7 @@ void pumpState_Action(PinLongPress_Class *p) { // Now accepts a pointer to PinLo
 //###########################################################################
 //# Action for the startButton
 //###########################################################################
-void startButton_Action(PinLongPress_Class *p) { // Now accepts a pointer to PinLongPress_Class class
+void startButton_Action(ButtonLongPress_Class *p) { // Now accepts a pointer to ButtonLongPress_Class class
     // Access members using getters or directly if they are public for a specific reason,
     // though getters are preferred for encapsulation.
     switch (p->getCurrentPressLevel()) { // Use getter for currentPressLevel after released
@@ -97,7 +97,7 @@ void startButton_Action(PinLongPress_Class *p) { // Now accepts a pointer to Pin
 //###########################################################################
 //# Processes a button release event
 //###########################################################################
-void processButton(PinLongPress_Class *p) { // Now accepts a pointer to PinLongPress_Class class
+void processButton(ButtonLongPress_Class *p) { // Now accepts a pointer to ButtonLongPress_Class class
     // Access members using getters
     printf0_FN("[%s] Rilasciato! Durata: %ld ms\n", p->getName(), p->getPressDuration());
 
