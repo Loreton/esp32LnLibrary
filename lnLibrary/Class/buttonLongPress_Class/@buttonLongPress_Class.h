@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 30-06-2025 15.22.43
+// Date .........: 30-06-2025 15.31.58
 */
 #pragma once
 #include <Arduino.h>
@@ -64,14 +64,16 @@ class ButtonLongPress_Class {
         // 1. Default Constructor (new)
         // ButtonLongPress_Class();
 
+        ButtonLongPress_Class(void);
+
         // Constructor: replaces the init() function.
         // It's good practice to provide default arguments if some parameters are optional.
         // ButtonLongPress_Class(const char* name, int pin, int pressedLogicLevel,
         //              const uint32_t thresholds[], size_t thresholdsCount, ButtonCallback callback=nullptr);
-        ButtonLongPress_Class(const char* name, int8_t pin, int8_t pressedLogicLevel,
-                     const uint32_t thresholds[], size_t thresholdsCount);
+        // ButtonLongPress_Class(const char* name, int8_t pin, int8_t pressedLogicLevel, const uint32_t thresholds[], size_t thresholdsCount);
 
         // Public methods to interact with the button object.
+        void init(const char* name, int8_t pin, int8_t pressedLogicLevel, const uint32_t thresholds[], size_t thresholdsCount);
         bool read();
         void process(); // If this function handles ongoing button states, it might be called externally.
                         // Based on your original code, process() was part of the struct, but its implementation was not provided.

@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 30-06-2025 15.22.27
+// Date .........: 30-06-2025 15.32.16
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 #include <Arduino.h>
@@ -28,6 +28,7 @@ ButtonLongPress_Class::ButtonLongPress_Class() {
 }
 */
 
+ButtonLongPress_Class::ButtonLongPress_Class(void) {};
 
 
 /**
@@ -47,7 +48,7 @@ ButtonLongPress_Class::ButtonLongPress_Class() {
 // ButtonLongPress_Class::ButtonLongPress_Class(const char* name, int pin, int pressedLogicLevel,
 //                            const uint32_t thresholds[], size_t thresholdsCount,
 //                            ButtonCallback callback) {
-
+/*
 ButtonLongPress_Class::ButtonLongPress_Class(const char* name, int8_t pin, int8_t pressedLogicLevel,
                            const uint32_t thresholds[], size_t thresholdsCount) {
     m_pin = pin;
@@ -55,6 +56,27 @@ ButtonLongPress_Class::ButtonLongPress_Class(const char* name, int8_t pin, int8_
     setPinID(m_pinID, sizeof(m_pinID)-1, m_name,  m_pin);
 
 
+
+    m_pressedLogicLevel = pressedLogicLevel;
+    m_pressThresholds = thresholds;
+    m_numThresholds = thresholdsCount;
+
+    if (m_pressedLogicLevel == LOW) {
+        pinMode(m_pin, INPUT_PULLUP);
+    } else {
+        pinMode(m_pin, INPUT);
+    }
+
+    m_lastButtonState = digitalRead(m_pin);
+    m_buttonPressed = (m_lastButtonState == m_pressedLogicLevel);
+
+}
+
+*/
+void ButtonLongPress_Class::init(const char* name, int8_t pin, int8_t pressedLogicLevel, const uint32_t thresholds[], size_t thresholdsCount) {
+    m_pin = pin;
+    m_name = name;
+    setPinID(m_pinID, sizeof(m_pinID)-1, m_name,  m_pin);
 
     m_pressedLogicLevel = pressedLogicLevel;
     m_pressThresholds = thresholds;
