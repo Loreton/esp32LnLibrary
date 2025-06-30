@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 30-06-2025 12.02.51
+// Date .........: 30-06-2025 14.50.49
 //
 #include <Arduino.h>
 
@@ -8,24 +8,45 @@
 #define LOG_LEVEL_2
 #define LOG_LEVEL_99
 #include "@logMacros.h"
+#include "@lnString.h" // per setPinID()
+
 #include "@ledController_Class.h" // Changed to new class header
 
 
 
 // Constructor definition
-LedController_Class::LedController_Class(const char *name, uint8_t pin, uint8_t pressedLogicLevel) :
+LedController_Class::LedController_Class(void) {};
+
+/*LedController_Class::LedController_Class(const char *name, uint8_t pin, uint8_t pressedLogicLevel) :
                 m_pin(pin),
                 m_name(name),
-                m_on_level(pressedLogicLevel) {
+                m_onLevel(pressedLogicLevel) {
 
-    m_on  = m_on_level;
-    m_off = !m_on_level;
+    m_on  = m_onLevel;
+    m_off = !m_onLevel;
     digitalWrite(m_pin, m_off); // start off
     pinMode(m_pin, OUTPUT);
 
-    size_t PIN_ID_MAXLENGTH = sizeof(m_pinID)-1;
+    setPinID(m_pinID, sizeof(m_pinID)-1, m_name,  m_pin);
+
+}
+*/
+void LedController_Class::init(const char *name, uint8_t pin, uint8_t pressedLogicLevel) {
+    m_pin=pin;
+    m_name=name;
+    m_onLevel=pressedLogicLevel;
+    m_on  = m_onLevel;
+    m_off = !m_onLevel;
+
+    digitalWrite(m_pin, m_off); // start off
+    pinMode(m_pin, OUTPUT);
+
+    setPinID(m_pinID, sizeof(m_pinID)-1, m_name,  m_pin);
+    /**
+    const size_t PIN_ID_MAXLENGTH = sizeof(m_pinID)-1;
     int cx = snprintf(m_pinID, PIN_ID_MAXLENGTH - 6, "[%s", m_name);
     snprintf(m_pinID + cx, PIN_ID_MAXLENGTH - cx, ".%02d]:", m_pin);
+    */
 }
 
 void LedController_Class::update() {

@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-06-2025 18.31.16
+// Date .........: 30-06-2025 12.39.20
 */
 
 
@@ -19,14 +19,18 @@
 #define LED2_pin 26
 
 // Now these are instances of the LedController_Class class
-LedController_Class activeBuzzer("Buzzer", activeBuzzer_pin, HIGH);
-LedController_Class myLed2("Led", LED2_pin, HIGH);
+// LedController_Class activeBuzzer("Buzzer", activeBuzzer_pin, HIGH);
+// LedController_Class myLed2("Led", LED2_pin, HIGH);
+LedController_Class activeBuzzer;
+LedController_Class myLed2;
 
 void setup() {
     Serial.begin(115200);
     delay(1000);
     printf99_FN("Starting LED module demonstration with classes...\n");
 
+    activeBuzzer.init("Buzzer", activeBuzzer_pin, HIGH);
+    myLed2.init("Led", LED2_pin, HIGH);
     // No need to call 'init' explicitly as it's handled by the constructor
     // activeBuzzer.init("Buzzer", activeBuzzer_pin, HIGH); // REMOVE THIS LINE
     // myLed2.init("Led", LED2_pin, HIGH); // REMOVE THIS LINE

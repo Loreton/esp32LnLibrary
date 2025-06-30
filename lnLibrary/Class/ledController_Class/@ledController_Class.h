@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-06-2025 18.22.05
+// Date .........: 30-06-2025 12.57.26
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 #pragma once
@@ -14,9 +14,11 @@
 class LedController_Class {
     public: // Public members and methods
         // Constructor
-        LedController_Class(const char* name, uint8_t pin, uint8_t active_level = HIGH);
+        LedController_Class(void);
+        // LedController_Class(const char* name, uint8_t pin, uint8_t active_level = HIGH);
 
         // Public methods
+        void init(const char* name, uint8_t pin, uint8_t active_level = HIGH);
         void update();
         void blinking(uint32_t onMs, uint32_t offMs, int8_t cycles = 0);
         void blinking_dc(uint32_t period, float duty_cycle, int8_t cycles = 0);
@@ -39,7 +41,7 @@ class LedController_Class {
         const char* m_name;
         char        m_pinID[21];
 
-        uint8_t     m_on_level = HIGH;
+        uint8_t     m_onLevel = HIGH;
         uint8_t     m_on       = HIGH;
         uint8_t     m_off      = LOW;
 
