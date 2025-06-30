@@ -1,12 +1,10 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 06-02-2025 08.27.53
+// Date .........: 30-06-2025 15.57.18
 */
 
+#pragma once
 #include <ESP32Time.h> // per definire ESP32Time rtc;
-
-#ifndef __LN_TIME_H__
-    #define __LN_TIME_H__
 
 
 
@@ -35,7 +33,3 @@
     void print_rtc_time(void);
 
     // void printTime(void);
-
-
-
-#endif

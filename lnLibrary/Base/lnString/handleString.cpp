@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-06-2025 17.11.01
+// Date .........: 30-06-2025 16.18.49
 */
 
 
@@ -13,7 +13,7 @@
 // lnLibrary headers files
 // ---------------------------------
 #define LOG_LEVEL_0x
-#include "@globalVars.h"
+#include "../lnMainInclude/@logMacros.h"
 
 
 /*

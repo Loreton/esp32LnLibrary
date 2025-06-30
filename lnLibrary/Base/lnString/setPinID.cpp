@@ -1,14 +1,14 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 30-06-2025 12.36.11
+// Date .........: 30-06-2025 16.18.59
 */
 
 // ---------------------------------
 // lnLibrary headers files
 // ---------------------------------
 #define LOG_LEVEL_0x
-#define LOG_LEVEL_99
-#include "@globalVars.h"
+#define LOG_LEVEL_99x
+#include "../lnMainInclude/@logMacros.h"
 
 /*
 // Online C compiler to run C program online
