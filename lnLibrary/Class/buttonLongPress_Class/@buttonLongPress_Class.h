@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-06-2025 18.09.48
+// Date .........: 30-06-2025 15.22.43
 */
 #pragma once
 #include <Arduino.h>
@@ -43,8 +43,8 @@ enum ButtonPressedLevel : uint8_t {
 
 typedef void (*BuzzerCallback)(uint16_t duration);
 
-// Forward declaration for PinController_Class since it's used in notifyCurrentLevel
-class PinController_Class;
+// Forward declaration for LedController_Class since it's used in notifyCurrentLevel
+class LedController_Class;
 
 // Forward declaration for the callback type, now accepting a pointer to the class
 class ButtonLongPress_Class;
@@ -79,7 +79,7 @@ class ButtonLongPress_Class {
         void printStatus(bool prompt); // Renamed for clarity and consistency with class methods.
 
         // New: notifyCurrentLevel is now a member function
-        void notifyCurrentLevel(PinController_Class* activeBuzzer = nullptr);
+        void notifyCurrentLevel(LedController_Class* activeBuzzer = nullptr);
 
 
         // Getters for relevant private members if external access is needed.
@@ -121,7 +121,7 @@ class ButtonLongPress_Class {
 
         // Private helper methods
         void checkNewLevel();
-        void beep(PinController_Class* activeBuzzer, uint16_t duration);
+        void beep(LedController_Class* activeBuzzer, uint16_t duration);
 
         // Static member for beep timing, shared across all ButtonLongPress_Class instances
         // if beep logic is truly global. Otherwise, make it a non-static private member.
@@ -131,4 +131,4 @@ class ButtonLongPress_Class {
 
 
 // No longer needed as it's a member function
-// void notifyCurrentButtonLevel(ButtonLongPress_Class* p, PinController_Class* activeBuzzer = nullptr);
+// void notifyCurrentButtonLevel(ButtonLongPress_Class* p, LedController_Class* activeBuzzer = nullptr);

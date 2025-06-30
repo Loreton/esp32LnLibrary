@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 30-06-2025 14.50.49
+// Date .........: 30-06-2025 15.06.30
 //
 #include <Arduino.h>
 
@@ -128,7 +128,7 @@ void LedController_Class::off() {
 }
 
 // ========================================
-// - Internal use functions
+// - privatefunctions
 // ========================================
 void LedController_Class::setLed(bool req_state) {
     m_ledState = req_state;

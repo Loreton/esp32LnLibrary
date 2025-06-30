@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-06-2025 18.15.58
+// Date .........: 30-06-2025 15.22.27
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 #include <Arduino.h>
@@ -13,7 +13,7 @@
 #include "@globalVars.h" // strXXX()
 
 #include "@buttonLongPress_Class.h"
-#include "@pinController_Class.h" // Include for PinController_Class usage
+#include "@ledController_Class.h" // Include for LedController_Class usage
 
 // Initialize the static member variable outside the class definition
 uint32_t ButtonLongPress_Class::m_lastBeepTime = 0;
@@ -191,7 +191,7 @@ void ButtonLongPress_Class::printStatus(bool prompt) {
 #define ALARM_BEEP_INTERVAL 2000
 
 
-void ButtonLongPress_Class::beep(PinController_Class *buzzer, uint16_t duration) {
+void ButtonLongPress_Class::beep(LedController_Class *buzzer, uint16_t duration) {
     if (buzzer) buzzer->pulse(duration);
 }
 
@@ -203,7 +203,7 @@ void ButtonLongPress_Class::beep(PinController_Class *buzzer, uint16_t duration)
  *
  * @param buzzer: Pointer to an active buzzer object to provide audible feedback.
  */
-void ButtonLongPress_Class::notifyCurrentLevel(PinController_Class *buzzer) {
+void ButtonLongPress_Class::notifyCurrentLevel(LedController_Class *buzzer) {
     uint16_t beep_duration = 200;
 
     // Check if the button is currently pressed according to its logic level

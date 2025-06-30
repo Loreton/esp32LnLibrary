@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-06-2025 18.18.36
+// Date .........: 30-06-2025 15.24.41
 //
 
 #ifdef __ln_MODULE_DEBUG_TEST__
@@ -13,7 +13,7 @@
 #include "@logMacros.h" // printf:XFN()
 #include "@globalVars.h" // strXXX()
 
-#include "@pinController_Class.h" // Include the new PinController_Class header
+#include "@ledController_Class.h" // Include the new LedController_Class header
 #include "@buttonLongPress_Class.h"  // Include the new ButtonLongPress_Class_Class header
 
 
@@ -59,16 +59,18 @@ char *nowTime() {
 // Initialize objects using their constructors
 // ButtonLongPress_Class  startButton;
 // ButtonLongPress_Class  pumpState;
-PinController_Class activeBuzzer("Buzzer", activeBuzzer_pin, HIGH);
+// LedController_Class    activeBuzzer("Buzzer", activeBuzzer_pin, HIGH);
+LedController_Class    activeBuzzer;
 ButtonLongPress_Class  startButton("startButton", startButton_pin, LOW, START_BUTTON_THRESHOLDS, NUM_START_BUTTON_THRESHOLDS); // Now an object, not a struct
 ButtonLongPress_Class  pumpState("pumpState", pumpState_pin, LOW, PUMP_STATE_THRESHOLDS, NUM_PUMP_STATE_THRESHOLDS);   // Now an object, not a struct
-// PinController_Class activeBuzzer("Buzzer", activeBuzzer_pin, HIGH);
+// LedController_Class activeBuzzer("Buzzer", activeBuzzer_pin, HIGH);
 
 void setup() {
     Serial.begin(115200);
     // while (!Serial) {};
     delay(2000);
     printf0_FN("Avvio test pulsante con debounce e gestione del reset dei livelli nella funzione chiamante.\n");
+    activeBuzzer.init("Buzzer", activeBuzzer_pin, HIGH);
 
 
     startButton.printStatus(fNO_KEYB_PROPT);
