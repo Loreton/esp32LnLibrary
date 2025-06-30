@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 30-06-2025 15.31.20
+// Date .........: 30-06-2025 15.37.41
 //
 
 #ifdef __ln_MODULE_DEBUG_TEST__
@@ -17,7 +17,7 @@
 #include "@buttonLongPress_Class.h"  // Include the new ButtonLongPress_Class_Class header
 
 
-#include "@main_test.h"
+#include "@project_usefullFunctions.h"
 /*
     test di due pin come input con tempi diversi
 */

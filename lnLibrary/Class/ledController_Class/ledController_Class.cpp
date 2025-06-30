@@ -1,12 +1,12 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 30-06-2025 15.06.30
+// Date .........: 30-06-2025 15.34.01
 //
 #include <Arduino.h>
 
 #define LOG_LEVEL_1
-#define LOG_LEVEL_2
-#define LOG_LEVEL_99
+#define LOG_LEVEL_2x
+#define LOG_LEVEL_99x
 #include "@logMacros.h"
 #include "@lnString.h" // per setPinID()
 
