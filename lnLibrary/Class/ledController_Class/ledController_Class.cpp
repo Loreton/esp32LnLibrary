@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-06-2025 18.33.07
+// Date .........: 30-06-2025 12.02.51
 //
 #include <Arduino.h>
 
@@ -13,14 +13,15 @@
 
 
 // Constructor definition
-LedController_Class::LedController_Class(const char *name, uint8_t pin, uint8_t active_level) :
+LedController_Class::LedController_Class(const char *name, uint8_t pin, uint8_t pressedLogicLevel) :
                 m_pin(pin),
                 m_name(name),
-                m_on_level(active_level) {
+                m_on_level(pressedLogicLevel) {
 
     m_on  = m_on_level;
     m_off = !m_on_level;
     digitalWrite(m_pin, m_off); // start off
+    pinMode(m_pin, OUTPUT);
 
     size_t PIN_ID_MAXLENGTH = sizeof(m_pinID)-1;
     int cx = snprintf(m_pinID, PIN_ID_MAXLENGTH - 6, "[%s", m_name);
