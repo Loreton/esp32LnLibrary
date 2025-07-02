@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 30-06-2025 12.39.20
+// Date .........: 01-07-2025 17.03.55
 */
 
 
@@ -55,8 +55,8 @@ void loop() {
     // printf99_FN("sono qui...%lu millis\n", elapsed);
     // Call update() for each LedController_Class instance you want to manage
     // You MUST call this function for EACH controller individually
-    activeBuzzer.update();
-    myLed2.update();
+    activeBuzzer.updateStatus();
+    myLed2.updateStatus();
 
     // examples of commands:
 

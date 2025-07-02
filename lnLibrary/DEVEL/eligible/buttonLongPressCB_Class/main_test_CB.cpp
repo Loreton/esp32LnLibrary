@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 27-06-2025 12.53.47
+// Date .........: 01-07-2025 16.58.36
 //
 
 #ifdef __ln_MODULE_DEBUG_TEST__
@@ -13,7 +13,7 @@
 #include "@globalVars.h" // printf:XFN()
 
 #include "@pinController_Class.h" // Include the new PinController_Class header
-#include "@pinLongPressCB_Class.h"  // Include the new PinLongPress_Class_Class header
+#include "@pinLongPressCB_Class.h"  // Include the new ButtonLongPressCB_Class_Class header
 
 
 #include "@main_test.h"
@@ -51,11 +51,11 @@ char *nowTime() {
     return temp_buffer_time;
 }
 
-// Callback function now receives a pointer to the PinLongPress_Class object
-void myButtonHandler(PinLongPress_Class* btn) {
+// Callback function now receives a pointer to the ButtonLongPressCB_Class object
+void myButtonHandler(ButtonLongPressCB_Class* btn) {
     Serial.printf("pinLongPress Callback: %s\n", btn->getPinID()); // Use getter
 }
-void myButtonNotifyCallback(PinLongPress_Class* btn) {
+void myButtonNotifyCallback(ButtonLongPressCB_Class* btn) {
     Serial.printf("pinLongPress Callback: %s\n", btn->getPinID()); // Use getter
 }
 void myBuzzerHandler(uint16_t duration) {
@@ -64,11 +64,11 @@ void myBuzzerHandler(uint16_t duration) {
 
 
 // Initialize objects using their constructors
-// PinLongPress_Class  startButton;
-// PinLongPress_Class  pumpState;
+// ButtonLongPressCB_Class  startButton;
+// ButtonLongPressCB_Class  pumpState;
 PinController_Class activeBuzzer("Buzzer", activeBuzzer_pin, HIGH);
-PinLongPress_Class  startButton("startButton", startButton_pin, LOW, START_BUTTON_THRESHOLDS, NUM_START_BUTTON_THRESHOLDS, myButtonNotifyCallback); // Now an object, not a struct
-PinLongPress_Class  pumpState("pumpState", pumpState_pin, LOW, PUMP_STATE_THRESHOLDS, NUM_PUMP_STATE_THRESHOLDS);   // Now an object, not a struct
+ButtonLongPressCB_Class  startButton("startButton", startButton_pin, LOW, START_BUTTON_THRESHOLDS, NUM_START_BUTTON_THRESHOLDS, myButtonNotifyCallback); // Now an object, not a struct
+ButtonLongPressCB_Class  pumpState("pumpState", pumpState_pin, LOW, PUMP_STATE_THRESHOLDS, NUM_PUMP_STATE_THRESHOLDS);   // Now an object, not a struct
 // PinController_Class activeBuzzer("Buzzer", activeBuzzer_pin, HIGH);
 
 void setup() {

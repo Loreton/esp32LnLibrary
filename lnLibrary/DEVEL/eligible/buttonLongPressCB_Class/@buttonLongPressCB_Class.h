@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 27-06-2025 15.26.53
+// Date .........: 01-07-2025 16.58.26
 */
 #pragma once
 #include <Arduino.h>
@@ -47,28 +47,28 @@ typedef void (*BuzzerCallback)(uint16_t duration);
 class PinController_Class;
 
 // Forward declaration for the callback type, now accepting a pointer to the class
-class PinLongPress_Class;
-typedef void (*ButtonCallback)(PinLongPress_Class* self);
+class ButtonLongPressCB_Class;
+typedef void (*ButtonCallback)(ButtonLongPressCB_Class* self);
 
 
-// typedef void (*CB_notifyHandler)(class PinLongPress_Class* self);
+// typedef void (*CB_notifyHandler)(class ButtonLongPressCB_Class* self);
 // typedef void (*buzzerCB)(uint16_t duration);
 // typedef void (*ButtonCallback)(struct pinLongPress_sc* self);
 
 
 
 // Class to manage the state and logic for a long-press button.
-class PinLongPress_Class {
+class ButtonLongPressCB_Class {
     public: // Public members (accessible from outside the class)
 
         // 1. Default Constructor (new)
-        // PinLongPress_Class();
+        // ButtonLongPressCB_Class();
 
         // Constructor: replaces the init() function.
         // It's good practice to provide default arguments if some parameters are optional.
-        // PinLongPress_Class(const char* name, int pin, int pressedLogicLevel,
+        // ButtonLongPressCB_Class(const char* name, int pin, int pressedLogicLevel,
         //              const uint32_t thresholds[], size_t thresholdsCount, ButtonCallback callback=nullptr);
-        PinLongPress_Class(const char* name, int8_t pin, int8_t pressedLogicLevel,
+        ButtonLongPressCB_Class(const char* name, int8_t pin, int8_t pressedLogicLevel,
                      const uint32_t thresholds[], size_t thresholdsCount, ButtonCallback callback=nullptr);
 
         // Public methods to interact with the button object.
@@ -126,7 +126,7 @@ class PinLongPress_Class {
         void checkNewLevel();
         void beep(PinController_Class* activeBuzzer, uint16_t duration);
 
-        // Static member for beep timing, shared across all PinLongPress_Class instances
+        // Static member for beep timing, shared across all ButtonLongPressCB_Class instances
         // if beep logic is truly global. Otherwise, make it a non-static private member.
         // Given the previous static in notifyCurrentButtonLevel, this is likely intended.
         static uint32_t m_lastBeepTime;
@@ -134,4 +134,4 @@ class PinLongPress_Class {
 
 
 // No longer needed as it's a member function
-// void notifyCurrentButtonLevel(PinLongPress_Class* p, PinController_Class* activeBuzzer = nullptr);
+// void notifyCurrentButtonLevel(ButtonLongPressCB_Class* p, PinController_Class* activeBuzzer = nullptr);

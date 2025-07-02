@@ -1,23 +1,23 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 25-06-2025 17.00.56
+// Date .........: 02-07-2025 11.57.53
 */
 
 #pragma once
 #include <Arduino.h>
+#ifdef __ln_MODULE_DEBUG_TEST__
+    #define passiveBuzzer_pin           22  // OUTPUT
+    #define activeBuzzer_pin            23  // OUTPUT
+    #define pressControlLED_pin         25  // OUTPUT
+    #define pumpLED_pin                 26  // OUTPUT
 
-#define passiveBuzzer_pin           22  // OUTPUT
-#define activeBuzzer_pin            23  // OUTPUT
-#define pressControlLED_pin         25  // OUTPUT
-#define pumpLED_pin                 26  // OUTPUT
+    #define pressControlRelay_pin       16  // OUTPUT
+    #define pumpHornAlarm_pin           17  // OUTPUT
 
-#define pressControlRelay_pin       16  // OUTPUT
-#define pumpHornAlarm_pin           17  // OUTPUT
-
-#define pressControlState_pin       18  // INPUT
-#define pumpState_pin               19  // INPUT
-#define startButton_pin             21  // INPUT
-
+    #define pressControlState_pin       18  // INPUT
+    #define pumpState_pin               19  // INPUT
+    #define startButton_pin             21  // INPUT
+#endif
 
 // Definisce i possibili tipi di pressione del pulsante.
 enum ButtonPressedLevel : uint8_t {
@@ -36,16 +36,16 @@ enum ButtonPressedLevel : uint8_t {
 } ;
 
 
-typedef void (*ButtonCallback)(struct pinLongPress_Struct* self);
+typedef void (*ButtonCallback)(struct ButtonLongPress_Struct* self);
 // esempio di callback
-// void myButtonHandler_sample(pinLongPress_Struct* btn) {
+// void myButtonHandler_sample(ButtonLongPress_Struct* btn) {
 //     Serial.printf("Hai premuto: %s\n", btn->_name);
 // }
 
 
 
 // Struttura per mantenere lo stato di ogni pulsante.
-typedef struct pinLongPress_Struct { // io_input_pin_struct_t
+typedef struct ButtonLongPress_Struct { // io_input_pin_struct_t
     int                     pin_;
     const char*             name_;                       // Nome del pulsante per identificazione.
     char                    pinID_[21];                  // contiene [pin:%02d.%-15s] p->pin, p->name,
@@ -79,7 +79,7 @@ typedef struct pinLongPress_Struct { // io_input_pin_struct_t
     void _checkNewLevel();
     // void notifyCurrentButtonLevel(ButtonState_t *btn, uint8_t buzzer_pin=99);
 
-} pinLongPress_Struct;
+} ButtonLongPress_Struct;
 
 
 
@@ -92,5 +92,5 @@ typedef struct pinLongPress_Struct { // io_input_pin_struct_t
 // ###########################################################################################
     #include "@pinController_Struct.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
 
-    void notifyCurrentButtonLevel(pinLongPress_Struct *p, pinController_Struct *activeBuzzer = nullptr);
-    void pinLongPressStatus(pinLongPress_Struct *p, bool prompt);
+    void notifyCurrentButtonLevel(ButtonLongPress_Struct *p, pinController_Struct *activeBuzzer = nullptr);
+    void pinLongPressStatus(ButtonLongPress_Struct *p, bool prompt);

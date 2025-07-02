@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 25-06-2025 16.56.54
+// Date .........: 02-07-2025 12.16.08
 //
 
 #include <Arduino.h>    // in testa anche per le definizioni dei type
@@ -8,7 +8,7 @@
 #define LOG_LEVEL_0x
 #define LOG_LEVEL_99
 #include "@logMacros.h" // printf:XFN()
-#include "@SerialRead.h"
+#include "@serialRead.h"
 #include "@pinController_Struct.h"
 
 

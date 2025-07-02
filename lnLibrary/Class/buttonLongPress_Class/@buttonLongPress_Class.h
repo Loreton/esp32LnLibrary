@@ -1,26 +1,27 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 30-06-2025 15.31.58
+// Date .........: 01-07-2025 17.45.43
 */
 #pragma once
 #include <Arduino.h>
 
-// Define pins globally if they are truly global constants,
-// or consider making them static const members if they relate
-// specifically to a single class instance or are part of a related system.
-// For now, keeping them as defines is acceptable if they are used broadly.
-#define passiveBuzzer_pin            22  // OUTPUT
-#define activeBuzzer_pin             23  // OUTPUT
-#define pressControlLED_pin          25  // OUTPUT
-#define pumpLED_pin                  26  // OUTPUT
+#ifdef __ln_MODULE_DEBUG_TEST__
+    // Define pins globally if they are truly global constants,
+    // or consider making them static const members if they relate
+    // specifically to a single class instance or are part of a related system.
+    // For now, keeping them as defines is acceptable if they are used broadly.
+    #define passiveBuzzer_pin            22  // OUTPUT
+    #define activeBuzzer_pin             23  // OUTPUT
+    #define pressControlLED_pin          25  // OUTPUT
+    #define pumpLED_pin                  26  // OUTPUT
 
-#define pressControlRelay_pin        16  // OUTPUT
-#define pumpHornAlarm_pin            17  // OUTPUT
+    #define pressControlRelay_pin        16  // OUTPUT
+    #define pumpHornAlarm_pin            17  // OUTPUT
 
-#define pressControlState_pin        18  // INPUT
-#define pumpState_pin                19  // INPUT
-#define startButton_pin              21  // INPUT
-
+    #define pressControlState_pin        18  // INPUT
+    #define pumpState_pin                19  // INPUT
+    #define startButton_pin              21  // INPUT
+#endif
 
 // Defines the possible button press levels.
 enum ButtonPressedLevel : uint8_t {
@@ -73,7 +74,7 @@ class ButtonLongPress_Class {
         // ButtonLongPress_Class(const char* name, int8_t pin, int8_t pressedLogicLevel, const uint32_t thresholds[], size_t thresholdsCount);
 
         // Public methods to interact with the button object.
-        void init(const char* name, int8_t pin, int8_t pressedLogicLevel, const uint32_t thresholds[], size_t thresholdsCount);
+        void init(const char* name, int8_t pin, int8_t pressedLogicLevel, const uint32_t thresholds[], uint8_t thresholdsCount);
         bool read();
         void process(); // If this function handles ongoing button states, it might be called externally.
                         // Based on your original code, process() was part of the struct, but its implementation was not provided.
@@ -86,8 +87,8 @@ class ButtonLongPress_Class {
 
         // Getters for relevant private members if external access is needed.
         // These provide controlled read-only access to private data.
-        const char* getName() const { return m_name; }
-        const char* getPinID() const { return m_pinID; }
+        const char* name() const { return m_name; }
+        const char* pinID() const { return m_pinID; }
         int         getPin() const { return m_pin; }
         int         getPressedLogicLevel() const { return m_pressedLogicLevel; }
         bool        isButtonPressed() const { return m_buttonPressed; }
@@ -98,6 +99,7 @@ class ButtonLongPress_Class {
 
         // Consider adding a reset method if needed to clear states after an action.
         void        resetState();
+
 
 
     private: // Private members (encapsulated, accessible only within the class)
@@ -118,12 +120,11 @@ class ButtonLongPress_Class {
         bool            m_maxLevelReachedAndNotified = false;
 
         const uint32_t* m_pressThresholds            = nullptr;
-        size_t          m_numThresholds              = 0;
+        uint8_t          m_numThresholds              = 0;
 
 
         // Private helper methods
         void checkNewLevel();
-        void beep(LedController_Class* activeBuzzer, uint16_t duration);
 
         // Static member for beep timing, shared across all ButtonLongPress_Class instances
         // if beep logic is truly global. Otherwise, make it a non-static private member.

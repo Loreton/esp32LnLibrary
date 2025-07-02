@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 25-06-2025 17.01.45
+// Date .........: 02-07-2025 12.22.16
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -9,9 +9,12 @@
 #define LOG_LEVEL_0
 #define LOG_LEVEL_2
 #define LOG_LEVEL_99x
+#include "@logMacros.h" // printf:XFN()
 #include "@globalVars.h" // printf:XFN()
+#include "@serialRead.h" // waitForEnter()
+#include "@setPinID.h" // waitForEnter()
 
-#include "@pinLongPress_Struct.h"
+#include "@buttonLongPress_Struct.h"
 
 
 
@@ -29,15 +32,16 @@
  *                                  Le soglie DEVONO essere in ordine crescente. L'indice 0 corrisponde a SHORT_PRESS, ecc.
  * @param thresholdsCount:      Il numero di elementi nell'array `thresholds`.
 */
-// void pinLongPress_Struct::init(const char* name, int pin, int pressedLogicLevel, const unsigned long thresholds[], size_t thresholdsCount) {
-void pinLongPress_Struct::init(const char* name, int pin,
+// void ButtonLongPress_Struct::init(const char* name, int pin, int pressedLogicLevel, const unsigned long thresholds[], size_t thresholdsCount) {
+void ButtonLongPress_Struct::init(const char* name, int pin,
                                              int pressedLogicLevel,
                                              const unsigned long thresholds[],
                                              size_t thresholdsCount,
                                              ButtonCallback callback) {
     pin_ = pin;
     name_ = name;
-    snprintf(pinID_, 20, "[%02d.%-14s]:", pin_, name_);
+    // snprintf(pinID_, 20, "[%02d.%-14s]:", pin_, name_);
+    setPinID(pinID_, sizeof(pinID_)-1, name_,  pin_);
 
     pressedLogicLevel_ = pressedLogicLevel;
     pressThresholds_ = thresholds;
@@ -67,7 +71,7 @@ void pinLongPress_Struct::init(const char* name, int pin,
 // Se il pulsante è attualmente PREMUTO (debounced) e il timer è attivo,
 // aggiorna il livello di pressione.
 // ##############################################
-void pinLongPress_Struct::_checkNewLevel() {
+void ButtonLongPress_Struct::_checkNewLevel() {
     unsigned long currentPressTime = millis() - pressStartTime_;
     uint8_t newLevel = NO_PRESS;
 
@@ -98,7 +102,7 @@ void pinLongPress_Struct::_checkNewLevel() {
  *  E' responsabilità della funzione chiamante resettare `_pressDuration`, `_currentPressLevel`
  *      e `_maxLevelReachedAndNotified` dopo averli processati.
  */
-bool pinLongPress_Struct::read() {
+bool ButtonLongPress_Struct::read() {
     bool state = digitalRead(pin_);
 
     if (state != buttonPressed_) {
@@ -144,7 +148,7 @@ bool pinLongPress_Struct::read() {
 //###########################################################################
 //#
 //###########################################################################
-void pinLongPressStatus(pinLongPress_Struct *p, bool prompt) {
+void pinLongPressStatus(ButtonLongPress_Struct *p, bool prompt) {
     // printf0_FN("\t%-18s: %2d - (%d)\n" , "pin nr"         , p->pin                   , p->mode);
     printf0_FN("%s\n", p->pinID_);
     printf0_FN("\t%-18s: %2d\n",   "pressedLogicLevel",          p->pressedLogicLevel_); //,           str_pinLevel[p->pressedLogicLevel_]);
@@ -185,7 +189,7 @@ void pinLongPressStatus(pinLongPress_Struct *p, bool prompt) {
 //###########################################################################
 //#
 //###########################################################################
-void notifyCurrentButtonLevel(pinLongPress_Struct *p, pinController_Struct *buzzer) {
+void notifyCurrentButtonLevel(ButtonLongPress_Struct *p, pinController_Struct *buzzer) {
     uint16_t beep_duration=200;
     static uint32_t lastBeepTime;
     // static bool alarming=false;

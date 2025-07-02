@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 25-06-2025 17.01.24
+// Date .........: 02-07-2025 12.13.38
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -11,12 +11,14 @@
 
 
 #define __I_AM_MAIN_CPP__
+#include "@logMacros.h" // printf:XFN()
 #include "@globalVars.h" // printf:XFN()
+#include "@serialRead.h" // waitForEnter()
 
 // #include "@logMacros.h"
 // #include "@SerialRead.h"
 #include "@pinController_Struct.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
-#include "@pinLongPress_Struct.h"
+#include "@buttonLongPress_Struct.h"
 
 
 #include "@main_test.h"
@@ -24,8 +26,8 @@
     test di due pin come input con tempi diversi
 */
 
-pinLongPress_Struct startButton;
-pinLongPress_Struct pumpState;
+ButtonLongPress_Struct startButton;
+ButtonLongPress_Struct pumpState;
 pinController_Struct activeBuzzer;
 
 
@@ -59,7 +61,7 @@ char *nowTime() {
 }
 
 
-void myButtonHandler(pinLongPress_Struct* btn) {
+void myButtonHandler(ButtonLongPress_Struct* btn) {
     Serial.printf("pinLongPress Callback: %s\n", btn->pinID_);
 }
 

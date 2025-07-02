@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 30-06-2025 15.37.59
+// Date .........: 02-07-2025 11.47.46
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -99,7 +99,7 @@ void startButton_Action(ButtonLongPress_Class *p) { // Now accepts a pointer to 
 //###########################################################################
 void processButton(ButtonLongPress_Class *p) { // Now accepts a pointer to ButtonLongPress_Class class
     // Access members using getters
-    printf0_FN("[%s] Rilasciato! Durata: %ld ms\n", p->getName(), p->getPressDuration());
+    printf0_FN("[%s] Rilasciato! Durata: %ld ms\n", p->pinID(), p->getPressDuration());
 
     // Use getters for pin comparison
     if (p->getPin() == startButton_pin) {
@@ -117,3 +117,5 @@ void processButton(ButtonLongPress_Class *p) { // Now accepts a pointer to Butto
 }
 
 #endif
+
+

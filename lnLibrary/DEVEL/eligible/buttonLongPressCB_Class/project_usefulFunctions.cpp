@@ -1,28 +1,31 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 25-06-2025 17.02.20
+// Date .........: 01-07-2025 16.58.48
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
 #ifdef __ln_MODULE_DEBUG_TEST__
-#include <Arduino.h>    // in testa anche per le definizioni dei type
+#include <Arduino.h>
 
 #define LOG_LEVEL_0
 #define LOG_LEVEL_99
 #include "@globalVars.h" // printf:XFN()
 
-#include "@pinLongPress_Struct.h"
+#include "@pinLongPress_Class.h" // Use the new class header
+#include "@main_test.h" // Includes the function prototypes
 
-#include "@main_test.h"
-
-
-
-//###########################################################################
-//#
-//###########################################################################
+// This 'relayState' is a global variable. If it should be managed
+// by a specific class (e.g., a RelayControl class), that would be
+// another good refactoring step. For now, keeping it global as per original.
 bool relayState = false;
-void pumpState_Action(pinLongPress_Struct *p) {
-    switch (p->currentPressLevel_) {
+
+//###########################################################################
+//# Action for the pumpState button
+//###########################################################################
+void pumpState_Action(ButtonLongPressCB_Class *p) { // Now accepts a pointer to ButtonLongPressCB_Class class
+    // Access members using getters or directly if they are public for a specific reason,
+    // though getters are preferred for encapsulation.
+    switch (p->getCurrentPressLevel()) { // Use getter for currentPressLevel
         case PRESSED_LEVEL_1:
             printf99_FN("PRESSED_LEVEL_1\n");
             break;
@@ -54,11 +57,12 @@ void pumpState_Action(pinLongPress_Struct *p) {
 }
 
 //###########################################################################
-//#
+//# Action for the startButton
 //###########################################################################
-void startButton_Action(pinLongPress_Struct *p) {
-    // printf99_FN("sono qui p->currentPressLevel_ %d\n", p->currentPressLevel_);
-    switch (p->currentPressLevel_) {
+void startButton_Action(ButtonLongPressCB_Class *p) { // Now accepts a pointer to ButtonLongPressCB_Class class
+    // Access members using getters or directly if they are public for a specific reason,
+    // though getters are preferred for encapsulation.
+    switch (p->getCurrentPressLevel()) { // Use getter for currentPressLevel after released
         case PRESSED_LEVEL_1:
             printf99_FN("PRESSED_LEVEL_1\n");
             break;
@@ -90,34 +94,26 @@ void startButton_Action(pinLongPress_Struct *p) {
 }
 
 
-
-
 //###########################################################################
-//#
+//# Processes a button release event
 //###########################################################################
-void processButton(pinLongPress_Struct *p) {
-    printf0_FN("[%s[  Rilasciato! Durata: %ld ms\n", p->name_, p->pressDuration_);
-    // Serial.print("Livello finale raggiunto: ");
+void processButton(ButtonLongPressCB_Class *p) { // Now accepts a pointer to ButtonLongPressCB_Class class
+    // Access members using getters
+    printf0_FN("[%s] Rilasciato! Durata: %ld ms\n", p->getName(), p->getPressDuration());
 
-    if (p->pin_ == startButton_pin) {
+    // Use getters for pin comparison
+    if (p->getPin() == startButton_pin) {
         Serial.print("start button action\n");
         startButton_Action(p);
     }
-    else if (p->pin_ == pumpState_pin) {
+    else if (p->getPin() == pumpState_pin) {
         pumpState_Action(p);
     }
 
-
-    // *** RESET DEI PARAMETRI DI LIVELLO NELLA FUNZIONE CHIAMANTE ***
-    // Dopo aver processato i dati, li resettiamo per la prossima pressione.
-    p->currentPressLevel_ = NO_PRESS;
-    p->lastPressedLevel_ = NO_PRESS;
-    p->pressDuration_ = 0;
-    p->maxLevelReachedAndNotified_ = false;
-    // .pressStartTime non ha bisogno di essere resettato qui, è già fatto in readButton quando rilascia.
+    // *** RESET BUTTON STATE ***
+    // After processing the data, we reset them for the next press.
+    // The resetState() method now encapsulates these actions.
+    p->resetState();
 }
-
-
-
 
 #endif

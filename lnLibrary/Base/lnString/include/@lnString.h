@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 28-06-2025 18.52.11
+// Date .........: 02-07-2025 12.19.06
 vedere test_file: /home/loreto/lnProfile/appls/Arduino-ESP32/Esp32TEST/LnFunctions/src/splitString_ok.cpp
 */
 
@@ -15,5 +15,5 @@ vedere test_file: /home/loreto/lnProfile/appls/Arduino-ESP32/Esp32TEST/LnFunctio
     bool    ln_isString(const char *);  // esistono altri isString
     int32_t stringToSeconds(char *input_str, const char *delim);
 
-    void setPinID(char buffer[], int MAXLENGTH, const char *name, int pin);
-    const char*  setFnameLine(char buffer[], int MAXLENGTH, const char *path, int lineNo);
+    // void setPinID(char buffer[], int MAXLENGTH, const char *name, int pin);
+    // const char*  setFnameLine(char buffer[], int MAXLENGTH, const char *path, int lineNo);

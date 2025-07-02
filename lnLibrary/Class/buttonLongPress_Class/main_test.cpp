@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 30-06-2025 15.37.41
+// Date .........: 01-07-2025 17.54.56
 //
 
 #ifdef __ln_MODULE_DEBUG_TEST__
@@ -38,8 +38,8 @@ const uint32_t PUMP_STATE_THRESHOLDS[] = {
     25000,
 };
 
-const size_t NUM_START_BUTTON_THRESHOLDS = sizeof(START_BUTTON_THRESHOLDS) / sizeof(START_BUTTON_THRESHOLDS[0]);
-const size_t NUM_PUMP_STATE_THRESHOLDS = sizeof(PUMP_STATE_THRESHOLDS) / sizeof(PUMP_STATE_THRESHOLDS[0]);
+const uint8_t NUM_START_BUTTON_THRESHOLDS = sizeof(START_BUTTON_THRESHOLDS) / sizeof(START_BUTTON_THRESHOLDS[0]);
+const uint8_t NUM_PUMP_STATE_THRESHOLDS = sizeof(PUMP_STATE_THRESHOLDS) / sizeof(PUMP_STATE_THRESHOLDS[0]);
 
 
 // #########################################
@@ -105,7 +105,7 @@ void loop() {
 
     // --------------------------------------------------
     // --- update current objects status
-    activeBuzzer.update(); // Call update on the activeBuzzer object
+    activeBuzzer.updateStatus(); // Call update on the activeBuzzer object
     startButton.notifyCurrentLevel(&activeBuzzer);
     pumpState.notifyCurrentLevel(&activeBuzzer);
     // --------------

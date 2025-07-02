@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 30-06-2025 15.32.16
+// Date .........: 01-07-2025 20.33.19
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 #include <Arduino.h>
@@ -73,7 +73,7 @@ ButtonLongPress_Class::ButtonLongPress_Class(const char* name, int8_t pin, int8_
 }
 
 */
-void ButtonLongPress_Class::init(const char* name, int8_t pin, int8_t pressedLogicLevel, const uint32_t thresholds[], size_t thresholdsCount) {
+void ButtonLongPress_Class::init(const char* name, int8_t pin, int8_t pressedLogicLevel, const uint32_t thresholds[], uint8_t thresholdsCount) {
     m_pin = pin;
     m_name = name;
     setPinID(m_pinID, sizeof(m_pinID)-1, m_name,  m_pin);
@@ -213,12 +213,6 @@ void ButtonLongPress_Class::printStatus(bool prompt) {
 #define ALARM_BEEP_INTERVAL 2000
 
 
-void ButtonLongPress_Class::beep(LedController_Class *buzzer, uint16_t duration) {
-    if (buzzer) buzzer->pulse(duration);
-}
-
-
-
 /**
  * @brief Notifies continuously about the current press level while the button is pressed.
  * This function is now a member of the ButtonLongPress_Class class.
@@ -226,7 +220,10 @@ void ButtonLongPress_Class::beep(LedController_Class *buzzer, uint16_t duration)
  * @param buzzer: Pointer to an active buzzer object to provide audible feedback.
  */
 void ButtonLongPress_Class::notifyCurrentLevel(LedController_Class *buzzer) {
-    uint16_t beep_duration = 200;
+    uint16_t beep_duration = 300;
+    uint16_t phase_beep_duration;
+    uint32_t next_interval;
+    uint32_t elapsed;
 
     // Check if the button is currently pressed according to its logic level
     if (m_buttonPressed == m_pressedLogicLevel) {
@@ -234,42 +231,50 @@ void ButtonLongPress_Class::notifyCurrentLevel(LedController_Class *buzzer) {
         if (m_currentPressLevel != NO_PRESS) {
             // If the current level is different from the last notified level, print and beep
             if (m_currentPressLevel != m_lastPressedLevel) {
-                printf0_FN("[%s] PRESSED_LEVEL_%d (ms:%6ld)\n", m_pinID, m_currentPressLevel, (millis() - m_pressStartTime));
+                elapsed = millis() - m_pressStartTime;
+                next_interval = m_pressThresholds[m_currentPressLevel+1] - m_pressThresholds[m_currentPressLevel];
+                if (m_currentPressLevel < m_numThresholds) {
+                    next_interval = m_pressThresholds[m_currentPressLevel] - m_pressThresholds[m_currentPressLevel-1];
+                }
+                printf0_FN("[%s] elapsed ms:%6ld - PRESSED_LEVEL_%d/%d\n", m_pinID, elapsed, m_currentPressLevel, m_numThresholds);
+                phase_beep_duration = next_interval / 5;
+                printf0_FN("[%s] next_interval: %lu - beep_duration: %lu\n", m_pinID, next_interval, phase_beep_duration);
+
+                // per evitare che il beep sia più lungo del tempo del livello
+                // phase_beep_duration = beep_duration*m_currentPressLevel;
+                    // if (phase_beep_duration > next_interval) {
+                    // phase_beep_duration = beep_duration*m_currentPressLevel-1;
+                    // }
+                    // printf0_FN("[%s] next interval in: %ld ms \n", m_pinID, m_currentPressLevel, next_interval);
+                // }
+                // printf0_FN("[%s] ms:%6ld - PRESSED_LEVEL_%d  next level in: %ld ms\n", (millis() - m_pressStartTime), m_pinID, m_currentPressLevel, next_interval);
                 switch (m_currentPressLevel) {
                     case PRESSED_LEVEL_1:
-                        beep(buzzer, beep_duration);
+                        if (buzzer) buzzer->pulse(phase_beep_duration);
                         break;
                     case PRESSED_LEVEL_2:
-                        printf99_FN("notify PRESSED_LEVEL: %d\n", m_currentPressLevel);
-                        beep(buzzer, beep_duration);
+                        if (buzzer) buzzer->pulse(phase_beep_duration);
                         break;
                     case PRESSED_LEVEL_3:
-                        printf99_FN("notify PRESSED_LEVEL: %d\n", m_currentPressLevel);
-                        beep(buzzer, beep_duration);
+                        if (buzzer) buzzer->pulse(phase_beep_duration);
                         break;
                     case PRESSED_LEVEL_4:
-                        printf99_FN("notify PRESSED_LEVEL: %d\n", m_currentPressLevel);
-                        beep(buzzer, beep_duration);
+                        if (buzzer) buzzer->pulse(phase_beep_duration);
                         break;
                     case PRESSED_LEVEL_5:
-                        printf99_FN("notify PRESSED_LEVEL: %d\n", m_currentPressLevel);
-                        beep(buzzer, beep_duration);
+                        if (buzzer) buzzer->pulse(phase_beep_duration);
                         break;
                     case PRESSED_LEVEL_6:
-                        printf99_FN("notify PRESSED_LEVEL: %d\n", m_currentPressLevel);
-                        beep(buzzer, beep_duration);
+                        if (buzzer) buzzer->pulse(phase_beep_duration);
                         break;
                     case PRESSED_LEVEL_7:
-                        printf99_FN("notify PRESSED_LEVEL: %d\n", m_currentPressLevel);
-                        beep(buzzer, beep_duration);
+                        if (buzzer) buzzer->pulse(phase_beep_duration);
                         break;
                     case PRESSED_LEVEL_8:
-                        printf99_FN("notify PRESSED_LEVEL: %d\n", m_currentPressLevel);
-                        beep(buzzer, beep_duration);
+                        if (buzzer) buzzer->pulse(phase_beep_duration);
                         break;
                     case PRESSED_LEVEL_9:
-                        printf99_FN("notify PRESSED_LEVEL: %d\n", m_currentPressLevel);
-                        beep(buzzer, beep_duration);
+                        if (buzzer) buzzer->pulse(phase_beep_duration);
                         break;
                     default:
                         printf0_FN("sono nel default: %d\n", m_currentPressLevel);

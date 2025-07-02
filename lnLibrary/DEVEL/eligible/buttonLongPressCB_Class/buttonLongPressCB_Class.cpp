@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 27-06-2025 15.47.30
+// Date .........: 01-07-2025 16.57.31
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 #include <Arduino.h>
@@ -10,15 +10,15 @@
 #define LOG_LEVEL_99x
 #include "@globalVars.h" // printf:XFN()
 
-#include "@pinLongPressCB_Class.h"
+#include "@buttonLongPressCB_Class.h"
 #include "@pinController_Class.h" // Include for PinController_Class usage
 
 // Initialize the static member variable outside the class definition
-uint32_t PinLongPress_Class::m_lastBeepTime = 0;
+uint32_t ButtonLongPressCB_Class::m_lastBeepTime = 0;
 
 /** non ha molto senso....
 // 1. Implementation of the Default Constructor
-PinLongPress_Class::PinLongPress_Class() {
+ButtonLongPressCB_Class::ButtonLongPressCB_Class() {
     m_pin = -1; // -1 indicates an uninitialized/invalid pin
     m_name = "????"; // A literal string for safety
     snprintf(m_pinID, sizeof(m_pinID), "[%02d.%-14s]:", m_pin, m_name);
@@ -27,7 +27,7 @@ PinLongPress_Class::PinLongPress_Class() {
 */
 
 /**
- * @brief Constructor for the PinLongPress_Class class.
+ * @brief Constructor for the ButtonLongPressCB_Class class.
  * Initializes a button by configuring the pin and its initial state.
  *
  * @param name:               A string that identifies the button (e.g., "Button1").
@@ -40,11 +40,11 @@ PinLongPress_Class::PinLongPress_Class() {
  * @param thresholdsCount:    The number of elements in the `thresholds` array.
  * @param callback:           Optional callback function to be executed on button press.
  */
-// PinLongPress_Class::PinLongPress_Class(const char* name, int pin, int pressedLogicLevel,
+// ButtonLongPressCB_Class::ButtonLongPressCB_Class(const char* name, int pin, int pressedLogicLevel,
 //                            const uint32_t thresholds[], size_t thresholdsCount,
 //                            ButtonCallback callback) {
 
-PinLongPress_Class::PinLongPress_Class(const char* name, int8_t pin, int8_t pressedLogicLevel,
+ButtonLongPressCB_Class::ButtonLongPressCB_Class(const char* name, int8_t pin, int8_t pressedLogicLevel,
                            const uint32_t thresholds[], size_t thresholdsCount, ButtonCallback callback) {
     m_pin = pin;
     m_name = name;
@@ -79,7 +79,7 @@ PinLongPress_Class::PinLongPress_Class(const char* name, int8_t pin, int8_t pres
  * @brief Helper function to check for new press levels based on current press duration.
  * This is now a private member function.
  */
-void PinLongPress_Class::checkNewLevel() {
+void ButtonLongPressCB_Class::checkNewLevel() {
     uint32_t currentPressTime = millis() - m_pressStartTime;
     uint8_t newLevel = NO_PRESS;
 
@@ -98,7 +98,7 @@ void PinLongPress_Class::checkNewLevel() {
  * @brief Helper function to check for new press levels based on current press duration.
  * This is now a private member function.
  */
-void PinLongPress_Class::setBuzzerCallback(BuzzerCallback callback) {
+void ButtonLongPressCB_Class::setBuzzerCallback(BuzzerCallback callback) {
     m_buzzer = callback;
 }
 
@@ -112,7 +112,7 @@ void PinLongPress_Class::setBuzzerCallback(BuzzerCallback callback) {
  * It's the responsibility of the calling function to reset pressDuration_, currentPressLevel_
  * and maxLevelReachedAndNotified_ after processing them.
  */
-bool PinLongPress_Class::read() {
+bool ButtonLongPressCB_Class::read() {
     bool state = digitalRead(m_pin);
 
     // State change detection (simple edge detection)
@@ -162,7 +162,7 @@ bool PinLongPress_Class::read() {
  * This is helpful after an action has been taken based on a press,
  * preparing the button for the next press cycle.
  */
-void PinLongPress_Class::resetState() {
+void ButtonLongPressCB_Class::resetState() {
     m_pressDuration = 0;
     m_currentPressLevel = NO_PRESS;
     m_lastPressedLevel = NO_PRESS;
@@ -175,7 +175,7 @@ void PinLongPress_Class::resetState() {
 // ###########################################################################
 // #
 // ###########################################################################
-void PinLongPress_Class::printStatus(bool prompt) {
+void ButtonLongPressCB_Class::printStatus(bool prompt) {
     printf0_FN("%s\n", m_pinID);
     printf0_FN("\t%-18s: %2d - %s\n",   "pressedLogicLevel",           m_pressedLogicLevel,           str_pinLevel[m_pressedLogicLevel]);
     printf0_FN("\t%-18s: %2d - %s\n",   "buttonPressed",               m_buttonPressed,               str_TrueFalse[m_buttonPressed]);
@@ -201,7 +201,7 @@ void PinLongPress_Class::printStatus(bool prompt) {
 #define ALARM_BEEP_INTERVAL 2000
 
 
-void PinLongPress_Class::beep(PinController_Class *buzzer, uint16_t duration) {
+void ButtonLongPressCB_Class::beep(PinController_Class *buzzer, uint16_t duration) {
     if (buzzer) buzzer->pulse(duration);
 }
 
@@ -209,11 +209,11 @@ void PinLongPress_Class::beep(PinController_Class *buzzer, uint16_t duration) {
 
 /**
  * @brief Notifies continuously about the current press level while the button is pressed.
- * This function is now a member of the PinLongPress_Class class.
+ * This function is now a member of the ButtonLongPressCB_Class class.
  *
  * @param buzzer: Pointer to an active buzzer object to provide audible feedback.
  */
-void PinLongPress_Class::notifyCurrentLevel(PinController_Class *buzzer) {
+void ButtonLongPressCB_Class::notifyCurrentLevel(PinController_Class *buzzer) {
     uint16_t beep_duration = 200;
 
     // Check if the button is currently pressed according to its logic level

@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 30-06-2025 15.34.01
+// Date .........: 01-07-2025 20.33.34
 //
 #include <Arduino.h>
 
@@ -49,7 +49,8 @@ void LedController_Class::init(const char *name, uint8_t pin, uint8_t pressedLog
     */
 }
 
-void LedController_Class::update() {
+// void LedController_Class::update() {
+void LedController_Class::updateStatus() {
     uint32_t now = millis();
 
     if (m_fixed) {
