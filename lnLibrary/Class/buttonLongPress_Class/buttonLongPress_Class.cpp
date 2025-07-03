@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 01-07-2025 20.33.19
+// Date .........: 02-07-2025 20.16.15
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 #include <Arduino.h>
@@ -295,3 +295,6 @@ void ButtonLongPress_Class::notifyCurrentLevel(LedController_Class *buzzer) {
         m_lastPressedLevel = NO_PRESS; // Reset for the next press cycle
     }
 }
+
+
+

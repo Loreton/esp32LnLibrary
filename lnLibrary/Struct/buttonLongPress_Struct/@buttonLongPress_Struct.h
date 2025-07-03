@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 02-07-2025 11.57.53
+// Date .........: 03-07-2025 07.26.57
 */
 
 #pragma once
@@ -36,7 +36,10 @@ enum ButtonPressedLevel : uint8_t {
 } ;
 
 
+struct ButtonLongPress_Struct;
 typedef void (*ButtonCallback)(struct ButtonLongPress_Struct* self);
+typedef void (*notifyLevelCallback)(struct ButtonLongPress_Struct* self);
+// typedef void (*notificationCallBack)(struct ButtonLongPress_Struct* self);
 // esempio di callback
 // void myButtonHandler_sample(ButtonLongPress_Struct* btn) {
 //     Serial.printf("Hai premuto: %s\n", btn->_name);
@@ -46,37 +49,47 @@ typedef void (*ButtonCallback)(struct ButtonLongPress_Struct* self);
 
 // Struttura per mantenere lo stato di ogni pulsante.
 typedef struct ButtonLongPress_Struct { // io_input_pin_struct_t
-    int                     pin_;
-    const char*             name_;                       // Nome del pulsante per identificazione.
-    char                    pinID_[21];                  // contiene [pin:%02d.%-15s] p->pin, p->name,
-    int                     pressedLogicLevel_;          // Livello logico che indica il pulsante premuto (LOW o HIGH).
+    uint8_t      m_pin = 0;
+    const char*  m_name;                       // Nome del pulsante per identificazione.
+    char         m_pinID[21];                  // contiene [pin:%02d.%-15s] p->pin, p->name,
+    bool         m_pressedLogicLevel = false;          // Livello logico che indica il pulsante premuto (LOW o HIGH).
 
-    bool                    lastButtonState_;            // Ultima lettura RAW del pin.
-    unsigned long           lastDebounceTime_;           // Ultimo momento in cui il pin ha cambiato stato RAW.
+    bool         m_lastButtonState=false;            // Ultima lettura RAW del pin.
+    uint32_t     m_lastDebounceTime=0;           // Ultimo momento in cui il pin ha cambiato stato RAW.
 
-    bool                    buttonPressed_;              // Stato debounced: true se premuto, false se rilasciato.
-    unsigned long           pressStartTime_;             // Timestamp quando il pulsante è stato premuto.
-    unsigned long           pressDuration_;              // Durata dell'ultima pressione (in ms).
+    bool         m_buttonPressed=false;              // Stato debounced: true se premuto, false se rilasciato.
+    uint32_t     m_pressStartTime=0;             // Timestamp quando il pulsante è stato premuto.
+    uint32_t     m_pressDuration=0;              // Durata dell'ultima pressione (in ms).
 
-    uint8_t                 currentPressLevel_;          // Livello di pressione attualmente raggiunto (aggiornato durante la pressione).
-    // uint8_t                 lastPrintedLevel_;          // Livello di pressione attualmente raggiunto (aggiornato durante la pressione).
-    uint8_t                 lastPressedLevel_;          // Livello di pressione precedentemente salvato.
-    bool                    maxLevelReachedAndNotified_; // Flag per indicare se il massimo livello è stato già notificato.
+    uint8_t      m_currentPressLevel=NO_PRESS;          // Livello di pressione attualmente raggiunto (aggiornato durante la pressione).
+    uint8_t      m_lastPressedLevel=NO_PRESS;          // Livello di pressione precedentemente salvato.
+    bool         m_maxLevelReachedAndNotified=false; // Flag per indicare se il massimo livello è stato già notificato.
 
     // Array e dimensione delle soglie specifiche per questo pulsante.
-    const unsigned long*    pressThresholds_;
-    size_t                  numThresholds_;
+    const uint32_t*    m_pressThresholds;
+    size_t             m_numThresholds=0;
 
     //  Callback per la gestione della pressione
-    ButtonCallback          onPressCallback_;
+    ButtonCallback         m_onPressCallback=nullptr;
+    notifyLevelCallback    m_onNotifyCallback=nullptr;
 
 
     // functions prototypes
     bool read(void);
-    // void init(const char* name, int pin, int pressedLogicLevel, const unsigned long thresholds[], size_t thresholdsCount);
-    void init(const char* name, int pin, int pressedLogicLevel, const unsigned long thresholds[], size_t thresholdsCount, ButtonCallback callback = nullptr);
+    // void init(const char* name, int pin, int pressedLogicLevel, const uint32_t thresholds[], size_t thresholdsCount);
+    void init(const char* name, uint8_t pin, bool pressedLogicLevel,
+                    const uint32_t thresholds[], size_t thresholdsCount );
+                    // ButtonCallback button_callback = nullptr,
+                    // notifyLevelCallback ntfy_callback = nullptr
     void process();
     void _checkNewLevel();
+    // void setNotifyCallBack(notifyLevelCallback callback);
+    // void setOnPressedCallBack(ButtonCallback callback);
+    void setNotifyCallBack(notifyLevelCallback callback) {m_onNotifyCallback = callback;};
+    void setOnPressedCallBack(ButtonCallback callback) {m_onPressCallback=callback;};
+
+
+
     // void notifyCurrentButtonLevel(ButtonState_t *btn, uint8_t buzzer_pin=99);
 
 } ButtonLongPress_Struct;

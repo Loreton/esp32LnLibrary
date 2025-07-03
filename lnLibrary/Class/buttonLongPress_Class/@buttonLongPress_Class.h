@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 01-07-2025 17.45.43
+// Date .........: 02-07-2025 18.15.23
 */
 #pragma once
 #include <Arduino.h>
@@ -96,6 +96,16 @@ class ButtonLongPress_Class {
         uint8_t     getCurrentPressLevel() const { return m_currentPressLevel; }
         uint8_t     getLastPressedLevel() const { return m_lastPressedLevel; }
         bool        hasMaxLevelReachedAndNotified() const { return m_maxLevelReachedAndNotified; }
+        // new GET
+        // int         pin() const { return m_pin; }
+        // int         pressedLogicLevel() const { return m_pressedLogicLevel; }
+        // bool        buttonPressed() const { return m_buttonPressed; }
+        // uint32_t    pressDuration() const { return m_pressDuration; }
+        // uint8_t     currentPressLevel() const { return m_currentPressLevel; }
+        // uint8_t     lastPressedLevel() const { return m_lastPressedLevel; }
+        // // new PUT
+        // void     setCurrentPressLevel() { bool level };
+
 
         // Consider adding a reset method if needed to clear states after an action.
         void        resetState();

@@ -1,0 +1,4 @@
+# Imposta il livello di log predefinito a Verbose.
+CONFIG_LOG_DEFAULT_LEVEL=5
+# Questo è importante per assicurarsi che tutti i livelli di log siano compilati nel firmware.
+CONFIG_LOG_MAXIMUM_LEVEL=5

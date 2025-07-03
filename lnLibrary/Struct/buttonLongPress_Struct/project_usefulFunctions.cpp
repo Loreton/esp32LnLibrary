@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 02-07-2025 12.19.52
+// Date .........: 02-07-2025 13.42.52
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -23,7 +23,7 @@
 //###########################################################################
 bool relayState = false;
 void pumpState_Action(ButtonLongPress_Struct *p) {
-    switch (p->currentPressLevel_) {
+    switch (p->m_currentPressLevel) {
         case PRESSED_LEVEL_1:
             printf99_FN("PRESSED_LEVEL_1\n");
             break;
@@ -58,8 +58,8 @@ void pumpState_Action(ButtonLongPress_Struct *p) {
 //#
 //###########################################################################
 void startButton_Action(ButtonLongPress_Struct *p) {
-    // printf99_FN("sono qui p->currentPressLevel_ %d\n", p->currentPressLevel_);
-    switch (p->currentPressLevel_) {
+    // printf99_FN("sono qui p->m_currentPressLevel %d\n", p->m_currentPressLevel);
+    switch (p->m_currentPressLevel) {
         case PRESSED_LEVEL_1:
             printf99_FN("PRESSED_LEVEL_1\n");
             break;
@@ -97,24 +97,24 @@ void startButton_Action(ButtonLongPress_Struct *p) {
 //#
 //###########################################################################
 void processButton(ButtonLongPress_Struct *p) {
-    printf0_FN("[%s[  Rilasciato! Durata: %ld ms\n", p->name_, p->pressDuration_);
+    printf0_FN("[%s[  Rilasciato! Durata: %ld ms\n", p->m_name, p->m_pressDuration);
     // Serial.print("Livello finale raggiunto: ");
 
-    if (p->pin_ == startButton_pin) {
+    if (p->m_pin == startButton_pin) {
         Serial.print("start button action\n");
         startButton_Action(p);
     }
-    else if (p->pin_ == pumpState_pin) {
+    else if (p->m_pin == pumpState_pin) {
         pumpState_Action(p);
     }
 
 
     // *** RESET DEI PARAMETRI DI LIVELLO NELLA FUNZIONE CHIAMANTE ***
     // Dopo aver processato i dati, li resettiamo per la prossima pressione.
-    p->currentPressLevel_ = NO_PRESS;
-    p->lastPressedLevel_ = NO_PRESS;
-    p->pressDuration_ = 0;
-    p->maxLevelReachedAndNotified_ = false;
+    p->m_currentPressLevel = NO_PRESS;
+    p->m_lastPressedLevel = NO_PRESS;
+    p->m_pressDuration = 0;
+    p->m_maxLevelReachedAndNotified = false;
     // .pressStartTime non ha bisogno di essere resettato qui, è già fatto in readButton quando rilascia.
 }
 

@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 02-07-2025 12.13.38
+// Date .........: 03-07-2025 07.35.09
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -11,12 +11,11 @@
 
 
 #define __I_AM_MAIN_CPP__
+#define LOG_LEVEL_0
 #include "@logMacros.h" // printf:XFN()
 #include "@globalVars.h" // printf:XFN()
 #include "@serialRead.h" // waitForEnter()
 
-// #include "@logMacros.h"
-// #include "@SerialRead.h"
 #include "@pinController_Struct.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
 #include "@buttonLongPress_Struct.h"
 
@@ -25,6 +24,10 @@
 /*
     test di due pin come input con tempi diversi
 */
+
+
+size_t initialMemory;
+size_t finalMemory;
 
 ButtonLongPress_Struct startButton;
 ButtonLongPress_Struct pumpState;
@@ -60,9 +63,9 @@ char *nowTime() {
     return temp_buffer_time;
 }
 
-
+// --- esempio di funzione di CallBack
 void myButtonHandler(ButtonLongPress_Struct* btn) {
-    Serial.printf("pinLongPress Callback: %s\n", btn->pinID_);
+    printf0_FN("pinLongPress Callback: %s\n", btn->m_pinID);
 }
 
 
@@ -70,6 +73,8 @@ void setup() {
     Serial.begin(115200);
     while (!Serial) {};
     delay(2000);
+
+
     printf0_FN("Avvio test pulsante con debounce e gestione del reset dei livelli nella funzione chiamante.\n");
 
     digitalWrite(pressControlRelay_pin, HIGH); // Assumiamo un relè che si attiva con LOW
@@ -77,18 +82,31 @@ void setup() {
     pinMode(activeBuzzer_pin, OUTPUT);
     pinMode(passiveBuzzer_pin, OUTPUT);
 
+    initialMemory = ESP.getFreeHeap();
+        ButtonLongPress_Struct startButton1;
+        ButtonLongPress_Struct pumpState1;
+        pinController_Struct activeBuzzer1;
+    finalMemory = ESP.getFreeHeap();
+
     // initialize pins
     activeBuzzer.init("Buzzer", activeBuzzer_pin, HIGH);
-    startButton.init("startButton",  startButton_pin, LOW, START_BUTTON_THRESHOLDS, NUM_START_BUTTON_THRESHOLDS, myButtonHandler);
-    pumpState.init("pumpState",      pumpState_pin,   LOW, PUMP_STATE_THRESHOLDS, NUM_PUMP_STATE_THRESHOLDS, myButtonHandler);
+    startButton.init("startButton",  startButton_pin, LOW, START_BUTTON_THRESHOLDS, NUM_START_BUTTON_THRESHOLDS);
+    startButton.setOnPressedCallBack(myButtonHandler);
+    pumpState.init("pumpState",      pumpState_pin,   LOW, PUMP_STATE_THRESHOLDS, NUM_PUMP_STATE_THRESHOLDS);
+    // startButton.init("startButton",  startButton_pin, LOW, START_BUTTON_THRESHOLDS, NUM_START_BUTTON_THRESHOLDS, myButtonHandler);
+    // pumpState.init("pumpState",      pumpState_pin,   LOW, PUMP_STATE_THRESHOLDS, NUM_PUMP_STATE_THRESHOLDS, myButtonHandler);
     pinLongPressStatus(&startButton, false);
     pinLongPressStatus(&pumpState, false);
 
 
     printf0_FN("Pulsante su GPIO %d, Relè su GPIO %d\n", startButton_pin, pressControlRelay_pin);
     printf0_FN("Premi il pulsante e rilascia al livello MEDIUM_PRESS per attivare/disattivare il relè.\n");
-    waitForEnter();
 
+    printf0_FN("initial Memory:     %ld bytes\n", initialMemory); // Stima RAM allocata
+    printf0_FN("final   Memory:     %ld bytes\n", finalMemory); // Stima RAM allocata
+    printf0_FN("memoria occupata:   %ld bytes\n", finalMemory - initialMemory); // Stima RAM allocata
+
+    waitForEnter();
 }
 
 
