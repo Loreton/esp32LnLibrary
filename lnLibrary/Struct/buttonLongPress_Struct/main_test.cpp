@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 03-07-2025 07.35.09
+// Date .........: 03-07-2025 17.45.50
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -18,16 +18,11 @@
 
 #include "@pinController_Struct.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
 #include "@buttonLongPress_Struct.h"
+#include "callBackFunctions.h" // Function protopypes
 
+void processButton(ButtonLongPress_Struct *p);
+size_t initialMemory = ESP.getFreeHeap();
 
-#include "@main_test.h"
-/*
-    test di due pin come input con tempi diversi
-*/
-
-
-size_t initialMemory;
-size_t finalMemory;
 
 ButtonLongPress_Struct startButton;
 ButtonLongPress_Struct pumpState;
@@ -51,7 +46,9 @@ const unsigned long PUMP_STATE_THRESHOLDS[] = {
 
 const size_t NUM_START_BUTTON_THRESHOLDS = sizeof(START_BUTTON_THRESHOLDS) / sizeof(START_BUTTON_THRESHOLDS[0]);
 const size_t NUM_PUMP_STATE_THRESHOLDS = sizeof(PUMP_STATE_THRESHOLDS) / sizeof(PUMP_STATE_THRESHOLDS[0]);
+size_t buttonMemory = ESP.getFreeHeap();
 
+size_t finalMemory;
 
 // #########################################
 // # se non c'è ln_time.cpp mi serve una dummy_Now()
@@ -61,11 +58,6 @@ char  PROGMEM temp_buffer_time[DUMMY_TIME_BUFFER_LENGTH];
 char *nowTime() {
     snprintf(temp_buffer_time, DUMMY_TIME_BUFFER_LENGTH, "%s", "01:02:03");
     return temp_buffer_time;
-}
-
-// --- esempio di funzione di CallBack
-void myButtonHandler(ButtonLongPress_Struct* btn) {
-    printf0_FN("pinLongPress Callback: %s\n", btn->m_pinID);
 }
 
 
@@ -82,29 +74,24 @@ void setup() {
     pinMode(activeBuzzer_pin, OUTPUT);
     pinMode(passiveBuzzer_pin, OUTPUT);
 
-    initialMemory = ESP.getFreeHeap();
-        ButtonLongPress_Struct startButton1;
-        ButtonLongPress_Struct pumpState1;
-        pinController_Struct activeBuzzer1;
-    finalMemory = ESP.getFreeHeap();
 
     // initialize pins
     activeBuzzer.init("Buzzer", activeBuzzer_pin, HIGH);
+
     startButton.init("startButton",  startButton_pin, LOW, START_BUTTON_THRESHOLDS, NUM_START_BUTTON_THRESHOLDS);
-    startButton.setOnPressedCallBack(myButtonHandler);
+    startButton.showStatus();
+
     pumpState.init("pumpState",      pumpState_pin,   LOW, PUMP_STATE_THRESHOLDS, NUM_PUMP_STATE_THRESHOLDS);
-    // startButton.init("startButton",  startButton_pin, LOW, START_BUTTON_THRESHOLDS, NUM_START_BUTTON_THRESHOLDS, myButtonHandler);
-    // pumpState.init("pumpState",      pumpState_pin,   LOW, PUMP_STATE_THRESHOLDS, NUM_PUMP_STATE_THRESHOLDS, myButtonHandler);
-    pinLongPressStatus(&startButton, false);
-    pinLongPressStatus(&pumpState, false);
+    pumpState.showStatus();
 
 
-    printf0_FN("Pulsante su GPIO %d, Relè su GPIO %d\n", startButton_pin, pressControlRelay_pin);
-    printf0_FN("Premi il pulsante e rilascia al livello MEDIUM_PRESS per attivare/disattivare il relè.\n");
+    // finalMemory = ESP.getFreeHeap();
+    // printf0_FN("Pulsante su GPIO %d, Relè su GPIO %d\n", startButton_pin, pressControlRelay_pin);
+    // printf0_FN("Premi il pulsante e rilascia al livello MEDIUM_PRESS per attivare/disattivare il relè.\n");
 
-    printf0_FN("initial Memory:     %ld bytes\n", initialMemory); // Stima RAM allocata
-    printf0_FN("final   Memory:     %ld bytes\n", finalMemory); // Stima RAM allocata
-    printf0_FN("memoria occupata:   %ld bytes\n", finalMemory - initialMemory); // Stima RAM allocata
+    // printf0_FN("initial Memory:     %ld bytes\n", initialMemory); // Stima RAM allocata
+    // printf0_FN("button Memory:      %ld bytes\n", buttonMemory - initialMemory); // Stima RAM allocata
+    // printf0_FN("memoria occupata:   %ld bytes\n", finalMemory - initialMemory); // Stima RAM allocata
 
     waitForEnter();
 }
@@ -140,16 +127,21 @@ void loop() {
     }
 
 */
-    notifyCurrentButtonLevel(&pumpState, &activeBuzzer);
-    notifyCurrentButtonLevel(&startButton, &activeBuzzer);
-    if (startButton.read()) { // state is changed
-        processButton(&startButton);
-    }
-    if (pumpState.read()) { // state is changed
-        processButton(&pumpState);
-    }
-/*
     // Notifica continua del livello raggiunto mentre il pulsante è premuto (opzionale)
+    startButton.notifyCurrentButtonLevel(startButtonNotificationHandlerCB);
+    pumpState.notifyCurrentButtonLevel(pumpStateNotificationHandlerCB);
+
+    startButton.read(startButtonHandlerCB);
+    pumpState.read(pumpStateHandlerCB);
+
+
+    // if (startButton.read()) { // state is changed
+    //     processButton(&startButton);
+    // }
+    // if (pumpState.read()) { // state is changed
+    //     processButton(&pumpState);
+    // }
+/*
     // notifyCurrentButtonLevel(&startButton);
 
 */
