@@ -1,15 +1,15 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 03-07-2025 17.55.36
+// Date .........: 04-07-2025 17.00.52
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
 #ifdef __ln_MODULE_DEBUG_TEST__
 #include <Arduino.h>    // in testa anche per le definizioni dei type
 
-#define LOG_LEVEL_0
-#define LOG_LEVEL_99
-#include "@logMacros.h" // printf:XFN()
+// #define LOG_LEVEL_0
+// #define LOG_LEVEL_99
+#include "@lnLogger.h"
 
 #include "@buttonLongPress_Struct.h"
 
@@ -20,7 +20,7 @@
 //#
 //###########################################################################
 void processButton(ButtonLongPress_Struct *p) {
-    printf0_FN("[%s[  Rilasciato! Durata: %ld ms\n", p->m_name, p->m_pressDuration);
+    LOG_INFO("[%s[  Rilasciato! Durata: %ld ms", p->m_name, p->m_pressDuration);
     // Serial.print("Livello finale raggiunto: ");
 
     if (p->m_pin == startButton_pin) {

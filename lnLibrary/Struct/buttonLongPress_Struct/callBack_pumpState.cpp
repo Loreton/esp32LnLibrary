@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 04-07-2025 16.05.13
+// Date .........: 04-07-2025 17.01.19
 //
 #ifdef __ln_MODULE_DEBUG_TEST__
 
@@ -8,7 +8,7 @@
 
 // #define LOG_LEVEL_0
 // #define LOG_LEVEL_99
-#include "@logMacros2.h"
+#include "@lnLogger.h"
 
 
 

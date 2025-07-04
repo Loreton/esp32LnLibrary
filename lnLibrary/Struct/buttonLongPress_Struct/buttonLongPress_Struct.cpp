@@ -1,16 +1,12 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 04-07-2025 16.07.36
+// Date .........: 04-07-2025 17.01.33
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
 #include <Arduino.h>    // in testa anche per le definizioni dei type
 
-// #define LOG_LEVEL_0
-// #define LOG_LEVEL_2
-// #define LOG_LEVEL_99
-// #include "@logMacros.h" // printf:XFN()
-#include "@logMacros2.h" // printf:XFN()
+#include "@lnLogger.h"
 #include "@globalVars.h" // printf:XFN()
 #include "@serialRead.h" // waitForEnter()
 #include "@setPinID.h" // waitForEnter()

@@ -1,10 +1,40 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 04-07-2025 16.08.24
+// Date .........: 04-07-2025 16.59.56
 */
 #pragma once
 
 #include <Arduino.h>
+    /*
+    ####################################################
+       red='\033[0;31m';    redH='\033[1;31m'
+     green='\033[0;32m';  greenH='\033[1;32m'
+    yellow='\033[0;33m'; yellowH='\033[1;33m'
+      blue='\033[0;34m';   blueH='\033[1;34m'
+    purple='\033[0;35m'; purpleH='\033[1;35m'
+      cyan='\033[0;36m';   cyanH='\033[1;36m'
+      gray='\033[0;37m';   white='\033[1;37m'
+    colorReset='\033[0m' # No Color
+
+    --- test ---
+    Serial.println("\x1B[1;31mRosso\x1B[0m Normale");
+    Serial.print("\x1B[1;31mROSSO\x1B[0m ");
+    Serial.print("\x1B[1;32mVERDE\x1B[0m ");
+    Serial.print("\x1B[1;33mGIALLO\x1B[0m ");
+    Serial.println("FINE");
+    ####################################################
+    */
+
+    #define ANSI_RESET     "\x1B[0m"
+    #define ANSI_RED       "\x1B[1;31m"
+    #define ANSI_GREEN     "\x1B[1;32m"
+    #define ANSI_YELLOW    "\x1B[1;33m"
+    #define ANSI_BLUE      "\x1B[1;34m"
+    #define ANSI_PURPLE    "\x1B[1;35m"
+    #define ANSI_CYAN      "\x1B[1;36m"
+    #define ANSI_WHITE     "\x1B[1;37m"
+
+
 
 
     // Imposta il livello attivo (es: 4 = DEBUG, 0 = NESSUN LOG)
@@ -30,36 +60,6 @@
         snprintf(out, sizeof(out), "%.*s.%03d", (int)len, filename, __LINE__); \
         out; \
     })
-
-    /*
-    ####################################################
-       red='\033[0;31m';    redH='\033[1;31m'
-     green='\033[0;32m';  greenH='\033[1;32m'
-    yellow='\033[0;33m'; yellowH='\033[1;33m'
-      blue='\033[0;34m';   blueH='\033[1;34m'
-    purple='\033[0;35m'; purpleH='\033[1;35m'
-      cyan='\033[0;36m';   cyanH='\033[1;36m'
-      gray='\033[0;37m';   white='\033[1;37m'
-    colorReset='\033[0m' # No Color
-
-    --- test ---
-    Serial.println("\x1B[1;31mRosso\x1B[0m Normale");
-    Serial.print("\x1B[1;31mROSSO\x1B[0m ");
-    Serial.print("\x1B[1;32mVERDE\x1B[0m ");
-    Serial.print("\x1B[1;33mGIALLO\x1B[0m ");
-    Serial.println("FINE");
-
-    ####################################################
-    */
-
-    #define ANSI_RESET     "\x1B[0m"
-    #define ANSI_RED       "\x1B[1;31m"
-    #define ANSI_GREEN     "\x1B[1;32m"
-    #define ANSI_YELLOW    "\x1B[1;33m"
-    #define ANSI_BLUE      "\x1B[1;34m"
-    #define ANSI_PURPLE    "\x1B[1;35m"
-    #define ANSI_CYAN      "\x1B[1;36m"
-    #define ANSI_WHITE     "\x1B[1;37m"
 
 
 
