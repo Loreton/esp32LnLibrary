@@ -1,14 +1,14 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 03-07-2025 17.39.43
+// Date .........: 04-07-2025 16.05.13
 //
 #ifdef __ln_MODULE_DEBUG_TEST__
 
 #include <Arduino.h>    // in testa anche per le definizioni dei type
 
-#define LOG_LEVEL_0
-#define LOG_LEVEL_99
-#include "@logMacros.h" // printf:XFN()
+// #define LOG_LEVEL_0
+// #define LOG_LEVEL_99
+#include "@logMacros2.h"
 
 
 
@@ -27,70 +27,44 @@ pinController_Struct *buzzer1 = &activeBuzzer;
 
 #define ALARM_BEEP_INTERVAL 2000
 
+void beepNotification(ButtonLongPress_Struct *p, uint16_t beep_duration) {
+    LOG_TRACE("[%s] beeping", p->m_pinID);
+    buzzer1->pulse(beep_duration);
+}
+
+
+
 void pumpStateNotificationHandlerCB(ButtonLongPress_Struct* p) {
     uint16_t beep_duration=200;
     static uint32_t lastBeepTime;
+    uint32_t next_interval;
+    uint32_t elapsed;
+    uint16_t phase_beep_duration;
 
     if (p->m_currentPressLevel != p->m_lastPressedLevel) {
-        printf0_FN("[%s] Pressione in corso (ms:%06ld)\n", p->m_pinID, (millis() - p->m_pressStartTime));
+        elapsed = millis() - p->m_pressStartTime;
+        next_interval = p->m_gapThresholds[p->m_currentPressLevel];
+        LOG_INFO("[%s] Pressione in corso (ms:%06ld)", p->m_pinID, elapsed);
+
+        LOG_INFO("[%s] PRESSED_LEVEL_%d/%d - elapsed ms:%6lu", p->m_pinID, p->m_currentPressLevel, p->m_numThresholds, elapsed);
+
+        phase_beep_duration = next_interval / 5; // arbitrario.... facciamo un beep che è u1/5 del next_threshold time
+        LOG_INFO("[%s] next_interval: %lu - beep_duration: %lu", p->m_pinID, next_interval, phase_beep_duration);
         switch (p->m_currentPressLevel) {
             case PRESSED_LEVEL_1:
-                printf2_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
-                buzzer1->pulse(beep_duration);
-                // notifyBuzzer(buzzer);
-                break;
-
-
             case PRESSED_LEVEL_2:
-                printf99_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
-                buzzer1->pulse(beep_duration);
-                // notifyBuzzer(buzzer);
-                break;
-
             case PRESSED_LEVEL_3:
-                printf99_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
-                buzzer1->pulse(beep_duration);
-                // notifyBuzzer(buzzer);
-                break;
-
             case PRESSED_LEVEL_4:
-                printf99_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
-                buzzer1->pulse(beep_duration);
-                // notifyBuzzer(buzzer);
-                break;
-
             case PRESSED_LEVEL_5:
-                printf99_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
-                buzzer1->pulse(beep_duration);
-                // notifyBuzzer(buzzer);
-                break;
-
             case PRESSED_LEVEL_6:
-                printf99_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
-                buzzer1->pulse(beep_duration);
-                // notifyBuzzer(buzzer);
-                break;
-
             case PRESSED_LEVEL_7:
-                printf99_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
-                buzzer1->pulse(beep_duration);
-                // notifyBuzzer(buzzer);
-                break;
-
             case PRESSED_LEVEL_8:
-                printf99_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
-                buzzer1->pulse(beep_duration);
-                // notifyBuzzer(buzzer);
-                break;
-
             case PRESSED_LEVEL_9:
-                printf99_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
                 buzzer1->pulse(beep_duration);
-                // notifyBuzzer(buzzer);
                 break;
 
             default:
-                printf0_FN("sono nel default: %d\n", p->m_currentPressLevel);
+                LOG_INFO("sono nel default: %d", p->m_currentPressLevel);
                 break;
         }
         p->m_lastPressedLevel = p->m_currentPressLevel;
@@ -114,31 +88,31 @@ void pumpStateHandlerCB(ButtonLongPress_Struct *p) {
     static bool relayState = false;
     switch (p->m_currentPressLevel) {
         case PRESSED_LEVEL_1:
-            printf99_FN("PRESSED_LEVEL_1\n");
+            LOG_DEBUG("PRESSED_LEVEL_1");
             break;
 
         case PRESSED_LEVEL_2:
-            printf99_FN("PRESSED_LEVEL_2\n");
+            LOG_DEBUG("PRESSED_LEVEL_2");
             break;
 
         case PRESSED_LEVEL_3:
-            printf99_FN("PRESSED_LEVEL_3\n");
+            LOG_DEBUG("PRESSED_LEVEL_3");
             relayState = !relayState;
             if (relayState) {
                 digitalWrite(pressControlRelay_pin, LOW);
-                printf0_FN("  --> Relè ACCESO!\n");
+                LOG_INFO("  --> Relè ACCESO!");
             } else {
                 digitalWrite(pressControlRelay_pin, HIGH);
-                printf0_FN("  --> Relè SPENTO!\n");
+                LOG_INFO("  --> Relè SPENTO!");
             }
             break;
 
         case PRESSED_LEVEL_4:
-            printf99_FN("PRESSED_LEVEL_4\n");
+            LOG_DEBUG("PRESSED_LEVEL_4");
             break;
 
         default:
-            printf99_FN("Sconosciuto/Non Qualificato\n");
+            LOG_DEBUG("Sconosciuto/Non Qualificato");
             break;
     }
 

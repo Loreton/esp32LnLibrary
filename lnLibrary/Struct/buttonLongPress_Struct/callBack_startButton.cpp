@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 03-07-2025 17.52.50
+// Date .........: 04-07-2025 16.03.58
 //
 #ifdef __ln_MODULE_DEBUG_TEST__
 
@@ -8,7 +8,7 @@
 
 #define LOG_LEVEL_0
 #define LOG_LEVEL_99
-#include "@logMacros.h" // printf:XFN()
+#include "@logMacros2.h"
 
 
 
@@ -33,65 +33,65 @@ void startButtonNotificationHandlerCB(ButtonLongPress_Struct* p) {
     static uint32_t lastBeepTime;
 
     if (p->m_currentPressLevel != p->m_lastPressedLevel) {
-        printf0_FN("[%s] Pressione in corso (ms:%06ld)\n", p->m_pinID, (millis() - p->m_pressStartTime));
+        LOG_INFO("[%s] Pressione in corso (ms:%06ld)", p->m_pinID, (millis() - p->m_pressStartTime));
         switch (p->m_currentPressLevel) {
             case PRESSED_LEVEL_1:
-                printf2_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
+                LOG_DEBUG("notify PRESSED_LEVEL: %d", p->m_currentPressLevel);
                 buzzer->pulse(beep_duration);
                 // notifyBuzzer(buzzer);
                 break;
 
 
             case PRESSED_LEVEL_2:
-                printf99_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
+                LOG_DEBUG("notify PRESSED_LEVEL: %d", p->m_currentPressLevel);
                 buzzer->pulse(beep_duration);
                 // notifyBuzzer(buzzer);
                 break;
 
             case PRESSED_LEVEL_3:
-                printf99_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
+                LOG_DEBUG("notify PRESSED_LEVEL: %d", p->m_currentPressLevel);
                 buzzer->pulse(beep_duration);
                 // notifyBuzzer(buzzer);
                 break;
 
             case PRESSED_LEVEL_4:
-                printf99_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
+                LOG_DEBUG("notify PRESSED_LEVEL: %d", p->m_currentPressLevel);
                 buzzer->pulse(beep_duration);
                 // notifyBuzzer(buzzer);
                 break;
 
             case PRESSED_LEVEL_5:
-                printf99_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
+                LOG_DEBUG("notify PRESSED_LEVEL: %d", p->m_currentPressLevel);
                 buzzer->pulse(beep_duration);
                 // notifyBuzzer(buzzer);
                 break;
 
             case PRESSED_LEVEL_6:
-                printf99_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
+                LOG_DEBUG("notify PRESSED_LEVEL: %d", p->m_currentPressLevel);
                 buzzer->pulse(beep_duration);
                 // notifyBuzzer(buzzer);
                 break;
 
             case PRESSED_LEVEL_7:
-                printf99_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
+                LOG_DEBUG("notify PRESSED_LEVEL: %d", p->m_currentPressLevel);
                 buzzer->pulse(beep_duration);
                 // notifyBuzzer(buzzer);
                 break;
 
             case PRESSED_LEVEL_8:
-                printf99_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
+                LOG_DEBUG("notify PRESSED_LEVEL: %d", p->m_currentPressLevel);
                 buzzer->pulse(beep_duration);
                 // notifyBuzzer(buzzer);
                 break;
 
             case PRESSED_LEVEL_9:
-                printf99_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
+                LOG_DEBUG("notify PRESSED_LEVEL: %d", p->m_currentPressLevel);
                 buzzer->pulse(beep_duration);
                 // notifyBuzzer(buzzer);
                 break;
 
             default:
-                printf0_FN("sono nel default: %d\n", p->m_currentPressLevel);
+                LOG_INFO("sono nel default: %d", p->m_currentPressLevel);
                 break;
         }
         p->m_lastPressedLevel = p->m_currentPressLevel;
@@ -114,31 +114,31 @@ void startButtonHandlerCB(ButtonLongPress_Struct *p) {
     static bool relayState = false;
     switch (p->m_currentPressLevel) {
         case PRESSED_LEVEL_1:
-            printf99_FN("PRESSED_LEVEL_1\n");
+            LOG_DEBUG("PRESSED_LEVEL_1");
             break;
 
         case PRESSED_LEVEL_2:
-            printf99_FN("PRESSED_LEVEL_2\n");
+            LOG_DEBUG("PRESSED_LEVEL_2");
             relayState = !relayState;
             if (relayState) {
                 digitalWrite(pressControlRelay_pin, LOW);
-                printf0_FN("  --> Relè ACCESO!\n");
+                LOG_INFO("  --> Relè ACCESO!");
             } else {
                 digitalWrite(pressControlRelay_pin, HIGH);
-                printf0_FN("  --> Relè SPENTO!\n");
+                LOG_INFO("  --> Relè SPENTO!");
             }
             break;
 
         case PRESSED_LEVEL_3:
-            printf99_FN("PRESSED_LEVEL_3\n");
+            LOG_DEBUG("PRESSED_LEVEL_3");
             break;
 
         case PRESSED_LEVEL_4:
-            printf99_FN("PRESSED_LEVEL_4\n");
+            LOG_DEBUG("PRESSED_LEVEL_4");
             break;
 
         default:
-            printf99_FN("Sconosciuto/Non Qualificato\n");
+            LOG_DEBUG("Sconosciuto/Non Qualificato");
             break;
     }
 
@@ -153,4 +153,85 @@ void startButtonHandlerCB(ButtonLongPress_Struct *p) {
 }
 
 
+#if 0
+
+   uint16_t beep_duration = 300;
+    uint16_t phase_beep_duration;
+    uint32_t next_interval;
+    uint32_t elapsed;
+
+    // Check if the button is currently pressed according to its logic level
+    if (m_buttonPressed == m_pressedLogicLevel) {
+        // If a press level has been reached (not NO_PRESS)
+        if (m_currentPressLevel != NO_PRESS) {
+            // If the current level is different from the last notified level, print and beep
+            if (m_currentPressLevel != m_lastPressedLevel) {
+                elapsed = millis() - m_pressStartTime;
+                next_interval = m_pressThresholds[m_currentPressLevel+1] - m_pressThresholds[m_currentPressLevel];
+                if (m_currentPressLevel < m_numThresholds) {
+                    next_interval = m_pressThresholds[m_currentPressLevel] - m_pressThresholds[m_currentPressLevel-1];
+                }
+                LOG_INFO("[%s] elapsed ms:%6ld - PRESSED_LEVEL_%d/%d\n", m_pinID, elapsed, m_currentPressLevel, m_numThresholds);
+                phase_beep_duration = next_interval / 5;
+                LOG_INFO("[%s] next_interval: %lu - beep_duration: %lu\n", m_pinID, next_interval, phase_beep_duration);
+
+                // per evitare che il beep sia più lungo del tempo del livello
+                // phase_beep_duration = beep_duration*m_currentPressLevel;
+                    // if (phase_beep_duration > next_interval) {
+                    // phase_beep_duration = beep_duration*m_currentPressLevel-1;
+                    // }
+                    // LOG_INFO("[%s] next interval in: %ld ms \n", m_pinID, m_currentPressLevel, next_interval);
+                // }
+                // LOG_INFO("[%s] ms:%6ld - PRESSED_LEVEL_%d  next level in: %ld ms\n", (millis() - m_pressStartTime), m_pinID, m_currentPressLevel, next_interval);
+                switch (m_currentPressLevel) {
+                    case PRESSED_LEVEL_1:
+                        if (buzzer) buzzer->pulse(phase_beep_duration);
+                        break;
+                    case PRESSED_LEVEL_2:
+                        if (buzzer) buzzer->pulse(phase_beep_duration);
+                        break;
+                    case PRESSED_LEVEL_3:
+                        if (buzzer) buzzer->pulse(phase_beep_duration);
+                        break;
+                    case PRESSED_LEVEL_4:
+                        if (buzzer) buzzer->pulse(phase_beep_duration);
+                        break;
+                    case PRESSED_LEVEL_5:
+                        if (buzzer) buzzer->pulse(phase_beep_duration);
+                        break;
+                    case PRESSED_LEVEL_6:
+                        if (buzzer) buzzer->pulse(phase_beep_duration);
+                        break;
+                    case PRESSED_LEVEL_7:
+                        if (buzzer) buzzer->pulse(phase_beep_duration);
+                        break;
+                    case PRESSED_LEVEL_8:
+                        if (buzzer) buzzer->pulse(phase_beep_duration);
+                        break;
+                    case PRESSED_LEVEL_9:
+                        if (buzzer) buzzer->pulse(phase_beep_duration);
+                        break;
+                    default:
+                        LOG_INFO("sono nel default: %d\n", m_currentPressLevel);
+                        break;
+                }
+                m_lastPressedLevel = m_currentPressLevel; // Update the last notified level
+            }
+
+            // --- BEEP LOGIC EVERY ALARM_BEEP_INTERVAL ---
+            if (m_maxLevelReachedAndNotified) {
+                if (millis() - m_lastBeepTime >= ALARM_BEEP_INTERVAL) {
+                    if (buzzer) buzzer->pulse(1000);
+                    m_lastBeepTime = millis();
+                }
+            }
+        }
+    } else { // Button is not pressed or has been released
+        m_lastPressedLevel = NO_PRESS; // Reset for the next press cycle
+    }
+}
+
+
+
+#endif
 #endif

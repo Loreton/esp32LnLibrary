@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-06-2025 16.49.49
+// Date .........: 04-07-2025 14.50.28
 */
 #pragma once
 
@@ -33,16 +33,42 @@ extern int8_t debug_filename_length;
         //#define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
     #endif
 
-    #define __FILE_NO_EXT__ ({ \
-                                static char buffer[128]; /* Adjust size as needed, ensure it's large enough for your longest filename */ \
-                                strncpy(buffer, __FILENAME__, sizeof(buffer) - 1); \
-                                buffer[sizeof(buffer) - 1] = '\0'; /* Ensure null-termination */ \
-                                char *dot = strrchr(buffer, '.'); \
-                                if (dot) { \
-                                    *dot = '\0'; /* Null-terminate at the dot */ \
-                                } \
-                                buffer; \
-                            })
+    #define __FILE_LINE_ID__ ({ \
+        static char out[128]; \
+        const char *filename = strrchr(__FILE__, '/'); \
+        filename = filename ? filename + 1 : __FILE__; \
+        char *dot = strrchr(filename, '.'); \
+        size_t len = dot ? (size_t)(dot - filename) : strlen(filename); \
+        snprintf(out, sizeof(out), "%.*s.%03d", (int)len, filename, __LINE__); \
+        out; \
+    })
+
+    // #define DEBUG_LOG_COLOR(fmt, ...) \
+    //     Serial.printf("\033[1;32m[%s] %s(): " fmt "\033[0m\n", __FILE_LINE_ID__, __func__, ##__VA_ARGS__)
+    // #define DEBUG_LOG(fmt, ...) \
+    //     Serial.printf("[%s] " fmt "\n", __FILE_LINE_ID__, ##__VA_ARGS__)
+
+
+    // #define __FILE_NO_EXT__ ({ \
+    //                             static char buffer[128]; /* Adjust size as needed, ensure it's large enough for your longest filename */ \
+    //                             strncpy(buffer, __FILENAME__, sizeof(buffer) - 1); \
+    //                             buffer[sizeof(buffer) - 1] = '\0'; /* Ensure null-termination */ \
+    //                             char *dot = strrchr(buffer, '.'); \
+    //                             if (dot) { \
+    //                                 *dot = '\0'; /* Null-terminate at the dot */ \
+    //                             } \
+    //                             buffer; \
+    //                         })
+
+    //                             // char *basename = strrchr(__FILENAME__, '/'); /*Estrai il nome file senza path*/ \
+    //                             // basename = (basename) ? basename + 1 : __FILENAME__;  /*se non c'è '/', usa tutto*/ \
+    //                             // static uint8_t pin_len; \
+    //                             // static uint8_t index=0; \
+
+
+
+
+
 
 
     char * nowTime(void); // se è definita in time o ntptime commentare quella presente nin main.cpp
@@ -56,14 +82,15 @@ extern int8_t debug_filename_length;
     #ifdef lnSERIAL
         #if defined(ARDUINO_ARCH_ESP32)
             // #define __ln_FNAME__ __FILENAME__
-            #define __ln_FNAME__ __FILE_NO_EXT__
+            #define __ln_FNAME__ __FILE_LINE_ID__
 
             // #define m_FNAME                                         lnSERIAL.printf((PGM_P) PSTR("[%-20s:%04d] "), __ln_FNAME__, __LINE__)
-            #define m_FNAME                                         lnSERIAL.printf((PGM_P) PSTR("[%-20s:%04d] "), __FILENAME__, __LINE__)
+            #define m_FNAME                                         lnSERIAL.printf((PGM_P) PSTR("[%-20s] "), __FILE_LINE_ID__)
+            // #define m_FNAME                                         lnSERIAL.printf((PGM_P) PSTR("[%-20s:%04d] "), __FILENAME__, __LINE__)
             // #define m_FNAME_ext_non_funziona                                     lnSERIAL.printf((PGM_P) "[%s]:", setFnameLine(debug_filename, debug_filename_length, __FILENAME__, __LINE__) )
             #define m_Func                                          lnSERIAL.printf((PGM_P) PSTR("[%-20s:%04d] "), __func__, __LINE__)
             #define m_FUNCTION                                      lnSERIAL.printf((PGM_P) PSTR("[%-20s:%04d] "), __FUNCTION__, __LINE__)
-            #define m_FILE_FUNC                                     lnSERIAL.printf((PGM_P) PSTR("[%s.%-10s:%04d] "), __ln_FNAME__, __func__, __LINE__)
+            // #define m_FILE_FUNC                                     lnSERIAL.printf((PGM_P) PSTR("[%s.%-10s:%04d] "), __ln_FNAME__, __func__, __LINE__)
 
 
             // #define m_FULLNAME                                      lnSERIAL.printf((PGM_P) "[%s]: ", extractFileName((char*)__FILE__, __appo__))
@@ -72,7 +99,7 @@ extern int8_t debug_filename_length;
             #define lnPrintLN(...)                                  lnSERIAL.println(__VA_ARGS__)
             #define lnPrintF(fmt, ...)       {                      lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
             #define lnPrintF_FN(fmt, ...)    {        m_FNAME;      lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
-            #define lnPrintF_FF(fmt, ...)    {        m_FILE_FUNC;  lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
+            // #define lnPrintF_FF(fmt, ...)    {        m_FILE_FUNC;  lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
             #define lnPrintF_now(fmt, ...)   {        m_NOW;        lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
             #define lnPrintF_NowFN(fmt, ...) { m_NOW; m_FNAME;      lnSERIAL.printf_P((PGM_P) PSTR(fmt), ## __VA_ARGS__); }
         #else

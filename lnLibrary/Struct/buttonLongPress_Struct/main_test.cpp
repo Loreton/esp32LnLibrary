@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 03-07-2025 17.45.50
+// Date .........: 04-07-2025 15.57.48
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -12,7 +12,8 @@
 
 #define __I_AM_MAIN_CPP__
 #define LOG_LEVEL_0
-#include "@logMacros.h" // printf:XFN()
+// #include "@logMacros.h" // printf:XFN()
+#include "@logMacros2.h" // printf:XFN()
 #include "@globalVars.h" // printf:XFN()
 #include "@serialRead.h" // waitForEnter()
 
@@ -67,10 +68,10 @@ void setup() {
     delay(2000);
 
 
-    printf0_FN("Avvio test pulsante con debounce e gestione del reset dei livelli nella funzione chiamante.\n");
+    LOG_INFO("Avvio test pulsante con debounce e gestione del reset dei livelli nella funzione chiamante.");
 
-    digitalWrite(pressControlRelay_pin, HIGH); // Assumiamo un relè che si attiva con LOW
     pinMode(pressControlRelay_pin, OUTPUT);
+    digitalWrite(pressControlRelay_pin, HIGH); // Assumiamo un relè che si attiva con LOW
     pinMode(activeBuzzer_pin, OUTPUT);
     pinMode(passiveBuzzer_pin, OUTPUT);
 
@@ -86,12 +87,12 @@ void setup() {
 
 
     // finalMemory = ESP.getFreeHeap();
-    // printf0_FN("Pulsante su GPIO %d, Relè su GPIO %d\n", startButton_pin, pressControlRelay_pin);
-    // printf0_FN("Premi il pulsante e rilascia al livello MEDIUM_PRESS per attivare/disattivare il relè.\n");
+    // DEBUG_LOG("Pulsante su GPIO %d, Relè su GPIO %d", startButton_pin, pressControlRelay_pin);
+    // DEBUG_LOG("Premi il pulsante e rilascia al livello MEDIUM_PRESS per attivare/disattivare il relè.");
 
-    // printf0_FN("initial Memory:     %ld bytes\n", initialMemory); // Stima RAM allocata
-    // printf0_FN("button Memory:      %ld bytes\n", buttonMemory - initialMemory); // Stima RAM allocata
-    // printf0_FN("memoria occupata:   %ld bytes\n", finalMemory - initialMemory); // Stima RAM allocata
+    // DEBUG_LOG("initial Memory:     %ld bytes", initialMemory); // Stima RAM allocata
+    // DEBUG_LOG("button Memory:      %ld bytes", buttonMemory - initialMemory); // Stima RAM allocata
+    // DEBUG_LOG("memoria occupata:   %ld bytes", finalMemory - initialMemory); // Stima RAM allocata
 
     waitForEnter();
 }
@@ -128,8 +129,10 @@ void loop() {
 
 */
     // Notifica continua del livello raggiunto mentre il pulsante è premuto (opzionale)
-    startButton.notifyCurrentButtonLevel(startButtonNotificationHandlerCB);
-    pumpState.notifyCurrentButtonLevel(pumpStateNotificationHandlerCB);
+    // startButton.notifyCurrentButtonLevel(startButtonNotificationHandlerCB);
+    // pumpState.notifyCurrentButtonLevel(pumpStateNotificationHandlerCB);
+    startButton.notifyCurrentButtonLevel(beepNotification);
+    pumpState.notifyCurrentButtonLevel(beepNotification);
 
     startButton.read(startButtonHandlerCB);
     pumpState.read(pumpStateHandlerCB);

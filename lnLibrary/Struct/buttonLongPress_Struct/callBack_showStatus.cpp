@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 03-07-2025 18.46.12
+// Date .........: 04-07-2025 16.03.24
 //
 #ifdef __ln_MODULE_DEBUG_TEST__
 
@@ -8,7 +8,7 @@
 
 #define LOG_LEVEL_0
 #define LOG_LEVEL_99
-#include "@logMacros.h" // printf:XFN()
+#include "@logMacros2.h" // printf:XFN()
 #include "@globalVars.h" //
 
 
@@ -25,23 +25,23 @@
 //#
 //###########################################################################
 void showStatusCB(ButtonLongPress_Struct *p) {
-    // printf0_FN("\t%-18s: %2d - (%d)\n" , "pin nr"         , p->pin                   , p->mode);
-    printf99_FN("%s\n", p->m_pinID);
-    printf99_FN("\t%-18s: %2d\n",   "pressedLogicLevel",          p->m_pressedLogicLevel); //,           str_pinLevel[p->m_pressedLogicLevel]);
-    printf99_FN("\t%-18s: %2d\n",   "buttonPressed",              p->m_buttonPressed); //,               str_TrueFalse[p->m_buttonPressed]);
-    printf99_FN("\t%-18s: %2d\n",   "maxLevelReachedAndNotified", p->m_maxLevelReachedAndNotified); //,  str_TrueFalse[p->m_maxLevelReachedAndNotified]);
+    // printf0_FN("\t%-18s: %2d - (%d)" , "pin nr"         , p->pin                   , p->mode);
+    LOG_DEBUG("%s", p->m_pinID);
+    LOG_DEBUG("\t%-18s: %2d",   "pressedLogicLevel",          p->m_pressedLogicLevel); //,           str_pinLevel[p->m_pressedLogicLevel]);
+    LOG_DEBUG("\t%-18s: %2d",   "buttonPressed",              p->m_buttonPressed); //,               str_TrueFalse[p->m_buttonPressed]);
+    LOG_DEBUG("\t%-18s: %2d",   "maxLevelReachedAndNotified", p->m_maxLevelReachedAndNotified); //,  str_TrueFalse[p->m_maxLevelReachedAndNotified]);
 
-    printf99_FN("\t%-18s: %2d - %s\n",   "pressedLogicLevel",          p->m_pressedLogicLevel,           str_pinLevel[p->m_pressedLogicLevel]);
-    printf99_FN("\t%-18s: %2d - %s\n",   "buttonPressed",              p->m_buttonPressed,               str_TrueFalse[p->m_buttonPressed]);
-    printf99_FN("\t%-18s: %2d - %s\n",   "maxLevelReachedAndNotified", p->m_maxLevelReachedAndNotified,  str_TrueFalse[p->m_maxLevelReachedAndNotified]);
+    LOG_DEBUG("\t%-18s: %2d - %s",   "pressedLogicLevel",          p->m_pressedLogicLevel,           str_pinLevel[p->m_pressedLogicLevel]);
+    LOG_DEBUG("\t%-18s: %2d - %s",   "buttonPressed",              p->m_buttonPressed,               str_TrueFalse[p->m_buttonPressed]);
+    LOG_DEBUG("\t%-18s: %2d - %s",   "maxLevelReachedAndNotified", p->m_maxLevelReachedAndNotified,  str_TrueFalse[p->m_maxLevelReachedAndNotified]);
 
-    printf99_FN("\t%-18s: nr:%2d --> [ ", "threshold"      , p->m_numThresholds);
+    LOG_DEBUG("\t%-18s: nr:%2d --> [ ", "threshold"      , p->m_numThresholds);
     for (int8_t j=0; j < p->m_numThresholds; j++) {
-        printf99_FN("%2d, ", p->m_pressThresholds[j]);
+        LOG_DEBUG("%2d, ", p->m_pressThresholds[j]);
     }
-    printf99(" ]\n"); // close threshold line
+    LOG_DEBUG(" ]"); // close threshold line
 
-    printf99("\n"); // blank line
+    LOG_DEBUG(""); // blank line
 
 }
 

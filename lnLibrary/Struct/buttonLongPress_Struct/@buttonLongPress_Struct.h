@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 03-07-2025 17.50.19
+// Date .........: 04-07-2025 13.42.18
 */
 
 #pragma once
@@ -41,6 +41,7 @@ enum ButtonPressedLevel : uint8_t {
 
 struct ButtonLongPress_Struct;
 typedef void (*ButtonCallback)(struct ButtonLongPress_Struct* self);
+typedef void (*BeepCallBack)(struct ButtonLongPress_Struct* self, uint16_t beep_duration);
 // questa essendo uguale non la uso
 // typedef void (*notifyLevelCallback)(struct ButtonLongPress_Struct* self);
 
@@ -71,23 +72,23 @@ typedef struct ButtonLongPress_Struct { // io_input_pin_struct_t
 
     // Array e dimensione delle soglie specifiche per questo pulsante.
     const uint32_t*    m_pressThresholds;
-    size_t             m_numThresholds=0;
+    uint32_t          m_gapThresholds[MAX_DEFINED_PRESS_LEVELS]; // inseriamo il gap tra i vari livelli di threshold per gestire eventuale allarme
+    int8_t             m_numThresholds=0;
 
-    //  Callback per la gestione della pressione
-    // ButtonCallback         m_onPressCallback=nullptr;
-    // notifyLevelCallback    m_onNotifyCallback=nullptr;
+
 
 
     // functions prototypes
     bool read(ButtonCallback callback=nullptr);
     // void init(const char* name, int pin, int pressedLogicLevel, const uint32_t thresholds[], size_t thresholdsCount);
     void init(const char* name, uint8_t pin, bool pressedLogicLevel,
-                    const uint32_t thresholds[], size_t thresholdsCount );
+                    const uint32_t thresholds[], int8_t thresholdsCount );
                     // ButtonCallback button_callback = nullptr,
                     // notifyLevelCallback ntfy_callback = nullptr
     void process();
     void _checkNewLevel();
-    void notifyCurrentButtonLevel(ButtonCallback callback=nullptr);
+    // void notifyCurrentButtonLevel(ButtonCallback callback=nullptr);
+    void notifyCurrentButtonLevel(BeepCallBack onPressCallback);
     void showStatus(ButtonCallback callback=nullptr);
 
     // void setNotifyCallBack(notifyLevelCallback callback);

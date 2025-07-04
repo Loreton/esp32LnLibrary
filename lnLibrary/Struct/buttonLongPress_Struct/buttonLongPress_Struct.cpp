@@ -1,15 +1,16 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 03-07-2025 17.51.10
+// Date .........: 04-07-2025 16.07.36
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
 #include <Arduino.h>    // in testa anche per le definizioni dei type
 
-#define LOG_LEVEL_0
-#define LOG_LEVEL_2
-#define LOG_LEVEL_99
-#include "@logMacros.h" // printf:XFN()
+// #define LOG_LEVEL_0
+// #define LOG_LEVEL_2
+// #define LOG_LEVEL_99
+// #include "@logMacros.h" // printf:XFN()
+#include "@logMacros2.h" // printf:XFN()
 #include "@globalVars.h" // printf:XFN()
 #include "@serialRead.h" // waitForEnter()
 #include "@setPinID.h" // waitForEnter()
@@ -38,20 +39,30 @@
 void ButtonLongPress_Struct::init(const char* name, uint8_t pin,
                                              bool pressedLogicLevel,
                                              const uint32_t thresholds[],
-                                             size_t thresholdsCount) {
+                                             int8_t thresholdsCount) {
     m_pin = pin;
     m_name = name;
     // snprintf(m_pinID, 20, "[%02d.%-14s]:", m_pin, m_name);
     setPinID(m_pinID, sizeof(m_pinID)-1, m_name,  m_pin);
 
+    m_numThresholds = (thresholdsCount > MAX_DEFINED_PRESS_LEVELS) ? MAX_DEFINED_PRESS_LEVELS : thresholdsCount;
+    LOG_DEBUG("m_numThresholds: %d/%d", m_numThresholds, MAX_DEFINED_PRESS_LEVELS);
+
     m_pressedLogicLevel = pressedLogicLevel;
     m_pressThresholds = thresholds;
-    m_numThresholds = thresholdsCount;
 
     if (pressedLogicLevel == LOW) {
         pinMode(m_pin, INPUT_PULLUP);
     } else {
         pinMode(m_pin, INPUT);
+    }
+
+    // calcolo del nextGAP.
+    // dobbiamo gestire l'ultimo ed allora lo mettiamo uguale al penultimo... da verificare
+    for (int8_t i = 0; i<m_numThresholds-1; i++) {
+        m_gapThresholds[i] = thresholds[i+1] - thresholds[i];
+        m_gapThresholds[i+1] = m_gapThresholds[i];
+        LOG_DEBUG("[%d]threshold: %lu - GAP: %lu", i, thresholds[i], m_gapThresholds[i]);
     }
 
     m_lastButtonState = digitalRead(m_pin);
@@ -101,6 +112,7 @@ bool ButtonLongPress_Struct::read(ButtonCallback onPressCallback) {
 
     if (state != m_buttonPressed) {
         m_buttonPressed = state;
+        LOG_DEBUG("[%s] state: %d", m_pinID, state);
 
         // Se il pulsante è stato PREMUTO (il suo stato debounced è ora il pressedLogicLevel).
         if (m_buttonPressed == m_pressedLogicLevel) {
@@ -125,12 +137,12 @@ bool ButtonLongPress_Struct::read(ButtonCallback onPressCallback) {
       }
     }
 
-    // Se il pulsante è attualmente PREMUTO (debounced) e il timer è attivo, aggiorna il livello di pressione.
+    // Se il pulsante è attualmente PREMUTO e il timer è attivo, aggiorna il livello di pressione.
     if (m_buttonPressed == m_pressedLogicLevel && m_pressStartTime != 0) {
         _checkNewLevel();
 
         if (m_currentPressLevel == static_cast<uint8_t>(m_numThresholds) && !m_maxLevelReachedAndNotified) {
-            printf0_FN("[%s] MAX livello di pressione raggiunto: %d\n", m_name, m_currentPressLevel);
+            LOG_INFO("[%s] MAX livello di pressione raggiunto: %d", m_name, m_currentPressLevel);
             m_maxLevelReachedAndNotified = true;
         }
     }
@@ -138,6 +150,72 @@ bool ButtonLongPress_Struct::read(ButtonCallback onPressCallback) {
     m_lastButtonState = state;
     return false;
 }
+
+
+
+// Notifica continua del livello raggiunto mentre il pulsante è premuto (opzionale)
+//###########################################################################
+//#
+//###########################################################################
+void ButtonLongPress_Struct::notifyCurrentButtonLevel(BeepCallBack buzzerBeep) {
+    uint16_t beep_duration=200;
+    static uint32_t lastBeepTime;
+    uint32_t next_interval;
+    uint32_t elapsed;
+    uint16_t phase_beep_duration;
+
+    if (m_buttonPressed == m_pressedLogicLevel) {
+        if (m_currentPressLevel != NO_PRESS) {
+            if (m_currentPressLevel != m_lastPressedLevel) {
+
+                // calcolo per gestione durata beep (se richiesto...)
+                elapsed = millis() - m_pressStartTime;
+                next_interval = m_gapThresholds[m_currentPressLevel];
+                LOG_NOTIFY("[%s] Pressione in corso (ms:%06ld)", m_pinID, elapsed);
+                LOG_INFO("[%s] PRESSED_LEVEL_%d/%d - elapsed ms:%6lu", m_pinID, m_currentPressLevel, m_numThresholds, elapsed);
+                phase_beep_duration = next_interval / 5; // arbitrario.... facciamo un beep che è u1/5 del next_threshold time
+                LOG_NOTIFY("[%s] next_interval: %lu - beep_duration: %lu", m_pinID, next_interval, phase_beep_duration);
+
+                switch (m_currentPressLevel) {
+                    case PRESSED_LEVEL_1:
+                    case PRESSED_LEVEL_2:
+                    case PRESSED_LEVEL_3:
+                    case PRESSED_LEVEL_4:
+                    case PRESSED_LEVEL_5:
+                    case PRESSED_LEVEL_6:
+                    case PRESSED_LEVEL_7:
+                    case PRESSED_LEVEL_8:
+                    case PRESSED_LEVEL_9:
+                        if (buzzerBeep) {
+                            buzzerBeep(this, beep_duration);
+                        }
+                        break;
+
+                    default:
+                        LOG_INFO("sono nel default: %d", m_currentPressLevel);
+                        break;
+                }
+                m_lastPressedLevel = m_currentPressLevel;
+            }
+            // --- LOGICA DEL BEEP OGNI 5 SECONDI quando si raggiunge il MAX-LEVEL---
+            if (m_maxLevelReachedAndNotified ) {
+                if (millis() - lastBeepTime >= ALARM_BEEP_INTERVAL) {
+                    if (buzzerBeep) {
+                        buzzerBeep(this, 1000);
+                    }
+                    LOG_INFO("[%s] ALARM! max pressed level %d reached", m_pinID, m_currentPressLevel);
+                    // buzzer1->pulse(1000);
+                    lastBeepTime = millis();
+                }
+            }
+        }
+
+    } else { // (m_buttonPressed != m_pressedLogicLevel)
+        m_lastPressedLevel = NO_PRESS; // Reset per il prossimo ciclo di pressione
+    }
+}
+
+#if 0
 
 // Notifica continua del livello raggiunto mentre il pulsante è premuto (opzionale)
 //###########################################################################
@@ -154,7 +232,7 @@ void ButtonLongPress_Struct::notifyCurrentButtonLevel(ButtonCallback onPressedLe
             }
             else {
                 if (m_currentPressLevel != m_lastPressedLevel) {
-                    printf0_FN("[%s] Pressione in corso (ms:%06ld)\n", m_name, (millis() - m_pressStartTime));
+                    LOG_INFO("[%s] Pressione in corso (ms:%06ld)", m_name, (millis() - m_pressStartTime));
                     switch (m_currentPressLevel) {
                         case PRESSED_LEVEL_1:
                         case PRESSED_LEVEL_2:
@@ -165,10 +243,10 @@ void ButtonLongPress_Struct::notifyCurrentButtonLevel(ButtonCallback onPressedLe
                         case PRESSED_LEVEL_7:
                         case PRESSED_LEVEL_8:
                         case PRESSED_LEVEL_9:
-                            printf0_FN("notify PRESSED_LEVEL: %d\n", m_currentPressLevel);
+                            LOG_INFO("notify PRESSED_LEVEL: %d", m_currentPressLevel);
                             break;
                         default:
-                            printf0_FN("notify sono nel default: %d\n", m_currentPressLevel);
+                            LOG_INFO("notify sono nel default: %d", m_currentPressLevel);
                             break;
                     } // end switch
                     m_lastPressedLevel = m_currentPressLevel;
@@ -176,7 +254,7 @@ void ButtonLongPress_Struct::notifyCurrentButtonLevel(ButtonCallback onPressedLe
 
                 // --- LOGICA DEL BEEP OGNI 5 SECONDI ---
                 if (m_maxLevelReachedAndNotified ) {
-                    printf0_FN("ALARM ALARM: %d\n", m_currentPressLevel);
+                    LOG_INFO("ALARM ALARM: %d", m_currentPressLevel);
                 }
             } // end m_onNotifyCallBack else
         }
@@ -186,6 +264,7 @@ void ButtonLongPress_Struct::notifyCurrentButtonLevel(ButtonCallback onPressedLe
     }
 }
 
+#endif
 
 
 
@@ -215,23 +294,23 @@ void ButtonLongPress_Struct::showStatus(ButtonCallback showStatus_callback) {
 //#
 //###########################################################################
 void pinLongPressDisplayStatus(ButtonLongPress_Struct *p, bool prompt) {
-    // printf0_FN("\t%-18s: %2d - (%d)\n" , "pin nr"         , p->pin                   , p->mode);
-    printf0_FN("%s\n", p->m_pinID);
-    printf0_FN("\t%-18s: %2d\n",   "pressedLogicLevel",          p->m_pressedLogicLevel); //,           str_pinLevel[p->m_pressedLogicLevel]);
-    printf0_FN("\t%-18s: %2d\n",   "buttonPressed",              p->m_buttonPressed); //,               str_TrueFalse[p->m_buttonPressed]);
-    printf0_FN("\t%-18s: %2d\n",   "maxLevelReachedAndNotified", p->m_maxLevelReachedAndNotified); //,  str_TrueFalse[p->m_maxLevelReachedAndNotified]);
+    // LOG_INFO("\t%-18s: %2d - (%d)" , "pin nr"         , p->pin                   , p->mode);
+    LOG_INFO("%s", p->m_pinID);
+    LOG_INFO("\t%-18s: %2d",   "pressedLogicLevel",          p->m_pressedLogicLevel); //,           str_pinLevel[p->m_pressedLogicLevel]);
+    LOG_INFO("\t%-18s: %2d",   "buttonPressed",              p->m_buttonPressed); //,               str_TrueFalse[p->m_buttonPressed]);
+    LOG_INFO("\t%-18s: %2d",   "maxLevelReachedAndNotified", p->m_maxLevelReachedAndNotified); //,  str_TrueFalse[p->m_maxLevelReachedAndNotified]);
 
-    printf0_FN("\t%-18s: %2d - %s\n",   "pressedLogicLevel",          p->m_pressedLogicLevel,           str_pinLevel[p->m_pressedLogicLevel]);
-    printf0_FN("\t%-18s: %2d - %s\n",   "buttonPressed",              p->m_buttonPressed,               str_TrueFalse[p->m_buttonPressed]);
-    printf0_FN("\t%-18s: %2d - %s\n",   "maxLevelReachedAndNotified", p->m_maxLevelReachedAndNotified,  str_TrueFalse[p->m_maxLevelReachedAndNotified]);
+    LOG_INFO("\t%-18s: %2d - %s",   "pressedLogicLevel",          p->m_pressedLogicLevel,           str_pinLevel[p->m_pressedLogicLevel]);
+    LOG_INFO("\t%-18s: %2d - %s",   "buttonPressed",              p->m_buttonPressed,               str_TrueFalse[p->m_buttonPressed]);
+    LOG_INFO("\t%-18s: %2d - %s",   "maxLevelReachedAndNotified", p->m_maxLevelReachedAndNotified,  str_TrueFalse[p->m_maxLevelReachedAndNotified]);
 
-    printf0_FN("\t%-18s: nr:%2d --> [ ", "threshold"      , p->m_numThresholds);
+    LOG_INFO("\t%-18s: nr:%2d --> [ ", "threshold"      , p->m_numThresholds);
     for (int8_t j=0; j < p->m_numThresholds; j++) {
         printf0("%2d, ", p->m_pressThresholds[j]);
     }
-    printf0(" ]\n"); // close threshold line
+    printf0(" ]"); // close threshold line
 
-    printf0("\n"); // blank line
+    printf0(""); // blank line
     if (prompt) {
         waitForEnter();
     }
@@ -260,65 +339,65 @@ void notifyCurrentButtonLevel(ButtonLongPress_Struct *p, pinController_Struct *b
     if (p->m_buttonPressed == p->m_pressedLogicLevel) {
         if (p->m_currentPressLevel != NO_PRESS) {
             if (p->m_currentPressLevel != p->m_lastPressedLevel) {
-                printf0_FN("[%s] Pressione in corso (ms:%06ld)\n", p->m_name, (millis() - p->m_pressStartTime));
+                LOG_INFO("[%s] Pressione in corso (ms:%06ld)", p->m_name, (millis() - p->m_pressStartTime));
                 switch (p->m_currentPressLevel) {
                     case PRESSED_LEVEL_1:
-                        printf2_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
+                        printf2_FN("notify PRESSED_LEVEL: %d", p->m_currentPressLevel);
                         buzzer->pulse(beep_duration);
                         // notifyBuzzer(buzzer);
                         break;
 
 
                     case PRESSED_LEVEL_2:
-                        printf99_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
+                        LOG_DEBUG("notify PRESSED_LEVEL: %d", p->m_currentPressLevel);
                         buzzer->pulse(beep_duration);
                         // notifyBuzzer(buzzer);
                         break;
 
                     case PRESSED_LEVEL_3:
-                        printf99_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
+                        ("notify PRESSED_LEVEL: %d", p->m_currentPressLevel);
                         buzzer->pulse(beep_duration);
                         // notifyBuzzer(buzzer);
                         break;
 
                     case PRESSED_LEVEL_4:
-                        printf99_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
+                        LOG_DEBUG("notify PRESSED_LEVEL: %d", p->m_currentPressLevel);
                         buzzer->pulse(beep_duration);
                         // notifyBuzzer(buzzer);
                         break;
 
                     case PRESSED_LEVEL_5:
-                        printf99_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
+                        LOG_DEBUG("notify PRESSED_LEVEL: %d", p->m_currentPressLevel);
                         buzzer->pulse(beep_duration);
                         // notifyBuzzer(buzzer);
                         break;
 
                     case PRESSED_LEVEL_6:
-                        printf99_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
+                        LOG_DEBUG("notify PRESSED_LEVEL: %d", p->m_currentPressLevel);
                         buzzer->pulse(beep_duration);
                         // notifyBuzzer(buzzer);
                         break;
 
                     case PRESSED_LEVEL_7:
-                        printf99_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
+                        LOG_DEBUG("notify PRESSED_LEVEL: %d", p->m_currentPressLevel);
                         buzzer->pulse(beep_duration);
                         // notifyBuzzer(buzzer);
                         break;
 
                     case PRESSED_LEVEL_8:
-                        printf99_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
+                        LOG_DEBUG("notify PRESSED_LEVEL: %d", p->m_currentPressLevel);
                         buzzer->pulse(beep_duration);
                         // notifyBuzzer(buzzer);
                         break;
 
                     case PRESSED_LEVEL_9:
-                        printf99_FN("notify PRESSED_LEVEL: %d\n", p->m_currentPressLevel);
+                        LOG_DEBUG("notify PRESSED_LEVEL: %d", p->m_currentPressLevel);
                         buzzer->pulse(beep_duration);
                         // notifyBuzzer(buzzer);
                         break;
 
                     default:
-                        printf0_FN("sono nel default: %d\n", p->m_currentPressLevel);
+                        LOG_INFO("sono nel default: %d", p->m_currentPressLevel);
                         break;
 
                 }
@@ -334,7 +413,7 @@ void notifyCurrentButtonLevel(ButtonLongPress_Struct *p, pinController_Struct *b
         }
 
     } else { // (p->m_buttonPressed != p->m_pressedLogicLevel)
-        // printf99_FN("clearing...\n");
+        // LOG_DEBUG("clearing...");
         p->m_lastPressedLevel = NO_PRESS; // Reset per il prossimo ciclo di pressione
         // lastBeepTime = 0; // Resetta il timer del beep quando il pulsante non è più premuto al livello massimo
         // buzzer->off_ifBlinking(); //siccome è usato per più pin rischiamo di chiudere un beep lanciato da un altra funzione

@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 30-06-2025 16.18.59
+// Date .........: 04-07-2025 13.51.53
 */
 
 // ---------------------------------
@@ -22,7 +22,6 @@ void setPinID(char buffer[], int MAXLENGTH, const char *name, int pin) {
     //int pinLen = snprintf(NULL, 0, ".%02d", pin); // utile per il calcolo lunghezza
 
     static char pinSuffix[8];
-    // const char *pinFmt=".%02d]";
     int pinLen = snprintf(pinSuffix, sizeof(pinSuffix), ".%02d", pin);
 
     int nameMaxLen = MAXLENGTH - (pinLen);
