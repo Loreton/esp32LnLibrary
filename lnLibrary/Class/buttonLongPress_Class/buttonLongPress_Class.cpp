@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 02-07-2025 20.16.15
+// Date .........: 07-07-2025 09.31.52
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 #include <Arduino.h>
@@ -8,12 +8,12 @@
 #define LOG_LEVEL_0
 #define LOG_LEVEL_2
 #define LOG_LEVEL_99x
-#include "@logMacros.h" // printf:XFN()
-#include "@lnString.h" // setPinID()
-#include "@globalVars.h" // strXXX()
+// #include "logMacros.h" // printf:XFN()
+#include "lnString.h" // setPinID()
+#include "lnGlobalVars.h" // strXXX()
 
-#include "@buttonLongPress_Class.h"
-#include "@ledController_Class.h" // Include for LedController_Class usage
+#include "lnButtonLongPress_Class.h"
+#include "lnLedController_Class.h" // Include for LedController_Class usage
 
 // Initialize the static member variable outside the class definition
 uint32_t ButtonLongPress_Class::m_lastBeepTime = 0;

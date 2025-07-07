@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 28-05-2025 08.05.52
+// Date .........: 07-07-2025 10.05.32
 */
 
 #include "Arduino.h"
@@ -12,14 +12,13 @@
 // ---------------------------------
 // loreto headers files
 // ---------------------------------
-#include "@ln_time.h"
+#include "lnTime.h"
 
 
 // ---------------------------------
 // macros Aliases for LOG
 // ---------------------------------
-#define LOG_LEVEL_0x
-#include "@logMacros.h"
+#include "lnLogger.h"
 
 
 
@@ -39,7 +38,7 @@ const char* PROGMEM sntp_status[] = {   "SNTP_SYNC_STATUS_RESET",
 // #####################################################################
 void cbSyncTime(struct timeval *tv)  { // callback function to show when NTP was synchronized
     uint8_t status = sntp_get_sync_status();
-    printf1_NFN("NTP time synched: %d [%s]\n", status, sntp_status[status]);
+    LOG_INFO("NTP time synched: %d [%s]\n", status, sntp_status[status]);
         // * sntp_get_sync_status(void) //
         // *    0  SNTP_SYNC_STATUS_RESET: Reset status.
         // *    1  SNTP_SYNC_STATUS_COMPLETED: Time is synchronized.

@@ -1,10 +1,12 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 04-07-2025 16.59.56
+// Date .........: 07-07-2025 19.51.35
 */
 #pragma once
 
-#include <Arduino.h>
+    #include <Arduino.h>
+
+    #include <lnLogger.h>
     /*
     ####################################################
        red='\033[0;31m';    redH='\033[1;31m'
@@ -38,7 +40,6 @@
 
 
     // Imposta il livello attivo (es: 4 = DEBUG, 0 = NESSUN LOG)
-    #ifndef LOG_LEVEL
         // Livelli di log
         #define LOG_LEVEL_NONE   0
         #define LOG_LEVEL_ERROR  1
@@ -48,29 +49,33 @@
         #define LOG_LEVEL_DEBUG  5
         #define LOG_LEVEL_TRACE  6
 
-        #define LOG_LEVEL LOG_LEVEL_DEBUG
+    #ifndef LOG_LEVEL
+        // #define LOG_LEVEL LOG_LEVEL_DEBUG
+        #define LOG_LEVEL LOG_LEVEL_INFO
     #endif
+
 
     #define __FILE_LINE_ID__ ({ \
         static char out[128]; \
         const char *filename = strrchr(__FILE__, '/'); \
         filename = filename ? filename + 1 : __FILE__; \
-        char *dot = strrchr(filename, '.'); \
-        size_t len = dot ? (size_t)(dot - filename) : strlen(filename); \
+        const char *sep = strrchr(filename, '_'); \
+        if (!sep) sep = strrchr(filename, '.'); \
+        size_t len = sep ? (size_t)(sep - filename) : strlen(filename); \
         snprintf(out, sizeof(out), "%.*s.%03d", (int)len, filename, __LINE__); \
         out; \
     })
-
 
 
     #define LOG_OUTPUT(color, tag, fmt, ...) \
       Serial.printf("%s[%s][%s] " fmt "%s\n", color, __FILE_LINE_ID__, tag, ##__VA_ARGS__, ANSI_RESET)
 
 
-
-    // #define LOG_OUTPUT(levelColor, levelTag, fmt, ...) \
-    //   Serial.printf(levelColor "[%s][%s] " fmt ANSI_RESET "\n", __FILE_LINE_ID__, levelTag, ##__VA_ARGS__)
-
+    /*
+        L'intero costrutto do {} while (0) è un'istruzione che il compilatore moderno
+        è in grado di ottimizzare completamente via (dead code elimination)
+        in quanto non ha effetti collaterali e non esegue alcuna operazione.
+    */
     #if LOG_LEVEL >= LOG_LEVEL_ERROR
         #define LOG_ERROR(fmt, ...) LOG_OUTPUT(ANSI_RED,   "ERR", fmt, ##__VA_ARGS__)
     #else
@@ -84,6 +89,7 @@
     #endif
 
     #if LOG_LEVEL >= LOG_LEVEL_INFO
+        #pragma message "SONO INFO"
         #define LOG_INFO(fmt, ...)  LOG_OUTPUT(ANSI_GREEN, "INF", fmt, ##__VA_ARGS__)
     #else
         #define LOG_INFO(fmt, ...)  do {} while (0)
@@ -96,6 +102,7 @@
     #endif
 
     #if LOG_LEVEL >= LOG_LEVEL_DEBUG
+        #pragma message "SONO DEBUG"
         #define LOG_DEBUG(fmt, ...) LOG_OUTPUT(ANSI_CYAN,  "DBG", fmt, ##__VA_ARGS__)
     #else
         #define LOG_DEBUG(fmt, ...) do {} while (0)

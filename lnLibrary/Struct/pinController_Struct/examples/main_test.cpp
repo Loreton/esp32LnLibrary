@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 25-06-2025 16.54.57
+// Date .........: 06-07-2025 20.52.58
 */
 
 
@@ -9,7 +9,7 @@
 
 #include <Arduino.h>
 
-#include "@pinController_Struct.h"
+#include "pinController_Struct.h"
 
 // --- Funzioni Principali (setup e loop) per dimostrazione ---
 

@@ -1,20 +1,18 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 04-07-2025 16.03.24
+// Date .........: 07-07-2025 09.38.00
 //
 #ifdef __ln_MODULE_DEBUG_TEST__
 
 #include <Arduino.h>    // in testa anche per le definizioni dei type
 
-#define LOG_LEVEL_0
-#define LOG_LEVEL_99
-#include "@logMacros2.h" // printf:XFN()
-#include "@globalVars.h" //
+#include "lnLogger.h" // printf:XFN()
+#include "lnGlobalVars.h" //
 
 
 
-#include "@buttonLongPress_Struct.h"
-// #include "@pinController_Struct.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
+#include "ButtonLongPress_Struct.h"
+// #include "pinController_Struct.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
 #include "callBackFunctions.h" // per functions protoype
 
 

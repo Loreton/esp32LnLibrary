@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 01-07-2025 17.03.55
+// Date .........: 04-07-2025 18.21.36
 */
 
 
@@ -27,7 +27,7 @@ LedController_Class myLed2;
 void setup() {
     Serial.begin(115200);
     delay(1000);
-    printf99_FN("Starting LED module demonstration with classes...\n");
+    LOG_DEBUG("Starting LED module demonstration with classes...\n");
 
     activeBuzzer.init("Buzzer", activeBuzzer_pin, HIGH);
     myLed2.init("Led", LED2_pin, HIGH);
@@ -43,7 +43,7 @@ void loop() {
     uint32_t elapsed;
 
     if (first_run) {
-        printf99_FN("Initialization complete. Starting loop...\n");
+        LOG_DEBUG("Initialization complete. Starting loop...\n");
         first_run = false;
         // The blinking_dc function now takes float for duty cycle
         activeBuzzer.blinking_dc(1000, 0.50, 4); // Period, Duty Cycle, Cycles
@@ -52,7 +52,7 @@ void loop() {
     }
 
     elapsed = millis() - startedMillis;
-    // printf99_FN("sono qui...%lu millis\n", elapsed);
+    // LOG_DEBUG("sono qui...%lu millis\n", elapsed);
     // Call update() for each LedController_Class instance you want to manage
     // You MUST call this function for EACH controller individually
     activeBuzzer.updateStatus();
@@ -61,18 +61,18 @@ void loop() {
     // examples of commands:
 
     if (elapsed > 20000 && elapsed < 20100) {
-        printf99_FN("superato 20000...%lu millis\n", elapsed);
+        LOG_DEBUG("superato 20000...%lu millis\n", elapsed);
         myLed2.blinking_dc(1000, 0.10); // Period, Duty Cycle
         activeBuzzer.pulse(3000);
     }
 
     if (elapsed > 24000 && elapsed < 24100) {
-        printf99_FN("superato 24000...%lu millis\n", elapsed);
+        LOG_DEBUG("superato 24000...%lu millis\n", elapsed);
         activeBuzzer.blinking_dc(1000, 0.70, 5); // Period, Duty Cycle, Cycles
     }
 
     if (elapsed > 30000 && elapsed < 30100) {
-        printf99_FN("superato 30000...%lu millis\n", elapsed);
+        LOG_DEBUG("superato 30000...%lu millis\n", elapsed);
         activeBuzzer.off();
     }
 

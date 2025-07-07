@@ -1,12 +1,12 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 04-07-2025 13.42.18
+// Date .........: 07-07-2025 17.18.32
 */
 
 #pragma once
 #include <Arduino.h>
 
-#include "@pinController_Struct.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
+// #include "@pinController_Struct.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
 
 #ifdef __ln_MODULE_DEBUG_TEST__
     #define passiveBuzzer_pin           22  // OUTPUT
@@ -45,10 +45,8 @@ typedef void (*BeepCallBack)(struct ButtonLongPress_Struct* self, uint16_t beep_
 // questa essendo uguale non la uso
 // typedef void (*notifyLevelCallback)(struct ButtonLongPress_Struct* self);
 
-// esempio di callback
-// void myButtonHandler_sample(ButtonLongPress_Struct* btn) {
-//     Serial.printf("Hai premuto: %s\n", btn->_name);
-// }
+
+
 
 
 
@@ -61,6 +59,7 @@ typedef struct ButtonLongPress_Struct { // io_input_pin_struct_t
 
     bool         m_lastButtonState=false;            // Ultima lettura RAW del pin.
     uint32_t     m_lastDebounceTime=0;           // Ultimo momento in cui il pin ha cambiato stato RAW.
+    bool         m_debouncedState=false;       // Stato del pulsante dopo il debounce
 
     bool         m_buttonPressed=false;              // Stato debounced: true se premuto, false se rilasciato.
     uint32_t     m_pressStartTime=0;             // Timestamp quando il pulsante è stato premuto.
@@ -83,22 +82,16 @@ typedef struct ButtonLongPress_Struct { // io_input_pin_struct_t
     // void init(const char* name, int pin, int pressedLogicLevel, const uint32_t thresholds[], size_t thresholdsCount);
     void init(const char* name, uint8_t pin, bool pressedLogicLevel,
                     const uint32_t thresholds[], int8_t thresholdsCount );
-                    // ButtonCallback button_callback = nullptr,
-                    // notifyLevelCallback ntfy_callback = nullptr
     void process();
     void _checkNewLevel();
-    // void notifyCurrentButtonLevel(ButtonCallback callback=nullptr);
+
     void notifyCurrentButtonLevel(BeepCallBack onPressCallback);
     void showStatus(ButtonCallback callback=nullptr);
+    void reset(void);
 
-    // void setNotifyCallBack(notifyLevelCallback callback);
-    // void setOnPressedCallBack(ButtonCallback callback);
-    // void setNotifyCallBack(notifyLevelCallback callback) {m_onNotifyCallback = callback;};
-    // void setOnPressedCallBack(ButtonCallback callback) {m_onPressCallback=callback;};
+    // inline functions
+    const char* pinID() const { return m_pinID; }
 
-
-
-    // void notifyCurrentButtonLevel(ButtonState_t *btn, uint8_t buzzer_pin=99);
 
 } ButtonLongPress_Struct;
 

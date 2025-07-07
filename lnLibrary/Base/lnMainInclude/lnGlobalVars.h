@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-06-2025 17.46.12
+// Date .........: 07-07-2025 19.27.05
 */
 
 
@@ -11,11 +11,22 @@
     // ---------------------------------
     // lnLibrary headers files
     // ---------------------------------
-    #include "@logMacros.h"
+    // #include "@logMacros.h"
     // #include "@serialRead.h" // waitForEnter()
     // #include "../serialRead/include/@SerialRead.h" // NON capisco perch* devo mettere il path relativo
-    // #include "@lnString.h" // setPinID
+    // #include "lnString.h" // setPinID
+    /* definition to expand macro then apply to pragma message */
+    #define VALUE_TO_STRING(x) #x
+    #define VALUE(x) VALUE_TO_STRING(x)
+    #define VAR_NAME_VALUE(var) #var "="  VALUE(var)
 
+    /* Some example here */
+    // #pragma message(VAR_NAME_VALUE(NOT_DEFINED))
+    // #pragma message(VAR_NAME_VALUE(DEFINED_BUT_NO_VALUE))
+    // #pragma message(VAR_NAME_VALUE(DEFINED_INT))
+    // #pragma message(VAR_NAME_VALUE(DEFINED_STR))
+    // #pragma message(VAR_NAME_VALUE(LORETO))
+    // #pragma message(VAR_NAME_VALUE(LORETO2))
 
 
 

@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 04-07-2025 15.57.48
+// Date .........: 07-07-2025 17.42.56
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -11,14 +11,12 @@
 
 
 #define __I_AM_MAIN_CPP__
-#define LOG_LEVEL_0
-// #include "@logMacros.h" // printf:XFN()
-#include "@logMacros2.h" // printf:XFN()
-#include "@globalVars.h" // printf:XFN()
-#include "@serialRead.h" // waitForEnter()
+#include "lnLogger.h" // printf:XFN()
+#include "lnGlobalVars.h" // printf:XFN()
+#include "lnSerialRead.h" // waitForEnter()
 
-#include "@pinController_Struct.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
-#include "@buttonLongPress_Struct.h"
+#include "PinController_Struct.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
+#include "ButtonLongPress_Struct.h"
 #include "callBackFunctions.h" // Function protopypes
 
 void processButton(ButtonLongPress_Struct *p);
@@ -27,7 +25,7 @@ size_t initialMemory = ESP.getFreeHeap();
 
 ButtonLongPress_Struct startButton;
 ButtonLongPress_Struct pumpState;
-pinController_Struct activeBuzzer;
+PinController_Struct activeBuzzer;
 
 
 const unsigned long START_BUTTON_THRESHOLDS[] = {
@@ -112,7 +110,7 @@ void loop() {
         startedMillis=millis();
     }
     now = millis() - startedMillis;
-    activeBuzzer.update();
+    activeBuzzer.updateStatus();
 
     /*
     elapsed=5000;

@@ -1,16 +1,16 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 01-07-2025 20.33.34
+// Date .........: 07-07-2025 09.32.10
 //
 #include <Arduino.h>
 
 #define LOG_LEVEL_1
 #define LOG_LEVEL_2x
 #define LOG_LEVEL_99x
-#include "@logMacros.h"
-#include "@lnString.h" // per setPinID()
+#include "lnLogger.h"
+#include "lnString.h" // per setPinID()
 
-#include "@ledController_Class.h" // Changed to new class header
+#include "lnLedController_Class.h" // Changed to new class header
 
 
 
@@ -57,7 +57,7 @@ void LedController_Class::updateStatus() {
         // do nothing
     } else if (m_pulseOn) {
         if (now - m_pulseOnStart >= m_pulseOnDuration) {
-            printf1_FN("%s pulseON expired\n", m_pinID); // For debug
+            LOG_NOTIFY("%s pulseON expired\n", m_pinID); // For debug
             clearAll();
         }
     } else if (m_blinking) {
@@ -68,7 +68,7 @@ void LedController_Class::updateStatus() {
             setLed(true);
             m_lastToggle = now;
             if ((m_temporaryBlinking) && (--m_num_cycles <= 0)) {
-                printf1_FN("%s temporaryBlinking expired\n", m_pinID); // For debug
+                LOG_NOTIFY("%s temporaryBlinking expired\n", m_pinID); // For debug
                 clearAll();
             }
         }
@@ -81,7 +81,7 @@ void LedController_Class::pulse(uint32_t duration) {
         m_pulseOnDuration = duration;
         m_pulseOnStart = millis();
         setLed(true);
-        printf2_FN("%s pulseON. duration: %lu ms\n", m_pinID,  m_pulseOnDuration);
+        LOG_NOTIFY("%s pulseON. duration: %lu ms\n", m_pinID,  m_pulseOnDuration);
     }
 }
 
@@ -92,7 +92,7 @@ void LedController_Class::blinking(uint32_t onMs, uint32_t offMs, int8_t cycles)
         m_offTime = offMs;
         m_lastToggle = millis();
         setLed(true); // start on
-        printf2_FN("%s blinking. ON: %lu ms, OFF: %lu ms (cycles: %d)\n", m_pinID,  m_onTime, m_offTime, m_num_cycles);
+        LOG_NOTIFY("%s blinking. ON: %lu ms, OFF: %lu ms (cycles: %d)\n", m_pinID,  m_onTime, m_offTime, m_num_cycles);
     }
 }
 
@@ -102,7 +102,7 @@ void LedController_Class::blinking_dc(uint32_t period, float duty_cycle, int8_t 
         float dutyCycle = constrain(duty_cycle, 0.0, 1.0); // important decimals for a float point
         uint32_t on_duration = period * dutyCycle;
         uint32_t off_duration = period - on_duration;
-        printf2_FN("%s duty_cycle: %.2f ON: %lums, OFF: %lums (cycles: %d)\n", m_pinID, dutyCycle, on_duration, off_duration, cycles);
+        LOG_NOTIFY("%s duty_cycle: %.2f ON: %lums, OFF: %lums (cycles: %d)\n", m_pinID, dutyCycle, on_duration, off_duration, cycles);
         blinking(on_duration, off_duration, cycles);
     }
 }
@@ -111,7 +111,7 @@ void LedController_Class::set(uint8_t req_state) {
     setFixed();
     m_ledState = req_state;
     digitalWrite(m_pin, req_state ? m_on : m_off);
-    printf99_FN("%s status: %d\n", m_pinID, digitalRead(m_pin));
+    LOG_DEBUG("%s status: %d\n", m_pinID, digitalRead(m_pin));
 }
 
 void LedController_Class::on() {
