@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 07-07-2025 17.18.32
+// Date .........: 08-07-2025 10.12.45
 */
 
 #pragma once
@@ -52,27 +52,28 @@ typedef void (*BeepCallBack)(struct ButtonLongPress_Struct* self, uint16_t beep_
 
 // Struttura per mantenere lo stato di ogni pulsante.
 typedef struct ButtonLongPress_Struct { // io_input_pin_struct_t
-    uint8_t      m_pin = 0;
-    const char*  m_name;                       // Nome del pulsante per identificazione.
-    char         m_pinID[21];                  // contiene [pin:%02d.%-15s] p->pin, p->name,
-    bool         m_pressedLogicLevel = false;          // Livello logico che indica il pulsante premuto (LOW o HIGH).
+    uint8_t         m_pin = 0;
+    const char*     m_name;                       // Nome del pulsante per identificazione.
+    char            m_pinID[21];                  // contiene [pin:%02d.%-15s] p->pin, p->name,
+    bool            m_pressedLogicLevel = false;          // Livello logico che indica il pulsante premuto (LOW o HIGH).
 
-    bool         m_lastButtonState=false;            // Ultima lettura RAW del pin.
-    uint32_t     m_lastDebounceTime=0;           // Ultimo momento in cui il pin ha cambiato stato RAW.
-    bool         m_debouncedState=false;       // Stato del pulsante dopo il debounce
+    bool            m_lastButtonState=false;            // Ultima lettura RAW del pin.
+    uint32_t        m_lastDebounceTime=0;           // Ultimo momento in cui il pin ha cambiato stato RAW.
+    bool            m_debouncedState=false;       // Stato del pulsante dopo il debounce
 
-    bool         m_buttonPressed=false;              // Stato debounced: true se premuto, false se rilasciato.
-    uint32_t     m_pressStartTime=0;             // Timestamp quando il pulsante è stato premuto.
-    uint32_t     m_pressDuration=0;              // Durata dell'ultima pressione (in ms).
+    // bool            m_isPressed=false;              // Stato debounced: true se premuto, false se rilasciato.
+    bool            m_buttonPressed=false;              // Stato debounced: true se premuto, false se rilasciato.
+    uint32_t        m_pressStartTime=0;             // Timestamp quando il pulsante è stato premuto.
+    uint32_t        m_pressDuration=0;              // Durata dell'ultima pressione (in ms).
 
-    uint8_t      m_currentPressLevel=NO_PRESS;          // Livello di pressione attualmente raggiunto (aggiornato durante la pressione).
-    uint8_t      m_lastPressedLevel=NO_PRESS;          // Livello di pressione precedentemente salvato.
-    bool         m_maxLevelReachedAndNotified=false; // Flag per indicare se il massimo livello è stato già notificato.
+    uint8_t         m_currentPressLevel=NO_PRESS;          // Livello di pressione attualmente raggiunto (aggiornato durante la pressione).
+    uint8_t         m_lastPressedLevel=NO_PRESS;          // Livello di pressione precedentemente salvato.
+    bool            m_maxLevelReachedAndNotified=false; // Flag per indicare se il massimo livello è stato già notificato.
 
     // Array e dimensione delle soglie specifiche per questo pulsante.
-    const uint32_t*    m_pressThresholds;
-    uint32_t          m_gapThresholds[MAX_DEFINED_PRESS_LEVELS]; // inseriamo il gap tra i vari livelli di threshold per gestire eventuale allarme
-    int8_t             m_numThresholds=0;
+    const uint32_t* m_pressThresholds;
+    uint32_t        m_gapThresholds[MAX_DEFINED_PRESS_LEVELS]; // inseriamo il gap tra i vari livelli di threshold per gestire eventuale allarme
+    int8_t          m_numThresholds=0;
 
 
 

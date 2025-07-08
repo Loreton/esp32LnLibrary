@@ -1,12 +1,11 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 07-07-2025 19.51.35
+// Date .........: 08-07-2025 09.17.02
 */
 #pragma once
 
     #include <Arduino.h>
 
-    #include <lnLogger.h>
     /*
     ####################################################
        red='\033[0;31m';    redH='\033[1;31m'
@@ -36,9 +35,6 @@
     #define ANSI_CYAN      "\x1B[1;36m"
     #define ANSI_WHITE     "\x1B[1;37m"
 
-
-
-
     // Imposta il livello attivo (es: 4 = DEBUG, 0 = NESSUN LOG)
         // Livelli di log
         #define LOG_LEVEL_NONE   0
@@ -49,10 +45,15 @@
         #define LOG_LEVEL_DEBUG  5
         #define LOG_LEVEL_TRACE  6
 
+
     #ifndef LOG_LEVEL
-        // #define LOG_LEVEL LOG_LEVEL_DEBUG
+        #pragma message "LOG_LEVEL not DEFINED"
         #define LOG_LEVEL LOG_LEVEL_INFO
+    #else
+        // #include "lnGlobalVars.h" // per #pragma message VAR_NAME_VALUE(LOG_LEVEL)
+        // #pragma message VAR_NAME_VALUE(LOG_LEVEL)
     #endif
+
 
 
     #define __FILE_LINE_ID__ ({ \
@@ -89,7 +90,6 @@
     #endif
 
     #if LOG_LEVEL >= LOG_LEVEL_INFO
-        #pragma message "SONO INFO"
         #define LOG_INFO(fmt, ...)  LOG_OUTPUT(ANSI_GREEN, "INF", fmt, ##__VA_ARGS__)
     #else
         #define LOG_INFO(fmt, ...)  do {} while (0)
@@ -102,7 +102,6 @@
     #endif
 
     #if LOG_LEVEL >= LOG_LEVEL_DEBUG
-        #pragma message "SONO DEBUG"
         #define LOG_DEBUG(fmt, ...) LOG_OUTPUT(ANSI_CYAN,  "DBG", fmt, ##__VA_ARGS__)
     #else
         #define LOG_DEBUG(fmt, ...) do {} while (0)

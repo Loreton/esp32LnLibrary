@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 07-07-2025 18.01.35
+// Date .........: 08-07-2025 10.22.45
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -61,7 +61,8 @@ void ButtonLongPress_Struct::init(const char* name, uint8_t pin,
         LOG_DEBUG("[%d]threshold: %lu - GAP: %lu", i, thresholds[i], m_gapThresholds[i]);
     }
 
-    m_lastButtonState = digitalRead(m_pin);
+    // m_lastButtonState = digitalRead(m_pin);
+    m_lastButtonState =  digitalRead(m_pin) == m_pressedLogicLevel;
     m_buttonPressed = (m_lastButtonState == m_pressedLogicLevel);
     m_lastDebounceTime = millis();        // Inizializza il tempo di debounce
     m_debouncedState = m_lastButtonState;   // Inizializza lo stato debounced
@@ -149,7 +150,7 @@ bool ButtonLongPress_Struct::read(ButtonCallback onPressCallback) {
                         m_pressStartTime = 0; // Resetta il timer di inizio pressione.
 
                         // Execute the callback if set and the button was pressed.
-                        if (onPressCallback) { // non mi conviene in quanto qui riesco a gestire tutto il processo di base
+                        if (onPressCallback) {
                             onPressCallback(this); // Pass 'this' (pointer to the current object)
                         }
 
@@ -175,7 +176,61 @@ bool ButtonLongPress_Struct::read(ButtonCallback onPressCallback) {
     return false;
 }
 
+#if 0
+bool ButtonLongPress_Struct::read_prev(ButtonCallback onPressCallback) {
+    bool state = digitalRead(m_pin);
+    uint16_t debounceDelay=300;
 
+    // Se la lettura RAW è cambiata rispetto all'ultima lettura RAW, resetta il timer di debounce.
+    if (state != m_lastButtonState) {
+        m_lastDebounceTime = millis();
+    }
+
+    // Se è trascorso il tempo di debounce e lo stato RAW è stabile.
+    if ((millis() - m_lastDebounceTime) > debounceDelay) {
+
+        if (state != m_buttonPressed) {
+            m_buttonPressed = state;
+            LOG_DEBUG("[%s] state: %d", m_pinID, state);
+
+            // Se il pulsante è stato PREMUTO (il suo stato debounced è ora il pressedLogicLevel).
+            if (m_buttonPressed == m_pressedLogicLevel) {
+                m_pressStartTime = millis(); // Registra il momento della pressione.
+                // NON resettiamo qui i parametri di livello, lo farà la funzione chiamante al rilascio precedente.
+            }
+            // Se il pulsante è stato RILASCIATO (il suo stato debounced è ora diverso dal pressedLogicLevel).
+            else {
+                // Calcola la durata della pressione solo se era stato effettivamente premuto.
+                if (m_pressStartTime != 0) {
+                    m_pressDuration = millis() - m_pressStartTime;
+                    m_pressStartTime = 0; // Resetta il timer di inizio pressione.
+
+                    // Execute the callback if set and the button was pressed.
+                    if (onPressCallback) {
+                        onPressCallback(this); // Pass 'this' (pointer to the current object)
+                    }
+
+                    // NON resettiamo qui i parametri di livello, lo farà la funzione chiamante dopo averli letti.
+                    return true; // Il pulsante è stato rilasciato.
+                }
+            }
+        }
+    } // end debounce check
+
+    // Se il pulsante è attualmente PREMUTO e il timer è attivo, aggiorna il livello di pressione.
+    if (m_buttonPressed == m_pressedLogicLevel && m_pressStartTime != 0) {
+        _checkNewLevel();
+
+        if (m_currentPressLevel == static_cast<uint8_t>(m_numThresholds) && !m_maxLevelReachedAndNotified) {
+            LOG_INFO("[%s] MAX livello di pressione raggiunto: %d", m_name, m_currentPressLevel);
+            m_maxLevelReachedAndNotified = true;
+        }
+    }
+
+    m_lastButtonState = state;
+    return false;
+}
+#endif
 
 
 
@@ -197,11 +252,10 @@ void ButtonLongPress_Struct::notifyCurrentButtonLevel(BeepCallBack buzzerBeep) {
                 // calcolo per gestione durata beep (se richiesto...)
                 elapsed = millis() - m_pressStartTime;
                 next_interval = m_gapThresholds[m_currentPressLevel];
-                // LOG_DEBUG("[%s] PRESSED_LEVEL_%d/%d - elapsed ms:%6lu", m_pinID, m_currentPressLevel, m_numThresholds, elapsed);
+                LOG_DEBUG("[%s] PRESSED_LEVEL_%d/%d - elapsed ms:%6lu", m_pinID, m_currentPressLevel, m_numThresholds, elapsed);
                 phase_beep_duration = next_interval / 5; // arbitrario.... facciamo un beep che è u1/5 del next_threshold time
-                // LOG_DEBUG("[%s] next_interval: %lu - beep_duration: %lu", m_pinID, next_interval, phase_beep_duration);
+                LOG_DEBUG("[%s] next_interval: %lu - beep_duration: %lu", m_pinID, next_interval, phase_beep_duration);
 
-                LOG_NOTIFY("[%s] PRESSED_LEVEL_%d/%d - elapsed ms:%6lu - next_interval: %lu - beep_duration: %lu", m_pinID, m_currentPressLevel, m_numThresholds, elapsed, next_interval, phase_beep_duration);
                 switch (m_currentPressLevel) {
                     case PRESSED_LEVEL_1:
                     case PRESSED_LEVEL_2:
@@ -230,6 +284,7 @@ void ButtonLongPress_Struct::notifyCurrentButtonLevel(BeepCallBack buzzerBeep) {
                         buzzerBeep(this, 1000);
                     }
                     LOG_WARN("[%s] ALARM! max pressed level %d reached", m_pinID, m_currentPressLevel);
+                    // buzzer1->pulse(1000);
                     lastBeepTime = millis();
                 }
             }

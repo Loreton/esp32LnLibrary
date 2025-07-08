@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 07-07-2025 17.42.56
+// Date .........: 08-07-2025 09.31.25
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -66,7 +66,7 @@ void setup() {
     delay(2000);
 
 
-    LOG_INFO("Avvio test pulsante con debounce e gestione del reset dei livelli nella funzione chiamante.");
+    // LOG_INFO("Avvio test pulsante con debounce e gestione del reset dei livelli nella funzione chiamante.");
 
     pinMode(pressControlRelay_pin, OUTPUT);
     digitalWrite(pressControlRelay_pin, HIGH); // Assumiamo un relè che si attiva con LOW
@@ -78,10 +78,12 @@ void setup() {
     activeBuzzer.init("Buzzer", activeBuzzer_pin, HIGH);
 
     startButton.init("startButton",  startButton_pin, LOW, START_BUTTON_THRESHOLDS, NUM_START_BUTTON_THRESHOLDS);
-    startButton.showStatus();
+    // showStatusCB(&startButton);
+    startButton.showStatus(showStatusCB);
 
     pumpState.init("pumpState",      pumpState_pin,   LOW, PUMP_STATE_THRESHOLDS, NUM_PUMP_STATE_THRESHOLDS);
-    pumpState.showStatus();
+    pumpState.showStatus(showStatusCB);
+    // showStatusCB(&pumpState);
 
 
     // finalMemory = ESP.getFreeHeap();
@@ -92,7 +94,7 @@ void setup() {
     // DEBUG_LOG("button Memory:      %ld bytes", buttonMemory - initialMemory); // Stima RAM allocata
     // DEBUG_LOG("memoria occupata:   %ld bytes", finalMemory - initialMemory); // Stima RAM allocata
 
-    waitForEnter();
+    // waitForEnter();
 }
 
 
@@ -108,6 +110,7 @@ void loop() {
         first_run=false;
         // activeBuzzer.blinking_dc(400, .75, 4);
         startedMillis=millis();
+        LOG_INFO("system ready!");
     }
     now = millis() - startedMillis;
     activeBuzzer.updateStatus();
@@ -147,7 +150,7 @@ void loop() {
 
 */
 
-    delay(10);
+    // delay(10);
 }
 
 #endif // #ifdef __ln_MODULE_DEBUG_TEST__

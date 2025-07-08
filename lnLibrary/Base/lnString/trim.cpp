@@ -1,14 +1,13 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 30-06-2025 16.18.40
+// Date .........: 08-07-2025 09.20.00
 */
 
 
 // ---------------------------------
 // lnLibrary headers files
 // ---------------------------------
-#define LOG_LEVEL 0
-#include "../lnMainInclude/@logMacros.h"
+#include "../lnMainInclude/lnLogger.h"
 
 
 
@@ -18,7 +17,7 @@
 // deallocated using the same allocator with which it was allocated.
 // The return value must NOT be deallocated using free() etc.
 void ltrim_ok(char *s) {
-    printf1_NFN("---------- ltrim --------\n");
+    LOG_INFO("---------- ltrim --------\n");
     // Pointer to the beginning of the trimmed string
     char *ptr = s;
     char *ptr0 = s;
@@ -30,8 +29,8 @@ void ltrim_ok(char *s) {
     s-=2;
     int lun=s-ptr0;
     int len=strlen(s);
-    printf1_NFN("\t1. lastchar: '%c'\n", *s); // verifica
-    printf1_NFN("\t2. '%s' lun: %d (strlen: %d)\n", s, lun, len);
+    LOG_INFO("\t1. lastchar: '%c'\n", *s); // verifica
+    LOG_INFO("\t2. '%s' lun: %d (strlen: %d)\n", s, lun, len);
 }
 
 
@@ -42,7 +41,7 @@ void ltrim_ok(char *s) {
 // The return value must NOT be deallocated using free() etc.
 
 void ltrim(char *s) {
-    printf1_NFN("---------- ltrim --------\n");
+    LOG_INFO("---------- ltrim --------\n");
     // Pointer to the beginning of the trimmed string
     char *dest = s;
     char *ptr = s;
@@ -55,24 +54,24 @@ void ltrim(char *s) {
     while (*dest++ = *ptr++);
     ptr--; // points to '\0'
     int lun=ptr-s;
-    printf1_NFN("\t1. first char: '%c'\n", *s); // verifica
-    printf1_NFN("\t2. last  char: '%c'\n", *(--ptr)); // verifica
-    printf1_NFN("\t3. '%s' lun: %d (strlen: %d) -non ho capito perché diverso ma non importa-\n", s, lun, (int) strlen(s));
+    LOG_INFO("\t1. first char: '%c'\n", *s); // verifica
+    LOG_INFO("\t2. last  char: '%c'\n", *(--ptr)); // verifica
+    LOG_INFO("\t3. '%s' lun: %d (strlen: %d) -non ho capito perché diverso ma non importa-\n", s, lun, (int) strlen(s));
 }
 
 
 void rtrim(char *s) {
-    printf1_NFN("---------- rtrim --------\n");
+    LOG_INFO("---------- rtrim --------\n");
 
     char *p = s;
     while (*p++); // goto end of string
     p--; // 1 per l'ultimo ++
     int lun=p-s;
     int len=strlen(s);
-    printf1_NFN("\t1. '%s' lun: %d (strlen: %d)\n", s, lun, len);
-    // printf1_NFN("lun: %d\n", lun);
-    // printf1_NFN("after rtrim: '%s' lun: %d (strlen: %d)\n", s, lun, strlen(s));
-    printf1_NFN("\t2. lastchar: '%c'\n", *p); // verifica
+    LOG_INFO("\t1. '%s' lun: %d (strlen: %d)\n", s, lun, len);
+    // LOG_INFO("lun: %d\n", lun);
+    // LOG_INFO("after rtrim: '%s' lun: %d (strlen: %d)\n", s, lun, strlen(s));
+    LOG_INFO("\t2. lastchar: '%c'\n", *p); // verifica
 
    // move backward and Skip trailing spaces
     p--; // skip  '\0'
@@ -82,8 +81,8 @@ void rtrim(char *s) {
     *(++p)=0;
     lun=p-s;
     len=strlen(s);
-    printf1_NFN("\t3. lastchar: '%c'\n", *(--p)); // verifica
-    printf1_NFN("\t4. '%s' lun: %d (strlen: %d)\n", s, lun, len);
+    LOG_INFO("\t3. lastchar: '%c'\n", *(--p)); // verifica
+    LOG_INFO("\t4. '%s' lun: %d (strlen: %d)\n", s, lun, len);
 
 }
 
@@ -91,15 +90,15 @@ void rtrim(char *s) {
 #if 0
 int main() {
     char s[] = " \t  Hello, Geeks!    x";
-    printf1_NFN("original: '%s'\n", s);
+    LOG_INFO("original: '%s'\n", s);
     int lun=strlen(s);
-    printf1_NFN("lun0: %d\n", lun);
+    LOG_INFO("lun0: %d\n", lun);
 
     ltrim(s);
-    printf1_NFN("\n\n");
+    LOG_INFO("\n\n");
     rtrim(s);
     int len=strlen(s);
-    printf1_NFN("final: '%s' lun: %d\n", s, len);
+    LOG_INFO("final: '%s' lun: %d\n", s, len);
     return 0;
 }
 
