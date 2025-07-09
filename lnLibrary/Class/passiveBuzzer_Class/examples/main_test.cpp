@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 25-06-2025 17.15.57
+// Date .........: 09-07-2025 13.56.21
 // ref:
 // https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
@@ -19,7 +19,7 @@
 #define passiveBuzzer_pin 22 // Define the output pin for the buzzer
 
 // --- Example Usage ---
-
+ 
 // Frequencies for an approximate C Major scale
 int C_major_scale[] = {
     262, // C4

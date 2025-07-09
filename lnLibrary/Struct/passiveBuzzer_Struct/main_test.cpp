@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 25-06-2025 16.35.22
+// Date .........: 09-07-2025 08.06.44
 // ref:
 // https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
@@ -9,11 +9,10 @@
 
 #include <Arduino.h> // in testa anche per le definizioni dei type
 
-#define LOG_LEVEL_2
-#define LOG_LEVEL_99x
-#include "@globalVars.h" // printf:XFN()
+#include "lnLogger.h"
+#include "lnSerialRead.h"
 
-#include "ledc_buzzer_Struct.h"
+#include "PassiveBuzzer_Struct.h"
 
 #define passiveBuzzer_pin 22 // OUTPUT
 
@@ -34,12 +33,14 @@ int num_notes_C_major = sizeof(C_major_scale) / sizeof(C_major_scale[0]);
 
 // Crea un'istanza del buzzer
 #define LEDC_CHANNEL 0
-passiveBuzzer_sc myBuzzer("passiveBz", passiveBuzzer_pin, LEDC_CHANNEL, 10); // Buzzer collegato al GPIO xx, canale LEDC 0, risoluzione 10 bit
+// PassiveBuzzer_Struct myBuzzer("passiveBz", passiveBuzzer_pin, LEDC_CHANNEL, 10); // Buzzer collegato al GPIO xx, canale LEDC 0, risoluzione 10 bit
+PassiveBuzzer_Struct myBuzzer;
 
 void setup() {
     Serial.begin(115200);
     delay(1000);
-    printf99_FN("ESP32 Buzzer Struct with Scale Example (Fixed ledcSetFreq error)\n");
+    LOG_DEBUG("ESP32 Buzzer Struct with Scale Example (Fixed ledcSetFreq error)\n");
+    myBuzzer.init("passiveBz", passiveBuzzer_pin, LEDC_CHANNEL, 10); // Buzzer collegato al GPIO xx, canale LEDC 0, risoluzione 10 bit
 
     myBuzzer.begin(); // Inizializza il buzzer
 }
@@ -75,7 +76,7 @@ void loop() {
         default:
             myBuzzer.noTone();
             step = 0; // Ricomincia la sequenza
-            printf99_FN("Sequenza dimostrativa completata, riavvio.\n");
+            LOG_DEBUG("Sequenza dimostrativa completata, riavvio.\n");
             waitForEnter();
             break;
         }

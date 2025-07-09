@@ -1,15 +1,13 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 21-06-2025 19.07.46
+// Date .........: 09-07-2025 13.55.58
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
 #include <Arduino.h>    // in testa anche per le definizioni dei type
 
-#define LOG_LEVEL_0
-#define LOG_LEVEL_99
-#include "@logMacros.h" // printf:XFN()
-#include "@SerialRead.h" // waitForEnter()
+#include "lnLogger.h" // printf:XFN()
+#include "lnSerialRead.h" // waitForEnter()
 
 #include "ledc_buzzer.h"
 
@@ -21,7 +19,7 @@ Buzzer_t myBuzzer; // Istanza globale del buzzer
 void setup() {
     Serial.begin(115200);
     while(!Serial) {};
-    Serial.println("ESP32 Buzzer External Functions Example");
+    LOG_INFO("ESP32 Buzzer External Functions Example");
 
     buzzer_init(&myBuzzer, passiveBuzzer_pin, 0); // Inizializza il buzzer
 }
@@ -50,7 +48,7 @@ void loop() {
             default:
                 buzzer_noTone(&myBuzzer);
                 step = 0;
-                Serial.println("Sequenza completata, riavvio.");
+                LOG_INFO("Sequenza completata, riavvio.");
                 waitForEnter();
                 break;
         }

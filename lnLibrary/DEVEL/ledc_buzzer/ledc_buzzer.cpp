@@ -1,14 +1,12 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 21-06-2025 19.13.48
+// Date .........: 09-07-2025 13.51.57
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
 #include <Arduino.h>    // in testa anche per le definizioni dei type
 
-#define LOG_LEVEL_0
-#define LOG_LEVEL_99
-#include "@logMacros.h" // printf_XFN()
+// #include "@logMacros.h" // printf_XFN()
 
 #include "ledc_buzzer.h"
 
@@ -41,9 +39,9 @@ void buzzer_playTone(Buzzer_t* b, int frequency, unsigned long duration) {
         b->toneDuration = duration;
         b->isPlaying = true;
 
-        printf99_FN("Avvio tono (Pin %d) %d Hz per %lu ms\n", b->pin, frequency, duration);
+        // printf99_FN("Avvio tono (Pin %d) %d Hz per %lu ms\n", b->pin, frequency, duration);
     } else {
-        printf99_FN("Buzzer (Pin %d) occupato, impossibile avviare nuovo tono.\n", b->pin);
+        // printf99_FN("Buzzer (Pin %d) occupato, impossibile avviare nuovo tono.\n", b->pin);
     }
 }
 
@@ -56,7 +54,7 @@ void buzzer_handle(Buzzer_t* b) {
     if (b->isPlaying) {
         if (millis() - b->toneStartTime >= b->toneDuration) {
             buzzer_noTone(b);
-            printf99_FN("Tono terminato (Pin %d)\n", b->pin);
+            // printf99_FN("Tono terminato (Pin %d)\n", b->pin);
         }
     }
 }
@@ -70,7 +68,7 @@ void buzzer_detach(Buzzer_t* b) {
         buzzer_noTone(b);
         ledcDetachPin(b->pin); // Potrebbe causare avvisi se non era attaccato, ma non errori gravi
         b->isAttached = false;
-        printf0_FN("Buzzer detached.\n");
+        // printf0_FN("Buzzer detached.\n");
     }
 }
 

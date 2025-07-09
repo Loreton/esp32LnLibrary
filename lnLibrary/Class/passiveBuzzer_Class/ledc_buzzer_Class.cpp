@@ -1,14 +1,13 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 27-06-2025 15.26.21
+// Date .........: 09-07-2025 13.39.54
 //
 
 // file: ledc_buzzer_Class.cpp
 #include <Arduino.h>
-#define LOG_LEVEL_0x // Consider reviewing these log levels if they are globally defined elsewhere
-#define LOG_LEVEL_2
-#define LOG_LEVEL_99x
-#include "@globalVars.h" // Assuming this contains printf_XFN() and similar
+
+#include "lnLogger.h" // Assuming this contains printf_XFN() and similar
+#include "lnGlobalVars.h" // Assuming this contains printf_XFN() and similar
 
 #include "ledc_buzzer_Class.h" // Include the new class header
 
@@ -43,7 +42,7 @@ void passiveBuzzer_Class::begin() {
     unsigned long actualFreq = ledcSetup(m_channel, 1, m_resolutionBits); // Initial frequency > 0, otherwise it errors
 
     if (actualFreq == 0) {
-        printf2_FN("[ERRORE] ledcSetup() FALLITO per canale %d. Controlla pin, canale e risoluzione.\n", m_channel);
+        LOG_INFO("[ERRORE] ledcSetup() FALLITO per canale %d. Controlla pin, canale e risoluzione.\n", m_channel);
         // You can add error handling logic here, e.g., halt execution
         while (true); // Halts the program in case of a critical error
     } else {
@@ -51,7 +50,7 @@ void passiveBuzzer_Class::begin() {
         // and the resolution. The frequency will then be set by playTone/playScale.
         ledcAttachPin(m_pin, m_channel);
         noTone(); // Ensure it's off at the start
-        printf2_FN("%s Channel: %d - Risoluzione: %d bit inizializzato.\n", m_pinID, m_channel, m_resolutionBits);
+        LOG_INFO("%s Channel: %d - Risoluzione: %d bit inizializzato.\n", m_pinID, m_channel, m_resolutionBits);
     }
 }
 
@@ -59,7 +58,7 @@ void passiveBuzzer_Class::begin() {
 // Sets the frequency and a specific duty cycle (0-100%)
 void passiveBuzzer_Class::playToneDutyCycle(int frequency, float dutyCyclePercent, uint32_t duration) {
     if (m_isPlaying || m_isPlayingScale) {
-        printf2_FN("%s occupato, impossibile avviare nuovo tono.\n", m_pinID);
+        LOG_INFO("%s occupato, impossibile avviare nuovo tono.\n", m_pinID);
         return;
     }
 
@@ -76,14 +75,14 @@ void passiveBuzzer_Class::playToneDutyCycle(int frequency, float dutyCyclePercen
     m_toneStartTime = millis();
     m_toneDuration = duration;
     m_isPlaying = true;
-    printf2_FN("%s Avvio tono DC freq: %d Hz - DC: %.2f%%, Durata: %lu ms\n", m_pinID, m_currentFrequency, dutyCyclePercent, m_toneDuration);
+    LOG_INFO("%s Avvio tono DC freq: %d Hz - DC: %.2f%%, Durata: %lu ms\n", m_pinID, m_currentFrequency, dutyCyclePercent, m_toneDuration);
 }
 
 // --- Feature 2: Fixed Sound of Variable Duration (50% Duty Cycle) ---
 // Uses ledcWriteTone() for an automatic 50% duty cycle
 void passiveBuzzer_Class::playToneFixed(int frequency, uint32_t duration) {
     if (m_isPlaying || m_isPlayingScale) {
-        printf2_FN("%s occupato, impossibile avviare nuovo tono.\n", m_pinID);
+        LOG_INFO("%s occupato, impossibile avviare nuovo tono.\n", m_pinID);
         return;
     }
 
@@ -93,18 +92,18 @@ void passiveBuzzer_Class::playToneFixed(int frequency, uint32_t duration) {
     m_toneStartTime = millis();
     m_toneDuration = duration;
     m_isPlaying = true;
-    printf2_FN("%s Avvio tono DC freq: %d Hz - Durata: %lu ms\n", m_pinID, m_currentFrequency, m_toneDuration);
+    LOG_INFO("%s Avvio tono DC freq: %d Hz - Durata: %lu ms\n", m_pinID, m_currentFrequency, m_toneDuration);
 }
 
 // Feature 3: Play a Scale (Non-Blocking)
 void passiveBuzzer_Class::playScale(int noteFrequencies[], int numberOfNotes, uint32_t singleNoteDuration, bool upDirection) {
     if (m_isPlaying || m_isPlayingScale) {
-        printf2_FN("%s occupato, impossibile avviare la scala.\n", m_pinID);
+        LOG_INFO("%s occupato, impossibile avviare la scala.\n", m_pinID);
         return;
     }
 
     if (numberOfNotes == 0 || noteFrequencies == nullptr) {
-        printf2_FN("%s suonare una scala vuota.\n", m_pinID); // Corrected message, "occupato" was misleading here
+        LOG_INFO("%s suonare una scala vuota.\n", m_pinID); // Corrected message, "occupato" was misleading here
         return;
     }
 
@@ -125,7 +124,7 @@ void passiveBuzzer_Class::playScale(int noteFrequencies[], int numberOfNotes, ui
     ledcWriteTone(m_channel, m_scaleNotes[m_currentNoteIndex]);
     m_currentFrequency = m_scaleNotes[m_currentNoteIndex]; // Update current frequency
     m_noteStartTime = millis();
-    printf2_FN("%s Avvio scala %s\n", m_pinID, (m_scaleDirectionUp ? "Ascendente" : "Discendente"));
+    LOG_INFO("%s Avvio scala %s\n", m_pinID, (m_scaleDirectionUp ? "Ascendente" : "Discendente"));
 }
 
 // Method to stop any sound (single tone or scale)
@@ -141,7 +140,7 @@ void passiveBuzzer_Class::handle() {
     if (m_isPlaying) {
         if (millis() - m_toneStartTime >= m_toneDuration) {
             noTone();
-            printf2_FN("%s Tono singolo terminato.\n", m_pinID);
+            LOG_INFO("%s Tono singolo terminato.\n", m_pinID);
         }
     } else if (m_isPlayingScale) {
         if (millis() - m_noteStartTime >= m_noteDuration) {
@@ -155,13 +154,13 @@ void passiveBuzzer_Class::handle() {
             // Check if the scale is finished
             if ((m_scaleDirectionUp && m_currentNoteIndex >= m_numNotes) || (!m_scaleDirectionUp && m_currentNoteIndex < 0)) {
                 noTone();
-                printf2_FN("%s Scala terminata.\n", m_pinID);
+                LOG_INFO("%s Scala terminata.\n", m_pinID);
             } else {
                 // Play the next note
                 ledcWriteTone(m_channel, m_scaleNotes[m_currentNoteIndex]);
                 m_currentFrequency = m_scaleNotes[m_currentNoteIndex]; // Update current frequency
                 m_noteStartTime = millis(); // Reset start time for the new note
-                printf99_FN("%s nota %d.\n", m_pinID, m_scaleNotes[m_currentNoteIndex]);
+                LOG_DEBUG("%s nota %d.\n", m_pinID, m_scaleNotes[m_currentNoteIndex]);
             }
         }
     }
