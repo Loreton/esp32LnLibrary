@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 07-07-2025 17.46.39
+// Date .........: 11-07-2025 09.18.52
 //
 
 #include <Arduino.h>    // in testa anche per le definizioni dei type
@@ -28,7 +28,7 @@ void PinController_Struct::init(const char *name, uint8_t pin, uint8_t active_le
 
 
 
-void PinController_Struct::updateStatus() {
+void PinController_Struct::update() {
     uint32_t now = millis();
 
     if (m_fixed) {
