@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 08-07-2025 09.17.02
+// Date .........: 14-07-2025 16.39.03
 */
 #pragma once
 
@@ -55,6 +55,31 @@
     #endif
 
 
+    #define __LOG_TIMESTAMP_BASE__ ({ \
+        static char tbuf[16]; \
+        uint32_t now = millis(); \
+        uint32_t ms = now % 1000; \
+        uint32_t s = (now / 1000) % 60; \
+        uint32_t m = (now / 60000) % 60; \
+        uint32_t h = (now / 3600000); \
+        snprintf(tbuf, sizeof(tbuf), "%02lu:%02lu:%02lu.%03lu", h, m, s, ms); \
+        tbuf; \
+    })
+
+
+    #include "esp_timer.h"  // assicurati sia incluso
+    #define __LOG_TIMESTAMP_ESP_TIMER__ ({ \
+        static char tbuf[16]; \
+        int64_t us = esp_timer_get_time(); \
+        uint32_t ms = (us / 1000) % 1000; \
+        uint32_t s  = (us / 1000000) % 60; \
+        uint32_t m  = (us / 60000000) % 60; \
+        uint32_t h  = (us / 3600000000); \
+        snprintf(tbuf, sizeof(tbuf), "%02lu:%02lu:%02lu.%03lu", h, m, s, ms); \
+        tbuf; \
+    })
+
+
 
     #define __FILE_LINE_ID__ ({ \
         static char out[128]; \
@@ -68,8 +93,40 @@
     })
 
 
+    #define __MAX_FILENAME_LENGTH__ 15
+    #define __FILENAME_PADDED_LINE_ID__ ({ \
+        static char out[32]; \
+        const char *filename = strrchr(__FILE__, '/'); \
+        filename = filename ? filename + 1 : __FILE__; \
+        const char *sep = strrchr(filename, '_'); \
+        if (!sep) sep = strrchr(filename, '.'); \
+        size_t len = sep ? (size_t)(sep - filename) : strlen(filename); \
+        const size_t maxlen = __MAX_FILENAME_LENGTH__; \
+        char name[maxlen + 1]; \
+        if (len > maxlen) len = maxlen; \
+        memset(name, '.', maxlen); \
+        memcpy(name, filename, len); \
+        name[maxlen] = '\0'; \
+        snprintf(out, sizeof(out), "%s.%03d", name, __LINE__); \
+        out; \
+    })
+
+
+
+    // #define LOG_OUTPUT(color, tag, fmt, ...) \
+    //     Serial.printf("%s[%s][%s] " fmt "%s\n", color, __FILE_LINE_ID__, tag, ##__VA_ARGS__, ANSI_RESET)
+
+
+    // #define __LOG_TIMESTAMP__ __LOG_TIMESTAMP_BASE__
+    #define __LOG_TIMESTAMP__ __LOG_TIMESTAMP_ESP_TIMER__
+    // #define __FILE_AND_LINE__ __FILE_LINE_ID__
+    #define __FILE_AND_LINE__ __FILENAME_PADDED_LINE_ID__
+
     #define LOG_OUTPUT(color, tag, fmt, ...) \
-      Serial.printf("%s[%s][%s] " fmt "%s\n", color, __FILE_LINE_ID__, tag, ##__VA_ARGS__, ANSI_RESET)
+        Serial.printf("%s[%s][%s][%s] " fmt "%s\n", \
+        color, __LOG_TIMESTAMP__, __FILENAME_PADDED_LINE_ID__, tag, ##__VA_ARGS__, ANSI_RESET)
+        // color, __LOG_TIMESTAMP__, __FILE_LINE_ID__, tag, ##__VA_ARGS__, ANSI_RESET)
+
 
 
     /*

@@ -1,11 +1,12 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 09-07-2025 18.09.26
+// Date .........: 13-07-2025 14.28.11
 //
 
 #include <Arduino.h>    // in testa anche per le definizioni dei type
 #include "driver/ledc.h"
 #include "lnLogger.h"
+#include "lnSetPinID.h"
 
 #include "PassiveBuzzer_Struct.h"
 
@@ -14,9 +15,14 @@ PassiveBuzzer_Struct::PassiveBuzzer_Struct(void) {}
 
 // Costruttore: chiamato quando crei un oggetto Buzzer
 // PassiveBuzzer_Struct::PassiveBuzzer_Struct(const char* pin_name, int buzzerPin, int ledcChannel, int resBits) {
-void PassiveBuzzer_Struct::init(const char* pin_name, int buzzerPin, int ledcChannel, int resBits) {
+void PassiveBuzzer_Struct::init(const char* pin_name, int buzzerPin, uint8_t active_level, int ledcChannel, int resBits) {
     m_pin              = buzzerPin;
     m_name             = pin_name;
+
+    m_activeLevel      = active_level;
+    m_on               = m_activeLevel;
+    m_off              = !m_activeLevel;
+
     m_channel          = ledcChannel;
     m_resolutionBits   = resBits;
     m_currentFrequency = 0; // Inizialmente nessuna frequenza
@@ -33,8 +39,16 @@ void PassiveBuzzer_Struct::init(const char* pin_name, int buzzerPin, int ledcCha
     m_isPlayingScale   = false;
     m_scaleDirectionUp = true;
 
-    int cx = snprintf(m_pinID, PIN_ID_MAXLENGTH-6, "%[%s", m_name);
-    cx = snprintf(m_pinID+cx, PIN_ID_MAXLENGTH-cx, ".%02d]:", m_pin);
+
+    setPinID(m_pinID, sizeof(m_pinID)-1, m_name,  m_pin);
+
+    // Imposta il relè allo stato iniziale (spento)
+    pinMode(m_pin, OUTPUT);
+    digitalWrite(m_pin, m_off);
+
+    // int cx = snprintf(m_pinID, PIN_ID_MAXLENGTH-6, "%[%s", m_name);
+    // cx = snprintf(m_pinID+cx, PIN_ID_MAXLENGTH-cx, ".%02d]:", m_pin);
+    LOG_DEBUG("%s inizializzato. active level: %s", m_pinID,  m_activeLevel ? "ON" : "OFF");
     // LOG_INFO("Written %d/%d chars", cx, PIN_ID_LENGTH); Serial non ancora attiva
 }
 

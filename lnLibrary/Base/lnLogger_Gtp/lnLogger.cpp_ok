@@ -1,0 +1,54 @@
+/*
+// updated by ...: Loreto Notarantonio
+// Date .........: 15-07-2025 07.55.50
+*/
+
+#include <string.h>
+#include <time.h>
+
+#include "lnLogger.h"
+
+static const size_t FILENAME_PAD = 15;
+
+void log_write(const char* color, const char* tag, const char* file, int line, const char* fmt, ...) {
+    // static evita allocazione ripetuta su stack
+    static char msgBuffer[256];
+    static char timestamp[32];
+    static char fname[24];
+    static const char fillingChar='.';
+
+    // Timestamp
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    struct tm tm_info;
+    if (localtime_r(&tv.tv_sec, &tm_info)) {
+        snprintf(timestamp, sizeof(timestamp), "%02d:%02d:%02d.%03ld", tm_info.tm_hour, tm_info.tm_min, tm_info.tm_sec, tv.tv_usec / 1000);
+    } else {
+        uint64_t us = esp_timer_get_time();
+        snprintf(timestamp, sizeof(timestamp), "%02llu.%03llu", us / 1000000ULL, (us / 1000ULL) % 1000);
+    }
+
+    // Filename basename (no path, no ext)
+    const char *base = strrchr(file, '/');
+    base = base ? base + 1 : file;
+    const char *sep = strrchr(base, '_');
+    if (!sep) sep = strrchr(base, '.');
+    size_t len = sep ? (size_t)(sep - base) : strlen(base);
+    if (len > FILENAME_PAD) len = FILENAME_PAD;
+
+    // memset(fname, ' ', FILENAME_PAD);
+    memset(fname, fillingChar, FILENAME_PAD);
+    memcpy(fname, base, len);
+    fname[FILENAME_PAD] = '\0';
+
+    // Compose header
+    Serial.printf("%s[%s][%s.%03d][%s] ", color, timestamp, fname, line, tag);
+
+        // Log body
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(msgBuffer, sizeof(msgBuffer), fmt, args);
+    va_end(args);
+    Serial.print(msgBuffer);
+    Serial.println(ANSI_RESET);
+}

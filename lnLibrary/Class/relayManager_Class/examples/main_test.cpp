@@ -1,12 +1,14 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 26-06-2025 17.17.34
+// Date .........: 11-07-2025 15.55.00
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
+#ifdef __ln_MODULE_DEBUG_TEST__
 
 #include <Arduino.h>    // in testa anche per le definizioni dei type
-#include "@SerialRead.h"
-#include "relayManager_Class.h"
+#include "lnLogger.h"
+#include "lnSerialRead.h"
+#include "../relayManager_Class.h"
 
 
 // --- Esempio di utilizzo nel file .ino ---
@@ -21,15 +23,15 @@ RelayManager relay2(17, LOW);
 void setup() {
     Serial.begin(115200);
     delay(1000);
-    Serial.println("Gestione Multi-Relè (solo Pulsetime) Avviata!");
+    LOG_INFO("Gestione Multi-Relè (solo Pulsetime) Avviata!");
 
     // Esempi di avvio per relay1
     relay1.startPulse(30000); // Pulsetime di 5 secondi
-    Serial.println("Relay 1: Pulsetime avviato.");
+    LOG_INFO("Relay 1: Pulsetime avviato.");
 
     // Esempi di avvio per relay2
     relay2.setRelay(true); // Accende il relè 2
-    Serial.println("Relay 2: Acceso.");
+    LOG_INFO("Relay 2: Acceso.");
     delay(1000);
 }
 
@@ -55,11 +57,11 @@ void loop() {
     static unsigned long lastPrintTime = 0;
     if (millis() - lastPrintTime >= 2000) { // Stampa ogni 2 secondi
         lastPrintTime = millis();
-        Serial.println("--- Stato Relè ---");
-        Serial.printf("Relay 1 (Pin %d): Stato: %s, Pulsetime Rimanente: %lu ms\n",
+        LOG_INFO("--- Stato Relè ---");
+        LOG_INFO("Relay 1 (Pin %d): Stato: %s, Pulsetime Rimanente: %lu ms",
                       relay1.getRelayPin(), relay1.getRelayState() ? "ACCESO" : "SPENTO",
                       relay1.getRemainingPulseTime());
-        Serial.printf("Relay 2 (Pin %d): Stato: %s, Pulsetime Rimanente: %lu ms\n",
+        LOG_INFO("Relay 2 (Pin %d): Stato: %s, Pulsetime Rimanente: %lu ms",
                       relay2.getRelayPin(), relay2.getRelayState() ? "ACCESO" : "SPENTO",
                       relay2.getRemainingPulseTime());
     }
@@ -69,7 +71,10 @@ void loop() {
     elapsed = now - startedMillis;
     if (elapsed >60000 && elapsed<60100) {
         relay1.setRelay(false); // Accende il relè 2
-        Serial.println("Relay 2: Spento.");
+        LOG_INFO("Relay 2: Spento.");
         waitForEnter();
     }
 }
+
+
+#endif

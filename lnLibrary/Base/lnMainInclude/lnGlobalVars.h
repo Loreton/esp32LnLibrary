@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 07-07-2025 19.27.05
+// Date .........: 11-07-2025 17.20.34
 */
 
 
@@ -35,6 +35,7 @@
         const char PROGMEM *str_pinLevel[]   = {"LOW", "HIGH"};
         const char PROGMEM *str_TrueFalse[]  = {"FALSE", "TRUE"};
         const char PROGMEM *str_OffOn[]      = {"OFF", "ON"};
+        const char PROGMEM *str_OnOff[]      = {"OFF", "ON"};
         const char PROGMEM *str_ON           = "ON";
         const char PROGMEM *str_OFF          = "OFF";
         const char PROGMEM *str_INPUT        = "INPUT";
@@ -56,6 +57,7 @@
         extern const char PROGMEM *str_pinLevel[];
         extern const char PROGMEM *str_TrueFalse[];
         extern const char PROGMEM *str_OffOn[];
+        extern const char PROGMEM *str_OnOff[];
         extern const char PROGMEM *str_ON;
         extern const char PROGMEM *str_OFF;
         extern const char PROGMEM *str_INPUT;

@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 09-07-2025 08.06.00
+// Date .........: 14-07-2025 15.12.25
 //
 
 #pragma once
@@ -16,6 +16,12 @@
         int      m_pin              = 0;
         const    char*  m_name;
         char     m_pinID[PIN_ID_MAXLENGTH+1];  // conterrà [%-10s:%02d] p->pin, p->name,
+
+
+        uint8_t  m_activeLevel=LOW; //              Livello che attiva il relè (HIGH o LOW)
+        uint8_t  m_on=HIGH; //              Livello che attiva il relè (HIGH o LOW)
+        uint8_t  m_off=LOW; //              Livello che attiva il relè (HIGH o LOW)
+
         int      m_channel          = 0;
         int      m_resolutionBits   = 10; // resolution bits=10
         int      m_currentFrequency = 0;
@@ -34,10 +40,11 @@
         bool     m_isPlayingScale   = false;
         bool     m_scaleDirectionUp = true;
 
+        // Costruttore: chiamato quando crei un oggetto Buzzer
         PassiveBuzzer_Struct(void);
-      // Costruttore: chiamato quando crei un oggetto Buzzer
+
         // PassiveBuzzer_Struct(const char* pin_name, int buzzerPin, int ledcChannel, int resBits = 10);
-        void init(const char* pin_name, int buzzerPin, int ledcChannel, int resBits = 10);
+        void init(const char* pin_name, int buzzerPin, uint8_t active_level, int ledcChannel, int resBits = 10);
         // init(int buzzerPin, int ledcChannel, int resBits = 10);
         void begin();
         void playToneDutyCycle(int frequency, float dutyCyclePercent, uint32_t duration);

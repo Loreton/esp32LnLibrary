@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 11-07-2025 09.18.50
+// Date .........: 13-07-2025 14.23.43
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 #pragma once
@@ -8,22 +8,26 @@
 
 // --- Definizione della Struttura del LED ---
 
-typedef void (*pinControllerCallback)(struct PinController_Struct* self);  // se volessi usare una callback
+typedef void (*pinControllerCallback)(struct LedController_Struct* self);  // se volessi usare una callback
 /** esempio:
-void myLedControllerHandler(PinController_Struct* led) {
+void myLedControllerHandler(LedController_Struct* led) {
     Serial.printf("ledController Callback: %s\n", led->_pinID);
 }
 */
 
 
-typedef struct PinController_Struct {
+typedef struct LedController_Struct {
     uint8_t        m_pin;
     const   char*  m_name;
     char           m_pinID[21];  // conterrà [pin:%02d.%-15s] p->pin, p->name,
 
-    uint8_t        m_onLevel       = HIGH;
+    uint8_t        m_activeLevel    = HIGH;
     uint8_t        m_on             = HIGH;
     uint8_t        m_off            = LOW;
+
+    // uint8_t         m_activeLevel=LOW; //              Livello che attiva il relè (HIGH o LOW)
+    // uint8_t         m_On=LOW; //              Livello che attiva il relè (HIGH o LOW)
+    // uint8_t         m_Off=LOW; //              Livello che attiva il relè (HIGH o LOW)
 
     // Blinking parameters
     uint32_t       m_onTime     = 500;
@@ -43,7 +47,7 @@ typedef struct PinController_Struct {
     uint32_t       m_lastToggle     = 0;
     // bool           m_isBusy         = false;
 
-
+    LedController_Struct(void); // costructor
 
     void init(const char *name, uint8_t pin, uint8_t active_level=HIGH);
     void update();
@@ -67,6 +71,6 @@ typedef struct PinController_Struct {
     void _clearAll();
 
 
-} PinController_Struct;
+} LedController_Struct;
 
 

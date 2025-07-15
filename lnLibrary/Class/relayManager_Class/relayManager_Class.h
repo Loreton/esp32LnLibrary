@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 27-06-2025 15.49.04
+// Date .........: 11-07-2025 15.46.30
 //
 
 #include <Arduino.h> // Necessario per funzioni come pinMode, digitalWrite, millis
@@ -38,7 +38,7 @@ class RelayManager {
 
     private:
         // --- Membri Privati ---
-        int             m_relayPin = 99;
+        int             m_pin = 99;
         const char*     m_name  = nullptr;
         char            m_pinID[21];           // [pin_name.pin_nr]:
 

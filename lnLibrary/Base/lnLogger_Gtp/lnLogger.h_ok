@@ -1,0 +1,81 @@
+/*
+// updated by ...: Loreto Notarantonio
+// Date .........: 15-07-2025 07.56.04
+*/
+
+
+#pragma once
+
+    #include <Arduino.h>
+    #include <sys/time.h>
+    #include <esp_timer.h>
+    #include <stdarg.h>
+
+    // ANSI Colors
+    #define ANSI_RESET     "\x1B[0m"
+    #define ANSI_RED       "\x1B[1;31m"
+    #define ANSI_GREEN     "\x1B[1;32m"
+    #define ANSI_YELLOW    "\x1B[1;33m"
+    #define ANSI_PURPLE    "\x1B[1;35m"
+    #define ANSI_CYAN      "\x1B[1;36m"
+    #define ANSI_WHITE     "\x1B[1;37m"
+
+    // Log levels
+    #define LOG_LEVEL_NONE   0
+    #define LOG_LEVEL_ERROR  1
+    #define LOG_LEVEL_WARN   2
+    #define LOG_LEVEL_INFO   3
+    #define LOG_LEVEL_NOTIFY 4
+    #define LOG_LEVEL_DEBUG  5
+    #define LOG_LEVEL_TRACE  6
+
+    #ifndef LOG_LEVEL
+        #define LOG_LEVEL LOG_LEVEL_DEBUG
+    #endif
+
+    // #ifdef __cplusplus
+    // extern "C" {
+    // #endif
+
+    void log_write(const char* color, const char* tag, const char* file, int line, const char* fmt, ...);
+
+    // #ifdef __cplusplus
+    // }
+    // #endif
+
+    // Macros per livello
+    #if LOG_LEVEL >= LOG_LEVEL_ERROR
+        #define LOG_ERROR(fmt, ...)  log_write(ANSI_RED,   "ERR", __FILE__, __LINE__, fmt, ##__VA_ARGS__)
+    #else
+        #define LOG_ERROR(...) do {} while (0)
+    #endif
+
+    #if LOG_LEVEL >= LOG_LEVEL_WARN
+        #define LOG_WARN(fmt, ...)   log_write(ANSI_YELLOW,"WRN", __FILE__, __LINE__, fmt, ##__VA_ARGS__)
+    #else
+        #define LOG_WARN(...) do {} while (0)
+    #endif
+
+    #if LOG_LEVEL >= LOG_LEVEL_INFO
+        #define LOG_INFO(fmt, ...)   log_write(ANSI_GREEN, "INF", __FILE__, __LINE__, fmt, ##__VA_ARGS__)
+    #else
+        #define LOG_INFO(...) do {} while (0)
+    #endif
+
+    #if LOG_LEVEL >= LOG_LEVEL_NOTIFY
+        #define LOG_NOTIFY(fmt, ...) log_write(ANSI_PURPLE,"NFY", __FILE__, __LINE__, fmt, ##__VA_ARGS__)
+    #else
+        #define LOG_NOTIFY(...) do {} while (0)
+    #endif
+
+    #if LOG_LEVEL >= LOG_LEVEL_DEBUG
+        #define LOG_DEBUG(fmt, ...)  log_write(ANSI_CYAN,  "DBG", __FILE__, __LINE__, fmt, ##__VA_ARGS__)
+    #else
+        #define LOG_DEBUG(...) do {} while (0)
+    #endif
+
+    #if LOG_LEVEL >= LOG_LEVEL_TRACE
+        #define LOG_TRACE(fmt, ...)  log_write(ANSI_WHITE, "TRC", __FILE__, __LINE__, fmt, ##__VA_ARGS__)
+    #else
+        #define LOG_TRACE(...) do {} while (0)
+    #endif

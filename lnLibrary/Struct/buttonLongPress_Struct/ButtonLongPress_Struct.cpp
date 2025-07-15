@@ -1,23 +1,24 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 11-07-2025 09.08.08
+// Date .........: 13-07-2025 13.55.36
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
 #include <Arduino.h>    // in testa anche per le definizioni dei type
 
 #include "lnLogger.h"
-#include "lnGlobalVars.h" // printf:XFN()
+#include "lnGlobalVars.h"
 #include "lnSerialRead.h" // waitForEnter()
 #include "lnSetPinID.h" // waitForEnter()
 
 #define ALARM_BEEP_INTERVAL 2000
-#include "PinController_Struct.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
+#include "LedController_Struct.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
 
 #include "ButtonLongPress_Struct.h"
 
 
-
+// costruttore
+ButtonLongPress_Struct::ButtonLongPress_Struct(void) {}
 
 /**
  * @brief Inizializza un pulsante configurando il pin e lo stato iniziale.

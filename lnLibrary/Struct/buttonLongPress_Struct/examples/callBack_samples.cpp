@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 11-07-2025 15.34.37
+// Date .........: 11-07-2025 15.37.35
 //
 #ifdef __ln_MODULE_DEBUG_TEST__
 
@@ -28,7 +28,7 @@ PinController_Struct *buzzer = &activeBuzzer;
 //# richiamata quando il pulsante è premuto
 //###########################################################################
 #define ALARM_BEEP_INTERVAL 2000
-void startButtonNotificationHandlerCB(ButtonLongPress_Struct* p) {
+void sampleNotificationHandlerCB(ButtonLongPress_Struct* p) {
     uint16_t beep_duration=200;
     static uint32_t lastBeepTime;
     uint32_t next_interval;
@@ -78,7 +78,7 @@ void startButtonNotificationHandlerCB(ButtonLongPress_Struct* p) {
 //###########################################################################
 //# richiamata quando il pulsante viene rilasciato
 //###########################################################################
-void startButtonHandlerCB(ButtonLongPress_Struct *p) {
+void buttonReleasedHandlerCB(ButtonLongPress_Struct *p) {
     static bool relayState = false;
     switch (p->m_currentPressLevel) {
         case PRESSED_LEVEL_1:

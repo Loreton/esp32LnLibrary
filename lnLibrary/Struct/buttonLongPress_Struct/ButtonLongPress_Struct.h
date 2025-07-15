@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 11-07-2025 09.05.56
+// Date .........: 13-07-2025 13.55.54
 */
 
 #pragma once
@@ -76,7 +76,8 @@ typedef struct ButtonLongPress_Struct { // io_input_pin_struct_t
     int8_t          m_numThresholds=0;
 
 
-
+    // costruttore
+    ButtonLongPress_Struct(void);
 
     // functions prototypes
     bool read(ButtonCallback callback=nullptr);
@@ -89,7 +90,7 @@ typedef struct ButtonLongPress_Struct { // io_input_pin_struct_t
     void notifyCurrentButtonLevel(BeepCallBack onPressCallback);
     void showStatus(ButtonCallback callback=nullptr);
     void reset(void);
-    bool isMaxLevelReached(void) const {return m_maxLevelReachedAndNotified};
+    bool isMaxLevelReached(void) const {return m_maxLevelReachedAndNotified;};
 
     // inline functions
     const char* pinID() const { return m_pinID; }

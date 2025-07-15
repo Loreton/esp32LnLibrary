@@ -1,29 +1,32 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 27-06-2025 15.49.42
+// Date .........: 11-07-2025 16.24.33
 //
 
 #include <Arduino.h> // Necessario per funzioni come pinMode, digitalWrite, millis
 
+#include "lnSetPinID.h" // waitForEnter()
 #include "relayManager_Class.h" // Include l'header della classe
 
 // Costruttore
 // pin: Il numero del GPIO a cui è collegato il relè.
 // activationLevel: Il livello fisico (HIGH o LOW) che attiva il relè.
 RelayManager::RelayManager(int pin, int activationLevel) :
-                            m_relayPin(pin),
+                            m_pin(pin),
                             m_pressedLevel(activationLevel),
                             m_pulseActive(false),
                             m_relayState(false) // Inizialmente spento
                         {
     // Imposta il relè allo stato iniziale (spento)
-    digitalWrite(m_relayPin, !m_pressedLevel);
-    pinMode(m_relayPin, OUTPUT);
+    pinMode(m_pin, OUTPUT);
+    digitalWrite(m_pin, !m_pressedLevel);
 
-
+    setPinID(m_pinID, sizeof(m_pinID)-1, m_name,  m_pin);
+    /**
     const size_t PIN_ID_MAXLENGTH = sizeof(m_pinID)-1;
     int cx = snprintf(m_pinID, PIN_ID_MAXLENGTH - 6, "[%s", m_name);
     snprintf(m_pinID + cx, PIN_ID_MAXLENGTH - cx, ".%02d]:", m_pin);
+    */
 }
 
 // --- Metodi Pubblici ---
@@ -31,7 +34,7 @@ RelayManager::RelayManager(int pin, int activationLevel) :
 // Imposta lo stato del relè (true = acceso, false = spento)
 void RelayManager::setRelay(bool state) {
     m_relayState = state;
-    digitalWrite(m_relayPin, m_relayState ? m_pressedLevel : !m_pressedLevel);
+    digitalWrite(m_pin, m_relayState ? m_pressedLevel : !m_pressedLevel);
 }
 
 // Avvia un pulsetime per il relè
@@ -75,6 +78,6 @@ bool RelayManager::getRelayState() {
 
 // Ritorna il pin del relè (utile per debug)
 int RelayManager::getRelayPin() {
-    return m_relayPin;
+    return m_pin;
 }
 

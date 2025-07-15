@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 07-07-2025 17.42.39
+// Date .........: 11-07-2025 15.32.55
 //
 #ifdef __ln_MODULE_DEBUG_TEST__
 
@@ -31,7 +31,9 @@ void beepNotification(ButtonLongPress_Struct *p, uint16_t beep_duration) {
 }
 
 
-
+//###########################################################################
+//# richiamata quando il pulsante è premuto
+//###########################################################################
 void pumpStateNotificationHandlerCB(ButtonLongPress_Struct* p) {
     uint16_t beep_duration=200;
     static uint32_t lastBeepTime;
@@ -80,7 +82,7 @@ void pumpStateNotificationHandlerCB(ButtonLongPress_Struct* p) {
 
 
 //###########################################################################
-//#
+//# richiamata quando il pulsante viene rilasciato
 //###########################################################################
 void pumpStateHandlerCB(ButtonLongPress_Struct *p) {
     static bool relayState = false;
