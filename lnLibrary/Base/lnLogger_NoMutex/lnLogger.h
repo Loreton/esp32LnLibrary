@@ -1,7 +1,8 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 15-07-2025 19.19.27
+// Date .........: 16-07-2025 18.00.39
 */
+
 #pragma once
 
 #include <Arduino.h>
@@ -40,20 +41,21 @@ enum LogLevel {
 class ESP32Logger {
     public:
         ESP32Logger(void);
+        void begin(void);
         void write(const char* color, const char* tag, const char* file, int line, const char* format, ...);
         // void info(const char* file, int line, const char* format, ...);
         char m_out[32];
         char m_tbuf[16]; // Buffer statico per il timestamp
 
     private:
-        int64_t  m_us = 0;
-        uint32_t m_ms = 0;
-        uint32_t m_s  = 0;
-        uint32_t m_m  = 0;
-        uint32_t m_h  = 0;
+        int64_t  m_usec = 0;
+        uint32_t m_msec = 0;
+        uint32_t m_sec  = 0;
+        uint32_t m_min  = 0;
+        uint32_t m_hour  = 0;
 
         const size_t m_maxlen = 10;     // Massima lunghezza desiderata per il nome del file
-        const char paddingChar  = '.';   //padding char per il file
+        const char m_paddingChar  = '.';   //padding char per il file
         const char *m_filename;
         const char *m_sep;
 

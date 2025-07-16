@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 15-07-2025 19.19.17
+// Date .........: 16-07-2025 18.09.29
 */
 
 
@@ -11,6 +11,11 @@
 
 ESP32Logger::ESP32Logger(void) {};
 
+void ESP32Logger::begin() {
+    Serial.println("\n\nOK: Logger NO-MUTEX inizializzato.\n\n");
+}
+
+
 
 
 /**
@@ -19,13 +24,13 @@ ESP32Logger::ESP32Logger(void) {};
  */
 
 const char* ESP32Logger::getTimestamp() {
-    m_us = esp_timer_get_time(); // Tempo in microsecondi dall'avvio
-    m_ms = (m_us / 1000) % 1000;
-    m_s  = (m_us / 1000000) % 60;
-    m_m  = (m_us / 60000000) % 60;
-    m_h  = (m_us / 3600000000);
+    m_usec = esp_timer_get_time(); // Tempo in microsecondi dall'avvio
+    m_msec = (m_usec / 1000) % 1000;
+    m_sec  = (m_usec / 1000000) % 60;
+    m_min  = (m_usec / 60000000) % 60;
+    m_hour  = (m_usec / 3600000000);
 
-    snprintf(m_tbuf, sizeof(m_tbuf), "%02lu:%02lu:%02lu.%03lu", m_h, m_m, m_s, m_ms);
+    snprintf(m_tbuf, sizeof(m_tbuf), "%02lu:%02lu:%02lu.%03lu", m_hour, m_min, m_sec, m_msec);
     return m_tbuf;
 }
 
@@ -52,7 +57,7 @@ const char* ESP32Logger::getFileLineInfo(const char* file, int line) {
     if (len > m_maxlen) len = m_maxlen; // Tronca il nome se più lungo di maxlen
 
     // memset(name_buffer, '.', m_maxlen); // Riempie il buffer con punti per il padding
-    memset(name_buffer, paddingChar, m_maxlen); // Riempie il buffer con punti per il padding
+    memset(name_buffer, m_paddingChar, m_maxlen); // Riempie il buffer con punti per il padding
     memcpy(name_buffer, m_filename, len); // Copia il nome effettivo
     name_buffer[m_maxlen] = '\0'; // Termina la stringa
 
@@ -72,18 +77,16 @@ const char* ESP32Logger::getFileLineInfo(const char* file, int line) {
 
 
 /**
- * @brief Funzione interna per l'output del log effettivo.
- * Questa funzione è chiamata dalle macro di logging.
- * @param color Codice colore ANSI per l'output.
- * @param tag Etichetta del livello di log (es. "ERR", "INF").
- * @param file Il path del file di origine.
- * @param line Il numero di linea nel file di origine.
- * @param format Stringa di formato come in printf.
- * @param ... Argomenti variabili per la stringa di formato.
- */
-// void ESP32Logger::info(const char* file, int line, const char* format, ...) {
-//      write(LogColors::GREEN, "INF", file, line, format,  ##__VA_ARGS__);
-// }
+ * @brief Questa ora è un semplice wrapper che cattura gli argomenti e li passa a write().
+ * @brief Esempio nel caso volessi creare delle funzioni per ogni livello di log
+
+void ESP32Logger::info(const char* file, int line, const char* format, ...) {
+    va_list args;
+    va_start(args, format);
+    write(LogColors::GREEN, "INF", file, line, format,  args);
+    va_end(args);
+}
+*/
 
 /**
  * @brief Funzione interna per l'output del log effettivo.
@@ -118,3 +121,5 @@ void ESP32Logger::write(const char* color, const char* tag, const char* file, in
 }
 
 ESP32Logger myLog;
+
+

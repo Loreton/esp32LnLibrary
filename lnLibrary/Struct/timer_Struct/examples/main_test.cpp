@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 15-07-2025 11.56.56
+// Date .........: 16-07-2025 18.06.23
 //
 // Gemini: https://g.co/gemini/share/7448d628a2a6
 
@@ -35,8 +35,11 @@ void onMyTimer02Complete() {
 
 void setup() {
     Serial.begin(115200);
-    delay(2000);
-    LOG_INFO("\n--- ESP32 Millis Timer Test Sketch ---");
+    while(!Serial && millis() < 5000); // Optional: attende la seriale (con timeout)
+    delay(1000);
+    myLog.begin();
+    LOG_INFO("--- ESP32 Millis Timer Test Sketch ---");
+
 
 
     // Avvia il primo timer per 5 secondi con una callback
@@ -70,7 +73,7 @@ void loop() {
     if (millis() - lastQueryTime >= 1000) { // Ogni secondo, stampa lo stato
         lastQueryTime = millis();
 
-        LOG_INFO("MyTimer Status: ");
+        // LOG_INFO("MyTimer Status: ");
         if (myTimer01.isTimerRunning()) {
             // LOG_INFO("Running, Elapsed: %lu ms, Remaining: %lu ms" , myTimer01.getElapsedTime(), myTimer01.getRemainingTime());
         } else if (myTimer01.hasCompleted()) {
