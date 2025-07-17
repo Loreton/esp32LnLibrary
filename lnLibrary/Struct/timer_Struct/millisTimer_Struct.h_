@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 17-07-2025 08.26.20
+// Date .........: 14-07-2025 15.45.52
 //
 
 #pragma once
@@ -15,8 +15,6 @@
         const char*     m_name;
         uint32_t        m_startTime          = 0;
         uint32_t        m_duration           = 0;
-        uint32_t        m_elapsed            = 0;
-        uint32_t        m_remaining          = 0;
         bool            m_isRunning          = false;
         bool            m_isCompleted        = false;
         TimerCallback   m_onCompleteCallback = nullptr; // Inizializza la callback a null
@@ -35,19 +33,18 @@
         void stop();
 
         // Controlla lo stato del timer e gestisce la callback
-        void update();
+        bool check();
 
         // Query: il timer è in esecuzione?
-        inline bool isRunning(void) {return m_isRunning;};
+        bool isTimerRunning();
 
         // Query: il timer è completato?
-        inline bool hasCompleted(void) {return m_isCompleted;};
-        // bool hasCompleted(void);
+        bool hasCompleted();
 
         // Restituisce il tempo trascorso
-        inline uint32_t getElapsedTime(void) {return m_elapsed;};
+        uint32_t getElapsedTime();
 
         // Restituisce il tempo rimanente
-        inline uint32_t getRemainingTime(void) {return m_remaining;};
+        uint32_t getRemainingTime();
     };
 

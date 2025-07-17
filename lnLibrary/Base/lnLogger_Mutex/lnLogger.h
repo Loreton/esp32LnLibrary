@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 16-07-2025 17.56.47
+// Date .........: 17-07-2025 08.33.11
 */
 
 #pragma once
@@ -89,9 +89,9 @@ extern ESP32LoggerMutex myLog; // defined in lnLogger.cpp
 #endif
 
 #if LOG_LEVEL >= LOG_LEVEL_WARN
-    #define LOG_WARN(fmt, ...)    myLog.write(LogColors::YELLOW, "WRN", __FILE__, __LINE__, fmt, ##__VA_ARGS__)
+    #define LOG_WARNING(fmt, ...)    myLog.write(LogColors::YELLOW, "WRN", __FILE__, __LINE__, fmt, ##__VA_ARGS__)
 #else
-    #define LOG_WARN(...) do {} while (0)
+    #define LOG_WARNING(...) do {} while (0)
 #endif
 
 #if LOG_LEVEL >= LOG_LEVEL_INFO
