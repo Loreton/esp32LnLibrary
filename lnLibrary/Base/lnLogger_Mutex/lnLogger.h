@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 17-07-2025 08.33.11
+// Date .........: 18-07-2025 16.49.57
 */
 
 #pragma once
@@ -8,6 +8,34 @@
 #include <Arduino.h>
 #include <freertos/semphr.h> // <-- AGGIUNGI QUESTO per i tipi FreeRTOS (SemaphoreHandle_t)
 #include "esp_timer.h" // Per esp_timer_get_time()
+#include "lnGlobalVars.h" // PRINT_VAR()
+
+
+
+
+
+// Classe per il logger ESP32
+class ESP32LoggerMutex {
+    public:
+        ESP32LoggerMutex(void);
+        void begin(void);
+        void write(const char* color, const char* tag, const char* file, int line, const char* format, ...);
+
+    private:
+        bool m_mutexInitialized = false;
+        SemaphoreHandle_t m_logMutex = NULL; // <-- AGGIUNGI QUESTO: il mutex per proteggere le operazioni di log
+
+        const char* getTimestamp();
+        const char* getFileLineInfo(const char* file, int line);
+}; // class ESP32LoggerMutex
+
+
+extern ESP32LoggerMutex myLog; // defined in lnLogger.cpp
+
+// #include "lnGlobalVars.h" // Per VAR_NAME_VALUE
+#define VALUE_TO_STRING(x) #x
+#define VALUE(x) VALUE_TO_STRING(x)
+#define VAR_NAME_VALUE(var) #var "="  VALUE(var)
 
 // Definizioni dei colori ANSI
 namespace LogColors {
@@ -21,59 +49,25 @@ namespace LogColors {
     const char* const WHITE  = "\x1B[1;37m";
 } // namespace LogColors
 
+
 // Livelli di log
-enum LogLevel {
-    LOG_LEVEL_NONE   = 0,
-    LOG_LEVEL_ERROR  = 1,
-    LOG_LEVEL_WARN   = 2,
-    LOG_LEVEL_INFO   = 3,
-    LOG_LEVEL_NOTIFY = 4,
-    LOG_LEVEL_DEBUG  = 5,
-    LOG_LEVEL_TRACE  = 6
-};
+#define    LOG_LEVEL_NONE    0
+#define    LOG_LEVEL_ERROR   1
+#define    LOG_LEVEL_WARN    2
+#define    LOG_LEVEL_INFO    3
+#define    LOG_LEVEL_NOTIFY  4
+#define    LOG_LEVEL_DEBUG   5
+#define    LOG_LEVEL_TRACE   6
 
 // Imposta il livello di log globale
 #ifndef LOG_LEVEL
-    #pragma message "LOG_LEVEL not DEFINED. Defaulting to LOG_LEVEL_INFO."
-    #define LOG_LEVEL LOG_LEVEL_INFO
+    #pragma message "LOG_LEVEL not DEFINED. Defaulting to LOG_LEVEL_WARN."
+    #define LOG_LEVEL LOG_LEVEL_WARN
+#else
+    // #pragma message VAR_NAME_VALUE(LOG_LEVEL)
 #endif
 
-
-
-
-
-
-// Classe per il logger ESP32
-class ESP32LoggerMutex {
-    public:
-        ESP32LoggerMutex(void);
-        void begin(void);
-        void write(const char* color, const char* tag, const char* file, int line, const char* format, ...);
-        // void info(const char* file, int line, const char* format, ...);
-        char m_out[32];
-        char m_tbuf[16]; // Buffer statico per il timestamp
-
-    private:
-        int64_t  m_usec = 0;
-        uint32_t m_msec = 0;
-        uint32_t m_sec  = 0;
-        uint32_t m_min  = 0;
-        uint32_t m_hour  = 0;
-        bool m_mutexInitialized = false;
-        SemaphoreHandle_t m_logMutex = NULL; // <-- AGGIUNGI QUESTO: il mutex per proteggere le operazioni di log
-
-        const size_t m_maxlen = 10;     // Massima lunghezza desiderata per il nome del file
-        const char m_paddingChar  = '.';   //padding char per il file
-        const char *m_filename;
-        const char *m_sep;
-
-        const char* getTimestamp();
-        const char* getFileLineInfo(const char* file, int line);
-}; // class ESP32LoggerMutex
-
-
-extern ESP32LoggerMutex myLog; // defined in lnLogger.cpp
-
+// #pragma message PRINT_VAR(LOG_LEVEL)
 
 // ---
 
@@ -96,7 +90,6 @@ extern ESP32LoggerMutex myLog; // defined in lnLogger.cpp
 
 #if LOG_LEVEL >= LOG_LEVEL_INFO
     #define LOG_INFO(fmt, ...)    myLog.write(LogColors::GREEN, "INF", __FILE__, __LINE__, fmt, ##__VA_ARGS__)
-    // #define LOG_INFO(fmt, ...)    myLog.info(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
 #else
     #define LOG_INFO(...) do {} while (0)
 #endif

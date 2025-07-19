@@ -1,10 +1,11 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 13-07-2025 14.02.48
+// Date .........: 18-07-2025 13.16.48
 //
 
 #include <Arduino.h> // Necessario per funzioni come pinMode, digitalWrite, millis
 
+#include "lnGlobalVars.h"
 #include "lnLogger.h"
 #include "lnSetPinID.h"
 #include "RelayManager_Struct.h" // Include l'header della classe
@@ -22,13 +23,14 @@ void RelayManager_Struct::init(const char *name, uint8_t pin, uint8_t activeLeve
         m_Off = !activeLevel;
         m_On = activeLevel;
         m_pulseActive = false;
-        m_relayState = false; // Inizialmente spento
+        m_relayState = m_Off; // Inizialmente spento
 
     setPinID(m_pinID, sizeof(m_pinID)-1, m_name,  m_pin);
 
     // Imposta il relè allo stato iniziale (spento)
     pinMode(m_pin, OUTPUT);
-    digitalWrite(m_pin, m_Off);
+    // digitalWrite(m_pin, m_Off);
+    setRelay(OFF);
     LOG_DEBUG("%s inizializzato. active level: %s", m_pinID,  m_activeLevel ? "ON" : "OFF");
 
 }
@@ -70,9 +72,9 @@ void RelayManager_Struct::update() {
 }
 
 // Ritorna il pin del relè (utile per debug)
-int RelayManager_Struct::pin() {
-    return m_pin;
-}
+// int RelayManager_Struct::pin() {
+//     return m_pin;
+// }
 
 // Ritorna il pin del relè (utile per debug)
 const char * RelayManager_Struct::pinID() {
@@ -90,18 +92,28 @@ bool RelayManager_Struct::state() {
 
 
 // Imposta lo stato del relè (true = acceso, false = spento)
-void RelayManager_Struct::setRelay(bool state) {
-    m_relayState = state;
+void RelayManager_Struct::setRelay(bool req_state) {
+    m_relayState = req_state;
     digitalWrite(m_pin, m_relayState ? m_activeLevel : !m_activeLevel);
+    LOG_DEBUG("[%s] - %s", m_pinID, str_pinLevel[req_state]);
 }
 
 void RelayManager_Struct::on() {
-    digitalWrite(m_pin, m_On);
-    LOG_DEBUG("[%s] - ON", m_pinID);
+    setRelay(true);
+    // digitalWrite(m_pin, m_On);
 }
 
 void RelayManager_Struct::off() {
-    digitalWrite(m_pin, m_Off);
-    LOG_DEBUG("[%s] - OFF", m_pinID);
+    setRelay(false);
+    // digitalWrite(m_pin, m_Off);
+    // LOG_DEBUG("[%s] - OFF", m_pinID);
+}
+
+void RelayManager_Struct::toggle() {
+    setRelay(!m_relayState);
+    // m_relayState = digitalRead(m_pin) ? m_activeLevel : !m_activeLevel
+
+    // digitalWrite(m_pin, m_relayState ? m_activeLevel : !m_activeLevel);
+    // LOG_DEBUG("[%s] - OFF", m_pinID);
 }
 

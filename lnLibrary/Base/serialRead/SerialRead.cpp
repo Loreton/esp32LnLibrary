@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 11-07-2025 16.27.43
+// Date .........: 18-07-2025 20.10.21
 //
 
 #include <Arduino.h> // in testa anche per le definizioni dei type
@@ -157,8 +157,8 @@ void setup_() {
     Serial.println("<Arduino is ready>");
 }
 
-int first_run = 0;
 void loop_____________() {
+    static int first_run = 0;
     if (first_run == 0) {
         // Serial.printf("Please enter 'c' char or ENTER to skip\n");
         waitForChar("Please enter 'c' char or ENTER to skip\n", 'c');

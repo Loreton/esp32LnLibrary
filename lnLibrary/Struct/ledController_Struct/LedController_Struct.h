@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 13-07-2025 14.23.43
+// Date .........: 18-07-2025 09.46.35
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 #pragma once
@@ -53,13 +53,13 @@ typedef struct LedController_Struct {
     void update();
 
     void blinking(uint32_t onMs, uint32_t offMs, int8_t cycles=0);
-    void blinking_dc(uint32_t period, float duty_cycle, int8_t cycles=0); // con duty_cycle
+    void blinking_dutyCycle(uint32_t period, float duty_cycle, int8_t cycles=0); // con duty_cycle
     void pulse(uint32_t duration);
-    void off();
     void off_ifBlinking();
-    void on();
     void set(uint8_t state);
 
+    inline void on() {set(m_on);};
+    inline void off() {set(m_off);};
 
     // ========================================
     // - Internal use funtcions

@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 11-07-2025 15.34.37
+// Date .........: 19-07-2025 10.15.41
 //
 #ifdef __ln_MODULE_DEBUG_TEST__
 
@@ -11,15 +11,15 @@
 
 
 #include "ButtonLongPress_Struct.h"
-#include "PinController_Struct.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
+#include "LedController_Struct.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
 #include "callBackFunctions.h" // per functions protoype
 
 
 
 
 
-extern PinController_Struct activeBuzzer;
-PinController_Struct *buzzer = &activeBuzzer;
+extern LedController_Struct activeBuzzer;
+LedController_Struct *buzzer2 = &activeBuzzer;
 
 
 
@@ -54,7 +54,7 @@ void startButtonNotificationHandlerCB(ButtonLongPress_Struct* p) {
             case PRESSED_LEVEL_7:
             case PRESSED_LEVEL_8:
             case PRESSED_LEVEL_9:
-                buzzer1->pulse(beep_duration);
+                buzzer2->pulse(beep_duration);
                 break;
 
             default:
@@ -66,7 +66,7 @@ void startButtonNotificationHandlerCB(ButtonLongPress_Struct* p) {
     // --- LOGICA DEL BEEP OGNI 5 SECONDI quando si raggiunge il MAX-LEVEL---
     if (p->m_maxLevelReachedAndNotified ) {
         if (millis() - lastBeepTime >= ALARM_BEEP_INTERVAL) {
-            buzzer1->pulse(1000);
+            buzzer2->pulse(1000);
             lastBeepTime = millis();
         }
     }
@@ -87,14 +87,15 @@ void startButtonHandlerCB(ButtonLongPress_Struct *p) {
 
         case PRESSED_LEVEL_2:
             LOG_DEBUG("PRESSED_LEVEL_2");
-            relayState = !relayState;
-            if (relayState) {
-                digitalWrite(pressControlRelay_pin, LOW);
-                LOG_INFO("  --> Relè ACCESO!");
-            } else {
-                digitalWrite(pressControlRelay_pin, HIGH);
-                LOG_INFO("  --> Relè SPENTO!");
-            }
+            // pressControlRelay.toggle();
+            // relayState = !relayState;
+            // if (relayState) {
+            //     digitalWrite(pressControlRelay_pin, LOW);
+            //     LOG_INFO("  --> Relè ACCESO!");
+            // } else {
+            //     digitalWrite(pressControlRelay_pin, HIGH);
+            //     LOG_INFO("  --> Relè SPENTO!");
+            // }
             break;
 
         case PRESSED_LEVEL_3:
@@ -110,13 +111,8 @@ void startButtonHandlerCB(ButtonLongPress_Struct *p) {
             break;
     }
 
-    // *** RESET DEI PARAMETRI DI LIVELLO NELLA FUNZIONE CHIAMANTE ***
     // Dopo aver processato i dati, li resettiamo per la prossima pressione.
-    p->m_currentPressLevel = NO_PRESS;
-    p->m_lastPressedLevel = NO_PRESS;
-    p->m_pressDuration = 0;
-    p->m_maxLevelReachedAndNotified = false;
-    // .pressStartTime non ha bisogno di essere resettato qui, è già fatto in readButton quando rilascia.
+    p->reset();
 
 }
 

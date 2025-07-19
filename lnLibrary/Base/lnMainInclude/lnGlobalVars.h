@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 11-07-2025 17.20.34
+// Date .........: 18-07-2025 16.45.53
 */
 
 
@@ -19,6 +19,7 @@
     #define VALUE_TO_STRING(x) #x
     #define VALUE(x) VALUE_TO_STRING(x)
     #define VAR_NAME_VALUE(var) #var "="  VALUE(var)
+    #define PRINT_VAR(var) #var "="  VALUE(var)
 
     /* Some example here */
     // #pragma message(VAR_NAME_VALUE(NOT_DEFINED))
@@ -28,7 +29,8 @@
     // #pragma message(VAR_NAME_VALUE(LORETO))
     // #pragma message(VAR_NAME_VALUE(LORETO2))
 
-
+    #define ON  true
+    #define OFF false
 
     #ifdef __I_AM_MAIN_CPP__
         const char PROGMEM *str_action[]     = {"released", "pressed"};

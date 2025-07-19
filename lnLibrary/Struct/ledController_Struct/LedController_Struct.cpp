@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 13-07-2025 14.25.58
+// Date .........: 19-07-2025 15.29.00
 //
 
 #include <Arduino.h>    // in testa anche per le definizioni dei type
@@ -73,7 +73,7 @@ void LedController_Struct::pulse(uint32_t duration) {
         m_pulseOnDuration = duration;
         m_pulseOnStart = millis();
         _setLed(true);
-        LOG_DEBUG("%s pulseON. duration: %lu ms", m_pinID,  m_pulseOnDuration);
+        LOG_TRACE("%s pulseON. duration: %lu ms", m_pinID,  m_pulseOnDuration);
     }
 }
 
@@ -85,17 +85,17 @@ void LedController_Struct::blinking(uint32_t onMs, uint32_t offMs, int8_t cycles
         m_offTime = offMs;
         m_lastToggle = millis();
         _setLed(true); // start on
-        LOG_DEBUG("%s blinking. ON: %lu ms, OFF: %lu ms (cycles: %d)", m_pinID,  m_onTime, m_offTime, m_numCycles);
+        LOG_TRACE("%s blinking. ON: %lu ms, OFF: %lu ms (cycles: %d)", m_pinID,  m_onTime, m_offTime, m_numCycles);
     }
 }
 
 // duty-cycle da 0.0 a 1.0
-void LedController_Struct::blinking_dc(uint32_t period, float duty_cycle, int8_t cycles) {
+void LedController_Struct::blinking_dutyCycle(uint32_t period, float duty_cycle, int8_t cycles) {
     if (!m_blinking) {
         float dutyCycle = constrain(duty_cycle, 0.0, 1.0); // importanti i decimali per avere un float point
         uint32_t on_duration = period*dutyCycle;
         uint32_t off_duration = period - on_duration;
-        LOG_DEBUG("%s duty_cycle: %.2f ON: %lums, OFF: %lums (cycles: %d)", m_pinID, dutyCycle, on_duration, off_duration, cycles);
+        LOG_TRACE("%s duty_cycle: %.2f ON: %lums, OFF: %lums (cycles: %d)", m_pinID, dutyCycle, on_duration, off_duration, cycles);
         blinking(on_duration, off_duration, cycles);
     }
 }
@@ -113,9 +113,9 @@ void LedController_Struct::set(uint8_t req_state) {
     LOG_DEBUG("%s status: %d", m_pinID, digitalRead(m_pin));
 }
 
-void LedController_Struct::on() {
-    set(m_on);
-}
+// void LedController_Struct::on() {
+//     set(m_on);
+// }
 
 void LedController_Struct::off_ifBlinking() {
     if (m_blinking) {
@@ -123,9 +123,9 @@ void LedController_Struct::off_ifBlinking() {
     }
 }
 
-void LedController_Struct::off() {
-    set(m_off);
-}
+// void LedController_Struct::off() {
+//     set(m_off);
+// }
 
 
 

@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 11-07-2025 15.37.35
+// Date .........: 19-07-2025 10.18.54
 //
 #ifdef __ln_MODULE_DEBUG_TEST__
 
@@ -11,15 +11,15 @@
 
 
 #include "ButtonLongPress_Struct.h"
-#include "PinController_Struct.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
+#include "LedController_Struct.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
 #include "callBackFunctions.h" // per functions protoype
 
 
 
 
 
-extern PinController_Struct activeBuzzer;
-PinController_Struct *buzzer = &activeBuzzer;
+extern LedController_Struct activeBuzzer;
+LedController_Struct *buzzer3 = &activeBuzzer;
 
 
 
@@ -54,7 +54,7 @@ void sampleNotificationHandlerCB(ButtonLongPress_Struct* p) {
             case PRESSED_LEVEL_7:
             case PRESSED_LEVEL_8:
             case PRESSED_LEVEL_9:
-                buzzer1->pulse(beep_duration);
+                buzzer3->pulse(beep_duration);
                 break;
 
             default:
@@ -66,7 +66,7 @@ void sampleNotificationHandlerCB(ButtonLongPress_Struct* p) {
     // --- LOGICA DEL BEEP OGNI 5 SECONDI quando si raggiunge il MAX-LEVEL---
     if (p->m_maxLevelReachedAndNotified ) {
         if (millis() - lastBeepTime >= ALARM_BEEP_INTERVAL) {
-            buzzer1->pulse(1000);
+            buzzer3->pulse(1000);
             lastBeepTime = millis();
         }
     }

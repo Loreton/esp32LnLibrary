@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 13-07-2025 13.54.28
+// Date .........: 18-07-2025 13.17.28
 //
 
 #include <Arduino.h> // Necessario per funzioni come pinMode, digitalWrite, millis
@@ -8,11 +8,10 @@
 // #include "relay_class.h" // Include l'header della classe
 
 
-#define PIN_ID_MAXLENGTH 16
     typedef struct RelayManager_Struct {
         uint8_t         m_pin = 99;
         const char*     m_name  = nullptr;
-        char            m_pinID[PIN_ID_MAXLENGTH+1];     // [pin_name.pin_nr]:
+        char            m_pinID[17];     // [pin_name.pin_nr]:
 
         uint8_t         m_activeLevel=LOW; //              Livello che attiva il relè (HIGH o LOW)
         uint8_t         m_On=LOW; //              Livello che attiva il relè (HIGH o LOW)
@@ -37,6 +36,7 @@
         void setRelay(bool state);
         void on(void);
         void off(void);
+        void toggle(void);
 
         // Avvia un pulsetime per il relè
         // duration_ms: Durata del pulsetime in millisecondi.
@@ -52,7 +52,7 @@
         bool state();
 
         // Ritorna il pin del relè (utile per debug)
-        int pin();
+        // int pin();
         const char *pinID(void);
         // const char *pinID() const char * {return m_pinID;};
 

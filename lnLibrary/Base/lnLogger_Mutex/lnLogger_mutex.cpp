@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 16-07-2025 18.08.19
+// Date .........: 18-07-2025 16.56.43
 */
 
 
@@ -39,18 +39,17 @@ void ESP32LoggerMutex::begin() {
  * @brief Genera un timestamp formattato (HH:MM:SS.mmm) usando esp_timer_get_time().
  * @return Una stringa costante contenente il timestamp.
  */
-
 const char* ESP32LoggerMutex::getTimestamp() {
-    m_usec = esp_timer_get_time(); // Tempo in microsecondi dall'avvio
-    m_msec = (m_usec / 1000) % 1000;
-    m_sec  = (m_usec / 1000000) % 60;
-    m_min  = (m_usec / 60000000) % 60;
-    m_hour  = (m_usec / 3600000000);
+    static char tbuf[16]; // Buffer statico per il timestamp
+    static int64_t  usec = esp_timer_get_time(); // Tempo in microsecondi dall'avvio
+    static uint32_t msec = (usec / 1000) % 1000;
+    static uint32_t sec  = (usec / 1000000) % 60;
+    static uint32_t min  = (usec / 60000000) % 60;
+    static uint32_t hour  = (usec / 3600000000);
 
-    snprintf(m_tbuf, sizeof(m_tbuf), "%02lu:%02lu:%02lu.%03lu", m_hour, m_min, m_sec, m_msec);
-    return m_tbuf;
+    snprintf(tbuf, sizeof(tbuf), "%02lu:%02lu:%02lu.%03lu", hour, min, sec, msec);
+    return tbuf;
 }
-
 
 /**
  * @brief Formatta il nome del file e il numero di linea.
@@ -60,50 +59,32 @@ const char* ESP32LoggerMutex::getTimestamp() {
  * @return Una stringa costante contenente il nome del file formattato e il numero di linea.
  */
 const char* ESP32LoggerMutex::getFileLineInfo(const char* file, int line) {
-    m_filename = strrchr(file, '/'); // Trova l'ultimo '/' per ottenere solo il nome del file
-    m_filename = m_filename ? m_filename + 1 : file; // Se trovato, sposta il puntatore, altrimenti usa l'intero path
+    static char buffer[19];                                         // spazio per il [filename.linNo]
+    static const uint8_t MAX_BUFFER_LEN = sizeof(buffer);
+    static const uint8_t FILE_LEN = MAX_BUFFER_LEN-5;               // Buffer temporaneo per il nome del file troncato/paddato 5 per .lineNo da 3 digit
+    static const char   paddingChar  = '.';                         // padding char per il file
 
-    // Trova il separatore per tagliare l'estensione o un suffisso (es. _H o .cpp)
-    m_sep = strrchr(m_filename, '_');
-    if (!m_sep) m_sep = strrchr(m_filename, '.');
+    static char fname_buffer[FILE_LEN+1];                           // spazio per il filename
+    const char *filename = strrchr(file, '/');                      // Trova l'ultimo '/' per ottenere solo il nome del file
+    filename = filename ? filename + 1 : file;                      // Se trovato, sposta il puntatore, altrimenti usa l'intero path
 
-    size_t len = m_sep ? (size_t)(m_sep - m_filename) : strlen(m_filename); // Lunghezza del nome senza estensione
-    // const size_t m_maxlen = 15; // Massima lunghezza desiderata per il nome del file
+    const char *sep = strrchr(filename, '_');                       // Trova il separatore per tagliare un suffisso (es. _H)
+    if (!sep) sep = strrchr(filename, '.');                         // Trova il separatore per tagliare l'estensione .cpp)
 
-    char name_buffer[m_maxlen + 1]; // Buffer temporaneo per il nome del file troncato/paddato
-    if (len > m_maxlen) len = m_maxlen; // Tronca il nome se più lungo di maxlen
+    size_t len = sep ? (size_t)(sep - filename) : strlen(filename); // Lunghezza del nome senza estensione
 
-    // memset(name_buffer, '.', m_maxlen); // Riempie il buffer con punti per il padding
-    memset(name_buffer, m_paddingChar, m_maxlen); // Riempie il buffer con punti per il padding
-    memcpy(name_buffer, m_filename, len); // Copia il nome effettivo
-    name_buffer[m_maxlen] = '\0'; // Termina la stringa
+    if (len > FILE_LEN) len = FILE_LEN;                             // Tronca il nome se più lungo di maxlen
 
-    snprintf(m_out, sizeof(m_out), "%s.%03d", name_buffer, line);
-    return m_out;
+    memset(fname_buffer, paddingChar, FILE_LEN);                    // Riempie il buffer con punti per il padding
+    memcpy(fname_buffer, filename, len);                            // Copia il nome effettivo
+    fname_buffer[FILE_LEN] = '\0';                                  // Termina la stringa
+
+    snprintf(buffer, sizeof(buffer), "%s.%03d", fname_buffer, line);
+    return buffer;
 }
 
 
 
-
-
-
-
-
-
-
-
-
-/**
- * @brief Questa ora è un semplice wrapper che cattura gli argomenti e li passa a write().
- * @brief Esempio nel caso volessi creare delle funzioni per ogni livello di log
-
-void ESP32LoggerMutex::info(const char* file, int line, const char* format, ...) {
-    va_list args;
-    va_start(args, format);
-    write(LogColors::GREEN, "INF", file, line, format,  args);
-    va_end(args);
-}
-*/
 
 /**
  * @brief Funzione interna per l'output del log effettivo.
@@ -122,7 +103,7 @@ void ESP32LoggerMutex::write(const char* color, const char* tag, const char* fil
         // Questa è la situazione più critica: un log prima di Serial.begin() e myLog.begin().
         // Per ora, lo stampiamo su Serial ma senza garanzie di visibilità.
         // Per log molto precoci, potresti considerare un buffer FIFO o JTAG/SWD.
-        Serial.printf("AVVISO: Logging prima dell'inizializzazione: ");
+        Serial.printf("AVVISO: Logging prima dell'inizializzazione: (lanciare il begin())");
         // Serial.printf(format, ##__VA_ARGS__);
         Serial.println();
         return; // Esci per evitare problemi
@@ -131,7 +112,7 @@ void ESP32LoggerMutex::write(const char* color, const char* tag, const char* fil
 
     // Tenta di acquisire il mutex. Aspetta indefinitamente (portMAX_DELAY) se è già bloccato.
     if (m_logMutex != NULL && xSemaphoreTake(m_logMutex, portMAX_DELAY) == pdTRUE) {
-        char buffer[256];
+        static char buffer[256];
         va_list args;
         va_start(args, format);
         int len = vsnprintf(buffer, sizeof(buffer), format, args);

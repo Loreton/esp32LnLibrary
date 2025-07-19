@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 08-07-2025 09.31.25
+// Date .........: 19-07-2025 10.20.51
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -15,7 +15,7 @@
 #include "lnGlobalVars.h" // printf:XFN()
 #include "lnSerialRead.h" // waitForEnter()
 
-#include "PinController_Struct.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
+#include "LedController_Struct.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
 #include "ButtonLongPress_Struct.h"
 #include "callBackFunctions.h" // Function protopypes
 
@@ -25,7 +25,7 @@ size_t initialMemory = ESP.getFreeHeap();
 
 ButtonLongPress_Struct startButton;
 ButtonLongPress_Struct pumpState;
-PinController_Struct activeBuzzer;
+LedController_Struct activeBuzzer;
 
 
 const unsigned long START_BUTTON_THRESHOLDS[] = {
@@ -64,6 +64,7 @@ void setup() {
     Serial.begin(115200);
     while (!Serial) {};
     delay(2000);
+    myLog.begin();
 
 
     // LOG_INFO("Avvio test pulsante con debounce e gestione del reset dei livelli nella funzione chiamante.");
@@ -79,22 +80,14 @@ void setup() {
 
     startButton.init("startButton",  startButton_pin, LOW, START_BUTTON_THRESHOLDS, NUM_START_BUTTON_THRESHOLDS);
     // showStatusCB(&startButton);
-    startButton.showStatus(showStatusCB);
+    // startButton.showStatus(showStatusCB);
 
     pumpState.init("pumpState",      pumpState_pin,   LOW, PUMP_STATE_THRESHOLDS, NUM_PUMP_STATE_THRESHOLDS);
-    pumpState.showStatus(showStatusCB);
+    // pumpState.showStatus(showStatusCB);
     // showStatusCB(&pumpState);
 
 
-    // finalMemory = ESP.getFreeHeap();
-    // DEBUG_LOG("Pulsante su GPIO %d, Relè su GPIO %d", startButton_pin, pressControlRelay_pin);
-    // DEBUG_LOG("Premi il pulsante e rilascia al livello MEDIUM_PRESS per attivare/disattivare il relè.");
 
-    // DEBUG_LOG("initial Memory:     %ld bytes", initialMemory); // Stima RAM allocata
-    // DEBUG_LOG("button Memory:      %ld bytes", buttonMemory - initialMemory); // Stima RAM allocata
-    // DEBUG_LOG("memoria occupata:   %ld bytes", finalMemory - initialMemory); // Stima RAM allocata
-
-    // waitForEnter();
 }
 
 
@@ -113,7 +106,7 @@ void loop() {
         LOG_INFO("system ready!");
     }
     now = millis() - startedMillis;
-    activeBuzzer.updateStatus();
+    activeBuzzer.update();
 
     /*
     elapsed=5000;
@@ -135,16 +128,16 @@ void loop() {
     startButton.notifyCurrentButtonLevel(beepNotification);
     pumpState.notifyCurrentButtonLevel(beepNotification);
 
-    startButton.read(startButtonHandlerCB);
-    pumpState.read(pumpStateHandlerCB);
+    // startButton.read(startButtonHandlerCB);
+    // pumpState.read(pumpStateHandlerCB);
 
 
-    // if (startButton.read()) { // state is changed
-    //     processButton(&startButton);
-    // }
-    // if (pumpState.read()) { // state is changed
-    //     processButton(&pumpState);
-    // }
+    if (startButton.read()) { // state is changed
+        processButton(&startButton);
+    }
+    if (pumpState.read()) { // state is changed
+        processButton(&pumpState);
+    }
 /*
     // notifyCurrentButtonLevel(&startButton);
 

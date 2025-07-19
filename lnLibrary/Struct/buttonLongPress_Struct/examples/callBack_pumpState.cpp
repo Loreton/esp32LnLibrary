@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 11-07-2025 15.32.55
+// Date .........: 19-07-2025 10.12.59
 //
 #ifdef __ln_MODULE_DEBUG_TEST__
 
@@ -11,15 +11,15 @@
 
 
 #include "ButtonLongPress_Struct.h"
-#include "PinController_Struct.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
+#include "LedController_Struct.h" // per l'active buzzer per inviare un beep durante la pressione del tasto
 #include "callBackFunctions.h" // per functions protoype
 
 
 
 
 
-extern PinController_Struct activeBuzzer;
-PinController_Struct *buzzer1 = &activeBuzzer;
+extern LedController_Struct activeBuzzer;
+LedController_Struct *buzzer1 = &activeBuzzer;
 
 
 

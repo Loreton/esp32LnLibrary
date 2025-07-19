@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 16-07-2025 18.09.29
+// Date .........: 18-07-2025 16.21.32
 */
 
 
@@ -24,14 +24,15 @@ void ESP32Logger::begin() {
  */
 
 const char* ESP32Logger::getTimestamp() {
-    m_usec = esp_timer_get_time(); // Tempo in microsecondi dall'avvio
-    m_msec = (m_usec / 1000) % 1000;
-    m_sec  = (m_usec / 1000000) % 60;
-    m_min  = (m_usec / 60000000) % 60;
-    m_hour  = (m_usec / 3600000000);
+    static const char tbuf[16]; // Buffer statico per il timestamp
+    static int64_t  usec = esp_timer_get_time(); // Tempo in microsecondi dall'avvio
+    static uint32_t msec = (usec / 1000) % 1000;
+    static uint32_t sec  = (usec / 1000000) % 60;
+    static uint32_t min  = (usec / 60000000) % 60;
+    static uint32_t hour  = (usec / 3600000000);
 
-    snprintf(m_tbuf, sizeof(m_tbuf), "%02lu:%02lu:%02lu.%03lu", m_hour, m_min, m_sec, m_msec);
-    return m_tbuf;
+    snprintf(tbuf, sizeof(tbuf), "%02lu:%02lu:%02lu.%03lu", hour, min, sec, msec);
+    return tbuf;
 }
 
 
@@ -41,7 +42,6 @@ const char* ESP32Logger::getTimestamp() {
  * @param file Il path completo del file (solitamente __FILE__).
  * @param line Il numero di linea (solitamente __LINE__).
  * @return Una stringa costante contenente il nome del file formattato e il numero di linea.
- */
 const char* ESP32Logger::getFileLineInfo(const char* file, int line) {
     m_filename = strrchr(file, '/'); // Trova l'ultimo '/' per ottenere solo il nome del file
     m_filename = m_filename ? m_filename + 1 : file; // Se trovato, sposta il puntatore, altrimenti usa l'intero path
@@ -65,28 +65,44 @@ const char* ESP32Logger::getFileLineInfo(const char* file, int line) {
     return m_out;
 }
 
-
-
-
-
-
-
-
-
-
-
+ */
 
 /**
- * @brief Questa ora è un semplice wrapper che cattura gli argomenti e li passa a write().
- * @brief Esempio nel caso volessi creare delle funzioni per ogni livello di log
+ * @brief Formatta il nome del file e il numero di linea.
+ * Il nome del file viene troncato a una lunghezza massima e riempito con punti se più corto.
+ * @param file Il path completo del file (solitamente __FILE__).
+ * @param line Il numero di linea (solitamente __LINE__).
+ * @return Una stringa costante contenente il nome del file formattato e il numero di linea.
+ */
+const char* ESP32Logger::getFileLineInfo(const char* file, int line) {
+    char buffer[32];                    // spazio per il [filename.linNo]
+    static const uint8_t MAX_BUFFER_LEN = sizeof(buffer);
+    static const uint8_t FILE_LEN = MAX_BUFFER_LEN-4; // Buffer temporaneo per il nome del file troncato/paddato 4 per .lineNo
+    static const char   paddingChar  = '.';    // padding char per il file
+    static char fname_buffer[FILE_LEN+1];                           // spazio per il filename
+    const char *filename = strrchr(file, '/');                      // Trova l'ultimo '/' per ottenere solo il nome del file
 
-void ESP32Logger::info(const char* file, int line, const char* format, ...) {
-    va_list args;
-    va_start(args, format);
-    write(LogColors::GREEN, "INF", file, line, format,  args);
-    va_end(args);
+
+    filename = filename ? filename + 1 : file;                      // Se trovato, sposta il puntatore, altrimenti usa l'intero path
+
+    // Trova il separatore per tagliare l'estensione o un suffisso (es. _H o .cpp)
+    const char *sep = strrchr(filename, '_');
+    if (!sep) sep = strrchr(filename, '.');
+
+    size_t len = sep ? (size_t)(sep - filename) : strlen(filename); // Lunghezza del nome senza estensione
+
+    if (len > FILE_LEN) len = FILE_LEN;                             // Tronca il nome se più lungo di maxlen
+
+    memset(fname_buffer, paddingChar, FILE_LEN);                    // Riempie il buffer con punti per il padding
+    memcpy(fname_buffer, filename, len);                            // Copia il nome effettivo
+    fname_buffer[FILE_LEN] = '\0';                                  // Termina la stringa
+
+    snprintf(buffer, sizeof(buffer), "%s.%03d", fname_buffer, line);
+    return buffer;
 }
-*/
+
+
+
 
 /**
  * @brief Funzione interna per l'output del log effettivo.
@@ -99,7 +115,7 @@ void ESP32Logger::info(const char* file, int line, const char* format, ...) {
  * @param ... Argomenti variabili per la stringa di formato.
  */
 void ESP32Logger::write(const char* color, const char* tag, const char* file, int line, const char* format, ...) {
-    char buffer[256]; // Buffer per il messaggio formattato
+    static char buffer[256]; // Buffer per il messaggio formattato
     va_list args;
     va_start(args, format);
     int len = vsnprintf(buffer, sizeof(buffer), format, args); // Formatta il messaggio

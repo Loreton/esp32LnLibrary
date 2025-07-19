@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 17-07-2025 08.36.59
+// Date .........: 18-07-2025 08.42.10
 //
 // Gemini: https://g.co/gemini/share/7448d628a2a6
 
@@ -49,6 +49,9 @@ void setup() {
     // Avvia il secondo timer per 2 secondi senza callback iniziale
     // myTimer02.start(2000);
 }
+
+
+
 
 void loop() {
     // *** È FONDAMENTALE chiamare update() per ogni timer nel loop principale ***
