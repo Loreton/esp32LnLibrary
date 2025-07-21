@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 18-07-2025 16.49.57
+// Date .........: 20-07-2025 17.44.38
 */
 
 #pragma once
@@ -8,7 +8,7 @@
 #include <Arduino.h>
 #include <freertos/semphr.h> // <-- AGGIUNGI QUESTO per i tipi FreeRTOS (SemaphoreHandle_t)
 #include "esp_timer.h" // Per esp_timer_get_time()
-#include "lnGlobalVars.h" // PRINT_VAR()
+// #include "lnGlobalVars.h" // PRINT_VAR()
 
 
 

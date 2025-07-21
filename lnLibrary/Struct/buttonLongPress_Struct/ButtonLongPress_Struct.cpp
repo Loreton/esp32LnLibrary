@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 19-07-2025 15.31.18
+// Date .........: 21-07-2025 13.59.44
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -43,7 +43,8 @@ void ButtonLongPress_Struct::init(const char* name, uint8_t pin,
     setPinID(m_pinID, sizeof(m_pinID)-1, m_name,  m_pin);
 
     m_numThresholds = (thresholdsCount > MAX_DEFINED_PRESS_LEVELS) ? MAX_DEFINED_PRESS_LEVELS : thresholdsCount;
-    LOG_DEBUG("m_numThresholds: %d/%d", m_numThresholds, MAX_DEFINED_PRESS_LEVELS);
+    // LOG_DEBUG("%s:", m_pinID);
+    // LOG_DEBUG("   m_numThresholds: %d/%d", m_numThresholds, MAX_DEFINED_PRESS_LEVELS);
 
     m_pressedLogicLevel = pressedLogicLevel;
     m_pressThresholds = thresholds;
@@ -55,18 +56,14 @@ void ButtonLongPress_Struct::init(const char* name, uint8_t pin,
     }
 
     // calcolo del nextGAP.
-    // dobbiamo gestire l'ultimo ed allora lo mettiamo uguale al penultimo... da verificare
     for (int8_t i = 0; i<m_numThresholds-1; i++) {
-        m_gapThresholds[i] = thresholds[i+1] - thresholds[i];
+        m_gapThresholds[i] = m_pressThresholds[i+1] - m_pressThresholds[i];
         m_gapThresholds[i+1] = m_gapThresholds[i];
-        LOG_DEBUG("[%d]threshold: %lu - GAP: %lu", i, thresholds[i], m_gapThresholds[i]);
     }
 
-    // m_lastButtonState = digitalRead(m_pin);
     m_lastButtonState =  digitalRead(m_pin) == m_pressedLogicLevel;
     m_buttonPressed = (m_lastButtonState == m_pressedLogicLevel);
-    m_lastDebounceTime = millis();        // Inizializza il tempo di debounce
-    m_debouncedState = m_lastButtonState;   // Inizializza lo stato debounced
+    ext_showStatus(this);
 
 }
 
@@ -95,6 +92,7 @@ void ButtonLongPress_Struct::reset(void) {
 void ButtonLongPress_Struct::_checkNewLevel() {
     uint32_t currentPressTime = millis() - m_pressStartTime;
     int8_t newLevel = NO_PRESS;
+    ext_showStatus(this);
     LOG_TRACE("[%s] currentPressTime: %lu, m_currentPressLevel %d, new_level %d", m_pinID, currentPressTime, m_currentPressLevel, newLevel);
 
     for (int8_t i = m_numThresholds - 1; i >= 0; i--) {
@@ -111,84 +109,10 @@ void ButtonLongPress_Struct::_checkNewLevel() {
         m_currentPressLevel = newLevel;
     }
     LOG_TRACE("[%s] currentPressTime: %lu, m_currentPressLevel %d, new_level %d", m_pinID, currentPressTime, m_currentPressLevel, newLevel);
-    showStatus(this);
+    ext_showStatus(this);
     // waitForEnter();
 }
 
-
-
-/** con bouncing ma non funziona bene
- * @brief Legge lo stato di un pulsante con debounce e rileva i livelli di pressione.
- * Questa funzione deve essere chiamata ripetutamente nel loop principale.
- *
- * @param btn:            Riferimento alla struttura ButtonState del pulsante da leggere.
- * @param debounceDelay:  Il tempo di debounce in millisecondi.
- * @return:               true se il pulsante è stato RILASCIATO dopo una pressione valida; false altrimenti.
- *
- *  I dettagli sulla durata della pressione e sul livello raggiunto sono disponibili nella struttura `btn`.
- *  E' responsabilità della funzione chiamante resettare `_pressDuration`, `_currentPressLevel`
- *      e `_maxLevelReachedAndNotified` dopo averli processati.
-bool ButtonLongPress_Struct::read_(ButtonCallback onPressCallback) {
-    bool currentState = digitalRead(m_pin); // Legge lo stato attuale del pin
-
-    // Controlla se lo stato attuale è cambiato rispetto all'ultimo stato letto
-    if (currentState != m_lastButtonState) {
-        m_lastDebounceTime = millis(); // Resetta il timer di debounce
-    }
-
-    // Se è passato abbastanza tempo dal cambio di stato (superiore al tempo di debounce)
-    if ((millis() - m_lastDebounceTime) > 300) { // 300ms di debounce
-        // Se lo stato attuale è diverso dallo stato debounced
-        if (currentState != m_debouncedState) {
-            m_debouncedState = currentState; // Aggiorna lo stato debounced
-
-            // La logica seguente è quella che avevi già, ma ora usa m_debouncedState
-            // invece di m_buttonPressed per la prima verifica dello stato.
-            // m_buttonPressed sarà aggiornato con lo stato debounced.
-            if (m_debouncedState != m_buttonPressed) {
-                m_buttonPressed = m_debouncedState; // Aggiorna lo stato "ufficiale" del pulsante dopo debounce
-                LOG_DEBUG("[%s] state: %d", m_pinID, m_debouncedState);
-
-                // Se il pulsante è stato PREMUTO (il suo stato debounced è ora il pressedLogicLevel).
-                if (m_buttonPressed == m_pressedLogicLevel) {
-                    m_pressStartTime = millis(); // Registra il momento della pressione.
-                    // NON resettiamo qui i parametri di livello, lo farà la funzione chiamante al rilascio precedente.
-                }
-                // Se il pulsante è stato RILASCIATO (il suo stato debounced è ora diverso dal pressedLogicLevel).
-                else {
-                    // Calcola la durata della pressione solo se era stato effettivamente premuto.
-                    if (m_pressStartTime != 0) {
-                        m_pressDuration = millis() - m_pressStartTime;
-                        m_pressStartTime = 0; // Resetta il timer di inizio pressione.
-
-                        // Execute the callback if set and the button was pressed.
-                        if (onPressCallback) {
-                            onPressCallback(this); // Pass 'this' (pointer to the current object)
-                        }
-
-                        // NON resettiamo qui i parametri di livello, lo farà la funzione chiamante dopo averli letti.
-                        return true; // Il pulsante è stato rilasciato.
-                    }
-                }
-            }
-        }
-    }
-
-    // Se il pulsante è attualmente PREMUTO e il timer è attivo, aggiorna il livello di pressione.
-    if (m_buttonPressed == m_pressedLogicLevel && m_pressStartTime != 0) {
-        _checkNewLevel();
-
-        if (m_currentPressLevel == static_cast<uint8_t>(m_numThresholds) && !m_maxLevelReachedAndNotified) {
-            LOG_INFO("[%s] MAX livello di pressione raggiunto: %d", m_name, m_currentPressLevel);
-            m_maxLevelReachedAndNotified = true;
-        }
-    }
-
-    m_lastButtonState = currentState; // Aggiorna l'ultimo stato letto per il prossimo ciclo
-    return false;
-}
-
- */
 
 /* NO bouncing extra, usa il primo livello di threshold come tale */
 bool ButtonLongPress_Struct::read(ButtonCallback onPressCallback) {
@@ -249,7 +173,7 @@ bool ButtonLongPress_Struct::read(ButtonCallback onPressCallback) {
 //###########################################################################
 //#
 //###########################################################################
-void ButtonLongPress_Struct::notifyCurrentButtonLevel(BeepCallBack buzzerBeep) {
+void ButtonLongPress_Struct::notifyPressingLevel(BeepCallBack buzzerBeep) {
     uint16_t beep_duration=200;
     static uint32_t lastBeepTime;
     uint32_t next_interval;
@@ -315,15 +239,11 @@ void ButtonLongPress_Struct::notifyCurrentButtonLevel(BeepCallBack buzzerBeep) {
 
 
 
-
-
 //###########################################################################
 //#
 //###########################################################################
-void ButtonLongPress_Struct::showStatus2(ButtonCallback showStatus_callback) {
-    if (showStatus_callback) {
-        showStatus_callback(this);
-    }
+void ButtonLongPress_Struct::showStatus(void) {
+    ext_showStatus(this);
 }
 
 
@@ -340,24 +260,25 @@ void ButtonLongPress_Struct::showStatus2(ButtonCallback showStatus_callback) {
 //###########################################################################
 //#
 //###########################################################################
-void showStatus(ButtonLongPress_Struct *p) {
+void ext_showStatus(ButtonLongPress_Struct *p) {
     // printf0_FN("\t%-18s: %2d - (%d)" , "pin nr"         , p->pin                   , p->mode);
     LOG_TRACE("%s", p->m_pinID);
-    // LOG_DEBUG("\t%-18s: %2d",   "pressedLogicLevel",          p->m_pressedLogicLevel); //,           str_pinLevel[p->m_pressedLogicLevel]);
-    // LOG_DEBUG("\t%-18s: %2d",   "buttonPressed",              p->m_buttonPressed); //,               str_TrueFalse[p->m_buttonPressed]);
-    // LOG_DEBUG("\t%-18s: %2d",   "maxLevelReachedAndNotified", p->m_maxLevelReachedAndNotified); //,  str_TrueFalse[p->m_maxLevelReachedAndNotified]);
+    const char *TAB="    ";
+    LOG_TRACE("%s%-18s: %2d - %s", TAB,  "m_pressedLogicLevel",          p->m_pressedLogicLevel,           str_pinLevel[p->m_pressedLogicLevel]);
+    LOG_TRACE("%s%-18s: %2d - %s", TAB,  "m_buttonPressed",              p->m_buttonPressed,               str_TrueFalse[p->m_buttonPressed]);
+    LOG_TRACE("%s%-18s: %2d - %s", TAB,  "m_maxLevelReachedAndNotified", p->m_maxLevelReachedAndNotified,  str_TrueFalse[p->m_maxLevelReachedAndNotified]);
+    LOG_TRACE("%s%-18s: %2d - %s", TAB,  "m_lastButtonState",            p->m_lastButtonState,             str_OnOff[p->m_lastButtonState]);
+    LOG_TRACE("%s%-18s: %2d - %s", TAB,  "m_lastPressedLevel",           p->m_lastPressedLevel,            str_OnOff[p->m_lastPressedLevel]);
 
-    LOG_TRACE("\t%-18s: %2d - %s",   "pressedLogicLevel",          p->m_pressedLogicLevel,           str_pinLevel[p->m_pressedLogicLevel]);
-    LOG_TRACE("\t%-18s: %2d - %s",   "buttonPressed",              p->m_buttonPressed,               str_TrueFalse[p->m_buttonPressed]);
-    LOG_TRACE("\t%-18s: %2d - %s",   "maxLevelReachedAndNotified", p->m_maxLevelReachedAndNotified,  str_TrueFalse[p->m_maxLevelReachedAndNotified]);
-    LOG_TRACE("\t%-18s: %2d",        "m_currentPressLevel",        p->m_currentPressLevel);
-    LOG_TRACE("\t%-18s: %2d",        "m_lastPressedLevel",         p->m_lastPressedLevel);
+    LOG_TRACE("%s%-18s: %2d",  TAB,      "m_currentPressLevel",          p->m_currentPressLevel);
+    LOG_TRACE("%s%-18s: %lu",  TAB,      "m_pressStartTime",             p->m_pressStartTime);
+    LOG_TRACE("%s%-18s: %lu",  TAB,      "m_pressDuration",              p->m_pressDuration);
 
-    LOG_TRACE("\t%-18s: nr:%2d --> [ ", "threshold"      , p->m_numThresholds);
+
+    LOG_TRACE("%snum_thresholds: %2d" , TAB,  p->m_numThresholds);
     for (int8_t j=0; j < p->m_numThresholds; j++) {
-        LOG_TRACE("%2d, ", p->m_pressThresholds[j]);
+        LOG_TRACE("%sthreshold[%d]: %lu", TAB, j, p->m_pressThresholds[j]);
     }
-    LOG_TRACE(" ]"); // close threshold line
 
     LOG_TRACE(""); // blank line
 

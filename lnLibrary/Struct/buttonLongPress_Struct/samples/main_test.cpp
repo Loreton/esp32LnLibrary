@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 19-07-2025 10.20.51
+// Date .........: 21-07-2025 11.05.32
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 
@@ -11,7 +11,7 @@
 
 
 #define __I_AM_MAIN_CPP__
-#include "lnLogger.h" // printf:XFN()
+#include "lnLogger.h"
 #include "lnGlobalVars.h" // printf:XFN()
 #include "lnSerialRead.h" // waitForEnter()
 
@@ -28,14 +28,15 @@ ButtonLongPress_Struct pumpState;
 LedController_Struct activeBuzzer;
 
 
-const unsigned long START_BUTTON_THRESHOLDS[] = {
+// const unsigned long START_BUTTON_THRESHOLDS[] = {
+const PROGMEM uint32_t START_BUTTON_THRESHOLDS[] = {
                                                   200,
                                                   800,
                                                   2000,
                                                   5000,
                                                 };
 
-const unsigned long PUMP_STATE_THRESHOLDS[] = {
+const PROGMEM uint32_t PUMP_STATE_THRESHOLDS[] = {
                                                   200,
                                                   5000,
                                                   15000,
@@ -65,7 +66,7 @@ void setup() {
     while (!Serial) {};
     delay(2000);
     myLog.begin();
-
+    printSizeOf();
 
     // LOG_INFO("Avvio test pulsante con debounce e gestione del reset dei livelli nella funzione chiamante.");
 
@@ -79,12 +80,14 @@ void setup() {
     activeBuzzer.init("Buzzer", activeBuzzer_pin, HIGH);
 
     startButton.init("startButton",  startButton_pin, LOW, START_BUTTON_THRESHOLDS, NUM_START_BUTTON_THRESHOLDS);
-    // showStatusCB(&startButton);
+    // showStatus(&startButton);
+    startButton.showStatus();
     // startButton.showStatus(showStatusCB);
 
     pumpState.init("pumpState",      pumpState_pin,   LOW, PUMP_STATE_THRESHOLDS, NUM_PUMP_STATE_THRESHOLDS);
     // pumpState.showStatus(showStatusCB);
-    // showStatusCB(&pumpState);
+    // showStatus(&pumpState);
+    pumpState.showStatus();
 
 
 

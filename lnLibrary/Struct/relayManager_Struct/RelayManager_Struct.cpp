@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 18-07-2025 13.16.48
+// Date .........: 19-07-2025 18.55.56
 //
 
 #include <Arduino.h> // Necessario per funzioni come pinMode, digitalWrite, millis
@@ -95,7 +95,7 @@ bool RelayManager_Struct::state() {
 void RelayManager_Struct::setRelay(bool req_state) {
     m_relayState = req_state;
     digitalWrite(m_pin, m_relayState ? m_activeLevel : !m_activeLevel);
-    LOG_DEBUG("[%s] - %s", m_pinID, str_pinLevel[req_state]);
+    LOG_DEBUG("[%s] - %s", m_pinID, str_OnOff[m_relayState]);
 }
 
 void RelayManager_Struct::on() {

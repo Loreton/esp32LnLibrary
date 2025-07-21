@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 18-07-2025 13.17.28
+// Date .........: 21-07-2025 20.14.19
 //
 
 #include <Arduino.h> // Necessario per funzioni come pinMode, digitalWrite, millis
@@ -50,6 +50,7 @@
 
         // Ritorna lo stato attuale del relè (true = acceso, false = spento)
         bool state();
+        bool isActive(void)   {return digitalRead(m_pin) == m_activeLevel; };
 
         // Ritorna il pin del relè (utile per debug)
         // int pin();

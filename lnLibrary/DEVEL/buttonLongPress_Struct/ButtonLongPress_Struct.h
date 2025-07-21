@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 21-07-2025 20.13.35
+// Date .........: 20-07-2025 19.02.15
 */
 
 #pragma once
@@ -58,6 +58,10 @@ typedef struct ButtonLongPress_Struct { // io_input_pin_struct_t
     bool            m_pressedLogicLevel = false;          // Livello logico che indica il pulsante premuto (LOW o HIGH).
 
     bool            m_lastButtonState=false;            // Ultima lettura RAW del pin.
+    // uint32_t        m_lastDebounceTime=0;           // Ultimo momento in cui il pin ha cambiato stato RAW.
+    // bool            m_debouncedState=false;       // Stato del pulsante dopo il debounce
+
+    // bool            m_isPressed=false;              // Stato debounced: true se premuto, false se rilasciato.
     bool            m_buttonPressed=false;              // Stato debounced: true se premuto, false se rilasciato.
     uint32_t        m_pressStartTime=0;             // Timestamp quando il pulsante è stato premuto.
     uint32_t        m_pressDuration=0;              // Durata dell'ultima pressione (in ms).
@@ -81,16 +85,16 @@ typedef struct ButtonLongPress_Struct { // io_input_pin_struct_t
     void process();
     void _checkNewLevel();
 
-    void notifyPressingLevel(BeepCallBack onPressCallback=nullptr);
+    void notifyCurrentButtonLevel(BeepCallBack onPressCallback=nullptr);
     // void showStatus2(ButtonCallback callback=nullptr);
     void showStatus(void);
     void reset(void);
 
     inline bool isMaxLevelReached(void) const {return m_maxLevelReachedAndNotified;};
-    inline bool isPressed(void) const {return (m_buttonPressed == m_pressedLogicLevel); };
+    inline bool isPressed(void) const {return m_buttonPressed;};
 
     // inline functions
-    const char* pinID(void) const { return m_pinID; }
+    const char* pinID() const { return m_pinID; }
 
 
 } ButtonLongPress_Struct;

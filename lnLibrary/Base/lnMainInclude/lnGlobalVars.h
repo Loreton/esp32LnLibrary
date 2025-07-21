@@ -1,11 +1,12 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 18-07-2025 16.45.53
+// Date .........: 20-07-2025 17.47.32
 */
 
 
 #pragma once
 #include <Arduino.h>
+
 
 
     // ---------------------------------
@@ -79,3 +80,30 @@
 
     #endif
 
+
+
+    #ifdef __I_AM_MAIN_CPP__
+        #include "lnLogger.h"
+        void printSizeOf(void) {
+            // Serial.printf("byte:            %d\n", sizeof(byte));
+            // Serial.printf("char:            %d\n", sizeof(char));
+            // Serial.printf("bool:            %d\n", sizeof(bool));
+            // Serial.printf("int:             %d\n", sizeof(int));
+            // Serial.printf("long:            %d\n", sizeof(long));
+            // Serial.printf("unsigned long:   %lu\n", sizeof(unsigned));
+            // Serial.printf("uint8_t:         %d\n", sizeof(uint8_t));
+            // Serial.printf("uint16_t:        %lu\n", sizeof(uint16_t));
+            // Serial.printf("uint32_t:        %lu\n", sizeof(uint32_t));
+            LOG_TRACE("byte:            %d", sizeof(byte));
+            LOG_TRACE("char:            %d", sizeof(char));
+            LOG_TRACE("bool:            %d", sizeof(bool));
+            LOG_TRACE("int:             %d", sizeof(int));
+            LOG_TRACE("long:            %d", sizeof(long));
+            LOG_TRACE("unsigned long:   %lu", sizeof(unsigned));
+            LOG_TRACE("uint8_t:         %d", sizeof(uint8_t));
+            LOG_TRACE("uint16_t:        %lu", sizeof(uint16_t));
+            LOG_TRACE("uint32_t:        %lu", sizeof(uint32_t));
+        }
+    #else
+        void printSizeOf(void);
+    #endif

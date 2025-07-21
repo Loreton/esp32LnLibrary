@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 19-07-2025 10.12.59
+// Date .........: 21-07-2025 13.50.04
 //
 #ifdef __ln_MODULE_DEBUG_TEST__
 
@@ -84,7 +84,7 @@ void pumpStateNotificationHandlerCB(ButtonLongPress_Struct* p) {
 //###########################################################################
 //# richiamata quando il pulsante viene rilasciato
 //###########################################################################
-void pumpStateHandlerCB(ButtonLongPress_Struct *p) {
+void pumpStateHandler(ButtonLongPress_Struct *p) {
     static bool relayState = false;
     switch (p->m_currentPressLevel) {
         case PRESSED_LEVEL_1:
