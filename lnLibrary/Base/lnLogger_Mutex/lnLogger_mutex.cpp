@@ -1,16 +1,20 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 20-07-2025 11.35.32
+// Date .........: 24-07-2025 13.38.26
 */
 
 
 
 #include <Arduino.h>
-#include "esp_timer.h"
+// #include "esp_timer.h"
+#include <ESP32Time.h> // ESP32Time.cpp
 #include <freertos/semphr.h> // <-- AGGIUNGI QUESTO anche qui per l'implementazione del mutex
 
 #include "lnLogger.h"
+// void to_HHMMSS2(uint32_t mseconds, char *outStr, uint8_t maxlen);
 
+
+extern ESP32Time     rtc;
 
 // Costruttore: Inizializza il mutex
 ESP32LoggerMutex::ESP32LoggerMutex(void) {
@@ -35,21 +39,78 @@ void ESP32LoggerMutex::begin() {
     }
 }
 
+
+
+// const char* ESP32LoggerMutex::uSecTo_HHMMSS(uint32_t usec, char *outStr, uint8_t maxlen) {
+// const char* ESP32LoggerMutex::mSecTo_HHMMSS(uint32_t millisec) {
+//     static const uint8_t MAX_BUFFER_LEN = 16; // Buffer statico per il timestamp
+//     static char timestamp[16]; // Buffer statico per il timestamp
+
+//     if (millisec == 0) {
+//         // uint32_t usec = esp_timer_get_time(); // Tempo in microsecondi dall'avvio
+//         // msec = (usec / 1000) % 1000;
+//         millisec = rtc.getMillis(); // Tempo in millisecondi dall'avvio
+//     }
+//     uint32_t msec  = millisec % 1000; // prendo il resto
+//     uint32_t sec   = (millisec / 1000) % 60;
+//     uint32_t min   = (millisec / 60000) % 60;
+//     uint32_t hour  = (millisec / 3600000);
+//     snprintf(timestamp, MAX_BUFFER_LEN, "%02lu:%02lu:%02lu.%03lu", hour, min, sec, msec);
+//     return timestamp;
+// }
+
+const char* ESP32LoggerMutex::mSecTo_HHMMSS(uint32_t millisec) {
+    static const uint8_t BUFFER_LEN = 16;
+    static char timeBuffer[BUFFER_LEN]; // Buffer statico per il timestamp
+    if (millisec == 0) {
+        millisec = rtc.getMillis(); // Tempo in millisecondi
+    }
+
+    uint16_t msec    = (millisec % 1000); // valode da 0-1000
+    uint32_t seconds = (millisec / 1000); // potrebbe essere lungo
+    uint8_t sec      = (seconds % 60);
+    uint8_t min      = (seconds / 60) % 60;
+    uint8_t hour     = (seconds / 3600);
+    if (hour > 0) {
+        snprintf(timeBuffer, BUFFER_LEN, "%02d:%02d:%02d.%03lu", hour, min, sec, msec);
+    } else if (min > 0) {
+        snprintf(timeBuffer, BUFFER_LEN, "%02d:%02d.%03lu", min, sec, msec);
+    } else {
+        snprintf(timeBuffer, BUFFER_LEN, "%02d.%03lu", sec, msec);
+    }
+    // snprintf(timeBuffer, BUFFER_LEN, "%02d:%02d:%02d.%03lu", hour, min, sec, msec);
+    return timeBuffer;
+}
+
+
+
 /**
  * @brief Genera un timestamp formattato (HH:MM:SS.mmm) usando esp_timer_get_time().
  * @return Una stringa costante contenente il timestamp.
  */
-const char* ESP32LoggerMutex::getTimestamp() {
-    static char tbuf[16]; // Buffer statico per il timestamp
-    static int64_t  usec = esp_timer_get_time(); // Tempo in microsecondi dall'avvio
-    static uint32_t msec = (usec / 1000) % 1000;
-    static uint32_t sec  = (usec / 1000000) % 60;
-    static uint32_t min  = (usec / 60000000) % 60;
-    static uint32_t hour  = (usec / 3600000000);
-
-    snprintf(tbuf, sizeof(tbuf), "%02lu:%02lu:%02lu.%03lu", hour, min, sec, msec);
-    return tbuf;
+const char* ESP32LoggerMutex::getTimestampFromBoot() {
+    return this->mSecTo_HHMMSS(esp_timer_get_time());
 }
+
+
+const char* ESP32LoggerMutex::getTimestamp() {
+    static char timestamp[16]; // Buffer statico per il timestamp
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    struct tm tm_info;
+
+    if (localtime_r(&tv.tv_sec, &tm_info)) {
+        snprintf(timestamp, sizeof(timestamp), "%02d:%02d:%02d.%03ld", tm_info.tm_hour, tm_info.tm_min, tm_info.tm_sec, tv.tv_usec / 1000);
+    } else {
+        uint64_t us = esp_timer_get_time(); // Tempo in microsecondi dall'avvio
+        snprintf(timestamp, sizeof(timestamp), "%02llu.%03llu", us / 1000000ULL, (us / 1000ULL) % 1000);
+        // snprintf(timestamp, sizeof(timestamp), "%02llu.%02llu.%03llu", (usec / 60000000) % 60), us / 1000000ULL, (us / 1000ULL) % 1000);
+    }
+    return timestamp;
+}
+
+
+
 
 /**
  * @brief Formatta il nome del file e il numero di linea.
@@ -124,8 +185,9 @@ void ESP32LoggerMutex::write(const char* color, const char* tag, const char* fil
 
         Serial.printf("%s[%s][%s][%s] %s%s\n",
                       color,
-                      getTimestamp(),       // Questi ora operano sui membri di myLog
-                      getFileLineInfo(file, line), // Questi ora operano sui membri di myLog
+                      // this.getTimestamp(),       // Questi ora operano sui membri di myLog
+                      this->mSecTo_HHMMSS(0),         // get elapsed time from boot
+                      this->getFileLineInfo(file, line), // Questi ora operano sui membri di myLog
                       tag,
                       buffer,
                       LogColors::RESET);
@@ -143,4 +205,32 @@ void ESP32LoggerMutex::write(const char* color, const char* tag, const char* fil
 }
 
 ESP32LoggerMutex myLog;
+
+
+
+
+// EXTERNAL utiliies
+// EXTERNAL utiliies
+// EXTERNAL utiliies
+// EXTERNAL utiliies
+// EXTERNAL utiliies
+// EXTERNAL utiliies
+
+// converts to (HH:MM:SS)
+// const char* to_HHMMSS2(uint32_t usec, char *outStr, uint8_t maxlen) {
+//     // time_t rawTime = mseconds / 1000;
+//     // struct tm *timeInfo = gmtime(&rawTime);
+//     // strftime(outStr, maxlen, "%H:%M:%S", timeInfo);
+
+//     // uint64_t usec = esp_timer_get_time(); // Tempo in microsecondi dall'avvio
+//     uint32_t msec = (usec / 1000) % 1000;
+//     uint32_t sec  = (usec / 1000000) % 60;
+//     uint32_t min  = (usec / 60000000) % 60;
+//     uint32_t hour  = (usec / 3600000000);
+//     snprintf(outStr, maxlen, "%02lu:%02lu:%02lu.%03lu", hour, min, sec, msec);
+//     return outStr;
+
+// }
+
+
 

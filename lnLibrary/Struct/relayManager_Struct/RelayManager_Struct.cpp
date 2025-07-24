@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 19-07-2025 18.55.56
+// Date .........: 24-07-2025 20.12.26
 //
 
 #include <Arduino.h> // Necessario per funzioni come pinMode, digitalWrite, millis
@@ -29,9 +29,9 @@ void RelayManager_Struct::init(const char *name, uint8_t pin, uint8_t activeLeve
 
     // Imposta il relè allo stato iniziale (spento)
     pinMode(m_pin, OUTPUT);
-    // digitalWrite(m_pin, m_Off);
-    setRelay(OFF);
-    LOG_DEBUG("%s inizializzato. active level: %s", m_pinID,  m_activeLevel ? "ON" : "OFF");
+    digitalWrite(m_pin, m_Off);
+    setRelay(false);
+    LOG_NOTIFY("[%s] initialized. active level: %s", m_pinID, str_pinLevel[m_activeLevel]);
 
 }
 
@@ -39,11 +39,17 @@ void RelayManager_Struct::init(const char *name, uint8_t pin, uint8_t activeLeve
 // Avvia un pulsetime per il relè
 // duration_ms: Durata del pulsetime in millisecondi.
 void RelayManager_Struct::startPulse(uint32_t duration_ms) {
-    m_pulseStartTime = millis();
-    m_pulseDuration = duration_ms;
-    m_pulseActive = true;
-    LOG_NOTIFY("[%s] Pulsetime avviato.", m_pinID);
-    on();
+    if (!m_pulseActive) {
+        m_pulseStartTime = millis();
+        m_pulseDuration = duration_ms;
+        m_pulseActive = true;
+        LOG_NOTIFY("[%s] Pulsetime avviato per %lu ms", m_pinID, duration_ms);
+        on();
+    }
+    else {
+        LOG_NOTIFY("[%s] Pulsetime already active %lu ms", m_pinID, duration_ms);
+    }
+
 }
 
 // Ottiene il tempo rimanente del pulsetime (0 se non attivo o scaduto)
@@ -71,10 +77,7 @@ void RelayManager_Struct::update() {
     }
 }
 
-// Ritorna il pin del relè (utile per debug)
-// int RelayManager_Struct::pin() {
-//     return m_pin;
-// }
+
 
 // Ritorna il pin del relè (utile per debug)
 const char * RelayManager_Struct::pinID() {
@@ -83,7 +86,6 @@ const char * RelayManager_Struct::pinID() {
 
 // Ritorna lo stato attuale del relè (true = acceso, false = spento)
 bool RelayManager_Struct::state() {
-    // uint8_t state=digitalRead(m_pin);
     uint8_t state = (digitalRead(m_pin) == m_activeLevel) ? true : false;
 
     LOG_DEBUG("state: %s", state ? "ON" : "OFF");
@@ -95,6 +97,9 @@ bool RelayManager_Struct::state() {
 void RelayManager_Struct::setRelay(bool req_state) {
     m_relayState = req_state;
     digitalWrite(m_pin, m_relayState ? m_activeLevel : !m_activeLevel);
+    if (!m_relayState) {
+        m_pulseActive=false;
+    }
     LOG_DEBUG("[%s] - %s", m_pinID, str_OnOff[m_relayState]);
 }
 
@@ -105,15 +110,9 @@ void RelayManager_Struct::on() {
 
 void RelayManager_Struct::off() {
     setRelay(false);
-    // digitalWrite(m_pin, m_Off);
-    // LOG_DEBUG("[%s] - OFF", m_pinID);
 }
 
 void RelayManager_Struct::toggle() {
     setRelay(!m_relayState);
-    // m_relayState = digitalRead(m_pin) ? m_activeLevel : !m_activeLevel
-
-    // digitalWrite(m_pin, m_relayState ? m_activeLevel : !m_activeLevel);
-    // LOG_DEBUG("[%s] - OFF", m_pinID);
 }
 

@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-06-2025 17.49.56
+// Date .........: 24-07-2025 13.20.28
 */
 
 #pragma once
@@ -40,4 +40,5 @@
     void alignToMinute(void);
     // void printTime(void);
     void to_HHMMSS(uint32_t mseconds, char *outStr, uint8_t maxlen=10);
+    const char* mSecTo_HHMMSSms(uint32_t msec, char *buffer=nullptr, uint8_t buffer_len=0);
 

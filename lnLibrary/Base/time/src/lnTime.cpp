@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 07-07-2025 10.14.38
+// Date .........: 24-07-2025 13.27.22
 */
 
 #include "Arduino.h"
@@ -21,9 +21,9 @@
 
 
 
-#define TIME_BUFFER_LENGTH 10
+#define TIME_BUFFER_LENGTH 16
 ESP32Time     rtc;
-char PROGMEM buffer_time[TIME_BUFFER_LENGTH];
+char PROGMEM timeBuffer[TIME_BUFFER_LENGTH];
 
 
 #define EUROPE_ROME_TZ "CET-1CEST,M3.5.0,M10.5.0/3" // https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv
@@ -36,7 +36,7 @@ struct tm timeinfo = rtc.getTimeStruct();
 // #
 // #########################################
 void time_setup() {
-    rtc.setTime(30, 24, 15, 21, 1, 2025);  // 21th Jan 2025 15:24:30
+    rtc.setTime(0, 0, 8, 21, 1, 2025);  // 21th Jan 2025 08:00:00
     // rtc.setTime(00, 00, 15, 17, 1, 2024);  // 17th Jan 2021 15:24:30
     //rtc.setTime(1609459200);  // 1st Jan 2021 00:00:00
     // rtc.offset = 7200; // change offset value
@@ -55,12 +55,79 @@ void time_setup() {
 char *nowTime() {
     // struct tm timeinfo = get_timeinfo();
     timeinfo = rtc.getTimeStruct();
-    snprintf(buffer_time, TIME_BUFFER_LENGTH, "%02d:%02d:%02d", timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
-    // snprintf(buffer_time, TIME_BUFFER_LENGTH, "%s", "01:02:03");
-    return buffer_time;
+    snprintf(timeBuffer, TIME_BUFFER_LENGTH, "%02d:%02d:%02d", timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+    // snprintf(timeBuffer, TIME_BUFFER_LENGTH, "%s", "01:02:03");
+    return timeBuffer;
 }
 
 
+const char* mSecTo_HHMMSSms(uint32_t millisec, char *buffer, uint8_t buffer_len) {
+    if (millisec == 0) {
+        millisec = rtc.getMillis(); // Tempo in millisecondi
+    }
+
+    if (buffer && buffer_len != 0) {
+    }
+    else {
+        buffer = timeBuffer; // definito in testa
+        buffer_len = TIME_BUFFER_LENGTH;
+    }
+    uint16_t msec    = (millisec % 1000); // valode da 0-1000
+    uint32_t seconds = (millisec / 1000); // potrebbe essere lungo
+    uint8_t sec      = (seconds  % 60);
+    uint8_t min      = (seconds / 60) % 60;
+    uint8_t hour     = (seconds / 3600);
+    snprintf(buffer, buffer_len, "%02d:%02d:%02d.%03lu", hour, min, sec, msec);
+    return buffer;
+}
+
+
+
+// // const char* ESP32LoggerMutex::uSecTo_HHMMSS(uint32_t usec, char *outStr, uint8_t maxlen) {
+// const char* mSecTo_HHMMSS2(uint32_t msec, char *buffer, uint8_t buffer_len) {
+//     // static uint8_t MAX_BUFFER_LEN = 16; // Buffer statico per il timestamp
+//     // static char timestamp[16]; // Buffer statico per il timestamp
+
+//     if (msec == 0) { // si vuole l'ora attuale
+//         uint32_t msec = rtc.getMillis(); // /home/loreto/lnProfile/appls/Arduino-ESP32/libraries/ESP32Time-2.0.6/ESP32Time.cpp
+//     }
+
+//     if (buffer != nullptr && buffer_len != 0) {
+
+//     } else {
+//         buffer = timeBuffer;
+//         buffer_len = TIME_BUFFER_LENGTH;
+//     }
+
+//     uint32_t sec  = (msec / 1000000) % 60;
+//     uint32_t min  = (msec / 60000000) % 60;
+//     uint32_t hour  = (msec / 3600000000);
+//     snprintf(buffer, buffer_len, "%02lu:%02lu:%02lu.%03lu", hour, min, sec, msec);
+//     return buffer;
+// }
+
+// // const char* ESP32LoggerMutex::uSecTo_HHMMSS(uint32_t usec, char *outStr, uint8_t maxlen) {
+// const char* mSecTo_HHMMSSms(uint32_t msec, char *buffer, uint8_t buffer_len) {
+//     // static uint8_t MAX_BUFFER_LEN = 16; // Buffer statico per il timestamp
+//     // static char timestamp[16]; // Buffer statico per il timestamp
+
+//     if (msec == 0) { // si vuole l'ora attuale
+//         uint32_t usec = esp_timer_get_time(); // Tempo in microsecondi dall'avvio
+//         msec = (usec / 1000) % 1000;
+//     }
+//     if (buffer  && buffer_len != 0) {
+
+//     } else {
+//         buffer = timeBuffer;
+//         buffer_len = TIME_BUFFER_LENGTH;
+//     }
+
+//     uint32_t sec  = (msec / 1000000) % 60;
+//     uint32_t min  = (msec / 60000000) % 60;
+//     uint32_t hour  = (msec / 3600000000);
+//     snprintf(buffer, buffer_len, "%02lu:%02lu:%02lu.%03lu", hour, min, sec, msec);
+//     return buffer;
+// }
 
 // converts to (HH:MM:SS)
 void to_HHMMSS(uint32_t mseconds, char *outStr, uint8_t maxlen) {
@@ -256,4 +323,40 @@ void print_rtc_time() {
     LOG_NOTIFY("\t%-20s: %s", "time struct", (&timeinfo, "%A, %B %d %Y %H:%M:%S"));   //  (tm struct) Sunday, January 17 2021 07:24:38
 
 }
+
+
+
+
+
+// // #include <stdio.h>
+// // #include <sys/time.h>
+// #include <time.h>
+// // #include "freertos/FreeRTOS.h"
+// // #include "freertos/task.h"
+
+// void print_time_with_millis() {
+//     struct timeval now;
+//     gettimeofday(&now, NULL); // Ottiene secondi + microsecondi
+
+//     struct tm timeinfo;
+//     localtime_r(&now.tv_sec, &timeinfo); // Converte in formato leggibile
+
+//     int millis = now.tv_usec / 1000;
+
+//     printf("Orario attuale: %02d:%02d:%02d.%03d\n",
+//            timeinfo.tm_hour,
+//            timeinfo.tm_min,
+//            timeinfo.tm_sec,
+//            millis);
+// }
+
+// void app_main(void) {
+//     while (1) {
+//         print_time_with_millis();
+//         vTaskDelay(pdMS_TO_TICKS(1000)); // ogni 1 secondo
+//     }
+// }
+
+
+
 

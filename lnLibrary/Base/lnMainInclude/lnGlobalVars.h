@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 20-07-2025 17.47.32
+// Date .........: 23-07-2025 14.36.34
 */
 
 
@@ -37,7 +37,7 @@
         const char PROGMEM *str_action[]     = {"released", "pressed"};
         const char PROGMEM *str_pinLevel[]   = {"LOW", "HIGH"};
         const char PROGMEM *str_TrueFalse[]  = {"FALSE", "TRUE"};
-        const char PROGMEM *str_OffOn[]      = {"OFF", "ON"};
+        // const char PROGMEM *str_OffOn[]      = {"OFF", "ON"};
         const char PROGMEM *str_OnOff[]      = {"OFF", "ON"};
         const char PROGMEM *str_ON           = "ON";
         const char PROGMEM *str_OFF          = "OFF";
@@ -59,7 +59,7 @@
         extern const char PROGMEM *str_action[];
         extern const char PROGMEM *str_pinLevel[];
         extern const char PROGMEM *str_TrueFalse[];
-        extern const char PROGMEM *str_OffOn[];
+        // extern const char PROGMEM *str_OffOn[];
         extern const char PROGMEM *str_OnOff[];
         extern const char PROGMEM *str_ON;
         extern const char PROGMEM *str_OFF;

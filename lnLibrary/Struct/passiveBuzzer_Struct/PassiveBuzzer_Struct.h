@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 14-07-2025 15.12.25
+// Date .........: 24-07-2025 20.18.24
 //
 
 #pragma once
@@ -44,14 +44,14 @@
         PassiveBuzzer_Struct(void);
 
         // PassiveBuzzer_Struct(const char* pin_name, int buzzerPin, int ledcChannel, int resBits = 10);
-        void init(const char* pin_name, int buzzerPin, uint8_t active_level, int ledcChannel, int resBits = 10);
+        void init(const char* pin_name, int buzzerPin, uint8_t active_level, int ledcChannel=0, int resBits = 10);
         // init(int buzzerPin, int ledcChannel, int resBits = 10);
         void begin();
         void playToneDutyCycle(int frequency, float dutyCyclePercent, uint32_t duration);
         void playToneFixed(int frequency, uint32_t duration);
         void playScale(int noteFrequencies[], int numberOfNotes, uint32_t singleNoteDuration, bool upDirection);
         void noTone();
-        void handle();
+        void update();
         bool isPlayingSomething();
     } PassiveBuzzer_Struct;
 

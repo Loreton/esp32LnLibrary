@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 13-07-2025 14.28.11
+// Date .........: 24-07-2025 20.18.18
 //
 
 #include <Arduino.h>    // in testa anche per le definizioni dei type
@@ -8,13 +8,14 @@
 #include "lnLogger.h"
 #include "lnSetPinID.h"
 
+
+#include "lnGlobalVars.h"
 #include "PassiveBuzzer_Struct.h"
 
 // Costruttore: chiamato quando crei un oggetto Buzzer
 PassiveBuzzer_Struct::PassiveBuzzer_Struct(void) {}
 
 // Costruttore: chiamato quando crei un oggetto Buzzer
-// PassiveBuzzer_Struct::PassiveBuzzer_Struct(const char* pin_name, int buzzerPin, int ledcChannel, int resBits) {
 void PassiveBuzzer_Struct::init(const char* pin_name, int buzzerPin, uint8_t active_level, int ledcChannel, int resBits) {
     m_pin              = buzzerPin;
     m_name             = pin_name;
@@ -46,10 +47,8 @@ void PassiveBuzzer_Struct::init(const char* pin_name, int buzzerPin, uint8_t act
     pinMode(m_pin, OUTPUT);
     digitalWrite(m_pin, m_off);
 
-    // int cx = snprintf(m_pinID, PIN_ID_MAXLENGTH-6, "%[%s", m_name);
-    // cx = snprintf(m_pinID+cx, PIN_ID_MAXLENGTH-cx, ".%02d]:", m_pin);
-    LOG_DEBUG("%s inizializzato. active level: %s", m_pinID,  m_activeLevel ? "ON" : "OFF");
-    // LOG_INFO("Written %d/%d chars", cx, PIN_ID_LENGTH); Serial non ancora attiva
+    // LOG_INFO("%s initialized. active level: %s", m_pinID,  m_pressedLogicLevel ? "HIGH"; "LOW");
+    LOG_NOTIFY("[%s] initialized. active level: %s", m_pinID, str_pinLevel[m_activeLevel]);
 }
 
 
@@ -165,7 +164,7 @@ void PassiveBuzzer_Struct::noTone() {
 
 
 // Metodo da chiamare ripetutamente nel loop() per gestire la fine del tono o il progresso della scala
-void PassiveBuzzer_Struct::handle() {
+void PassiveBuzzer_Struct::update() {
     if (m_isPlaying) {
         if (millis() - m_toneStartTime >= m_toneDuration) {
             noTone();
