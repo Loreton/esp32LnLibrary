@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 24-07-2025 13.38.26
+// Date .........: 25-07-2025 08.09.08
 */
 
 
@@ -11,20 +11,19 @@
 #include <freertos/semphr.h> // <-- AGGIUNGI QUESTO anche qui per l'implementazione del mutex
 
 #include "lnLogger.h"
-// void to_HHMMSS2(uint32_t mseconds, char *outStr, uint8_t maxlen);
 
 
-extern ESP32Time     rtc;
+ESP32Time     this_rtc;
 
 // Costruttore: Inizializza il mutex
 ESP32LoggerMutex::ESP32LoggerMutex(void) {
     // Il costruttore fa il minimo indispensabile, o nulla.
-    // Il mutex verrà creato in begin().
+    // Il mutex verrà creato in init().
     m_logMutex = NULL; // Inizializza a NULL per sapere che non è stato ancora creato
 };
 
 // la uso in modo che posso mandare un messaggio se non riesco ad inizializzare il mutex
-void ESP32LoggerMutex::begin() {
+void ESP32LoggerMutex::init() {
     if (!m_mutexInitialized) {
         m_logMutex = xSemaphoreCreateMutex();
         if (m_logMutex == NULL) {
@@ -49,7 +48,7 @@ void ESP32LoggerMutex::begin() {
 //     if (millisec == 0) {
 //         // uint32_t usec = esp_timer_get_time(); // Tempo in microsecondi dall'avvio
 //         // msec = (usec / 1000) % 1000;
-//         millisec = rtc.getMillis(); // Tempo in millisecondi dall'avvio
+//         millisec = this_rtc.getMillis(); // Tempo in millisecondi dall'avvio
 //     }
 //     uint32_t msec  = millisec % 1000; // prendo il resto
 //     uint32_t sec   = (millisec / 1000) % 60;
@@ -63,7 +62,7 @@ const char* ESP32LoggerMutex::mSecTo_HHMMSS(uint32_t millisec) {
     static const uint8_t BUFFER_LEN = 16;
     static char timeBuffer[BUFFER_LEN]; // Buffer statico per il timestamp
     if (millisec == 0) {
-        millisec = rtc.getMillis(); // Tempo in millisecondi
+        millisec = this_rtc.getMillis(); // Tempo in millisecondi
     }
 
     uint16_t msec    = (millisec % 1000); // valode da 0-1000
@@ -161,10 +160,10 @@ void ESP32LoggerMutex::write(const char* color, const char* tag, const char* fil
     if (!m_mutexInitialized) {
         // Se non è inizializzato, non possiamo usare il mutex o la Serial.
         // Potresti stampare un messaggio di avviso rudimentale o scartare il log.
-        // Questa è la situazione più critica: un log prima di Serial.begin() e myLog.begin().
+        // Questa è la situazione più critica: un log prima di Serial.init() e myLog.init().
         // Per ora, lo stampiamo su Serial ma senza garanzie di visibilità.
         // Per log molto precoci, potresti considerare un buffer FIFO o JTAG/SWD.
-        Serial.printf("AVVISO: Logging prima dell'inizializzazione: (lanciare il begin())");
+        Serial.printf("AVVISO: Logging prima dell'inizializzazione: (lanciare il init())");
         // Serial.printf(format, ##__VA_ARGS__);
         Serial.println();
         return; // Esci per evitare problemi

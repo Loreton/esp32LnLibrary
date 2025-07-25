@@ -1,11 +1,12 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 24-07-2025 20.18.18
+// Date .........: 25-07-2025 08.12.22
 //
 
 #include <Arduino.h>    // in testa anche per le definizioni dei type
 #include "driver/ledc.h"
 #include "lnLogger.h"
+#include "lnGlobalVars.h"
 #include "lnSetPinID.h"
 
 
@@ -49,10 +50,13 @@ void PassiveBuzzer_Struct::init(const char* pin_name, int buzzerPin, uint8_t act
 
     // LOG_INFO("%s initialized. active level: %s", m_pinID,  m_pressedLogicLevel ? "HIGH"; "LOW");
     LOG_NOTIFY("[%s] initialized. active level: %s", m_pinID, str_pinLevel[m_activeLevel]);
+    begin();
 }
 
 
-  // Metodo per inizializzare il buzzer
+// ###############################################################
+// # Metodo per inizializzare il buzzer
+// ###############################################################
 void PassiveBuzzer_Struct::begin() {
     unsigned long actualFreq = ledcSetup(m_channel, 1, m_resolutionBits); // Frequenza iniziale > 0 altrimenti da errore
 

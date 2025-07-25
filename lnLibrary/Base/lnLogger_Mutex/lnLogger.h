@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 24-07-2025 13.16.05
+// Date .........: 25-07-2025 08.09.48
 */
 
 #pragma once
@@ -23,7 +23,7 @@
 class ESP32LoggerMutex {
     public:
         ESP32LoggerMutex(void);
-        void begin(void);
+        void init(void);
         void write(const char* color, const char* tag, const char* file, int line, const char* format, ...);
 
     private:
