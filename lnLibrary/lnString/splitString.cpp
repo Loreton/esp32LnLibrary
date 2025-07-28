@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 07-07-2025 09.32.32
+// Date .........: 28-07-2025 14.49.34
 */
 
 
@@ -10,8 +10,7 @@
 // ---------------------------------
 // lnLibrary headers files
 // ---------------------------------
-#define LOG_LEVEL_0x
-#include "../lnMainInclude/@logMacros.h"
+#include "lnLogger_Class.h"
 #include "lnString.h"
 
 /*
@@ -24,15 +23,15 @@
 const PROGMEM char *splittedResult[100];
 
 uint8_t splitString(char *input_str, const char *delim) {
-    printf1_NFN("Parsing String: %s\n", input_str);
+    LOG_INFO("Parsing String: %s\n", input_str);
 
 
     char* ptr = strtok(input_str, delim); // get first word
-    printf1_NFN("index\ttext\n");
+    LOG_INFO("index\ttext\n");
     int8_t i = 0;
     while (ptr) {
         splittedResult[i]=ptr;
-        printf1_NFN("%d - '%s'\n", i, ptr);  // this is the ASCII text we want to transform into an integer
+        LOG_INFO("%d - '%s'\n", i, ptr);  // this is the ASCII text we want to transform into an integer
         ptr = strtok(NULL, delim);
         i++;
     }
@@ -84,7 +83,7 @@ char *getWord(char *input_str, const char *delim, int8_t word_nr) {
             if (curr_word == word_nr) {
                 break;
             }
-            printf1_NFN("%d - '%s'\n", curr_word, ptr);
+            LOG_INFO("%d - '%s'\n", curr_word, ptr);
             ptr = strtok(NULL, delim);
             curr_word++;
         }
@@ -99,7 +98,7 @@ char *getWord(char *input_str, const char *delim, int8_t word_nr) {
 // #    char myString[]="12:34:55";
 // #    char delim[] = ":";
 // #    int32_t seconds = stringToSeconds(myString, delim);
-// #    printf1_NFN("seconds: %d\n", seconds);
+// #    LOG_INFO("seconds: %d\n", seconds);
 // ######################################################################
 int32_t stringToSeconds(char *input_str, const char *delim) {
     int words = splitString(input_str, delim);
@@ -126,7 +125,7 @@ int32_t stringToSeconds(char *input_str, const char *delim) {
             seconds = 0;
 
     }
-    printf1_NFN("seconds [switch]: %d\n", seconds);
+    LOG_INFO("seconds [switch]: %d\n", seconds);
     return seconds;
 }
 
@@ -138,8 +137,8 @@ char *getSubString(char *source, char *dest, char left, char right) {
     if (myTo != NULL) {
         len=myTo - myFrom;
     }
-    printf("len: %d\n", len);
+   LOG_INFO("len: %d\n", len);
     snprintf(dest, len+1, "%s", myFrom);
-    printf("From: %s\n", dest);
+   LOG_INFO("From: %s\n", dest);
     return dest;
 }

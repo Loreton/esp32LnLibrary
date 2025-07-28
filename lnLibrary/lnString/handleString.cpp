@@ -1,11 +1,11 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 28-07-2025 11.31.39
+// Date .........: 28-07-2025 14.48.34
 */
 
 
 #include <Arduino.h>
-
+#include "lnLogger_Class.h"
 // char msg[] = "1,20,300,4000,50000";
 
 
@@ -13,7 +13,6 @@
 // lnLibrary headers files
 // ---------------------------------
 
-#include "../lnMainInclude/@logMacros.h"
 
 
 /*
@@ -27,11 +26,11 @@ void charToString() {
     char cString[] = "char to String";
     String sString;
     sString = cString;
-    printf("sString1: %s\n", sString.c_str());
-    printf("cString1: %s\n", cString);
+    LOG_INFO("sString1: %s\n", sString.c_str());
+    LOG_INFO("cString1: %s\n", cString);
     sString="loreto";
-    printf("sString2: %s\n", sString.c_str());
-    printf("cString2: %s\n", cString);
+    LOG_INFO("sString2: %s\n", sString.c_str());
+    LOG_INFO("cString2: %s\n", cString);
 }
 
 
@@ -51,8 +50,8 @@ void StringToChar() {
     // oppure
     sprintf(cString, "%s", sString.c_str());
 
-    printf("sString3: %s\n", sString.c_str());
-    printf("cString3: %s\n", cString);
+    LOG_INFO("sString3: %s\n", sString.c_str());
+    LOG_INFO("cString3: %s\n", cString);
 }
 
 
@@ -60,13 +59,13 @@ bool ln_isString(const char *str) {
     bool isValid = false;
 
     if (!str) {
-        printf1_NFN("null\n");
+        LOG_INFO("null\n");
     }
     else if (str[0] == '\0') {
-        printf1_NFN("empty\n");
+        LOG_INFO("empty\n");
     }
     else if (str ) {
-        printf1_NFN("%s\n", str);
+        LOG_INFO("%s\n", str);
         isValid=true;
     }
     return isValid;
