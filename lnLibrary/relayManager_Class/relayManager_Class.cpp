@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 28-07-2025 15.53.37
+// Date .........: 28-07-2025 17.05.11
 //
 
 #include <Arduino.h> // Necessario per funzioni come pinMode, digitalWrite, millis
@@ -10,7 +10,7 @@
 #include "relayManager_Class.h" // Include l'header della classe
 
 // Costruttore
-RelayManager::RelayManager() {
+RelayManager_Class::RelayManager_Class() {
     // Inizializza i membri con valori predefiniti
     m_pin = 99;
     m_name = nullptr;
@@ -25,7 +25,7 @@ RelayManager::RelayManager() {
 }
 
 // Inizializza il relè.
-void RelayManager::init(const char *name, uint8_t pin, uint8_t activeLevel) {
+void RelayManager_Class::init(const char *name, uint8_t pin, uint8_t activeLevel) {
     m_pin = pin;
     m_name = name;
     m_activeLevel = activeLevel;
@@ -46,7 +46,7 @@ void RelayManager::init(const char *name, uint8_t pin, uint8_t activeLevel) {
 }
 
 // Imposta lo stato fisico del relè sul pin
-void RelayManager::setRelay(bool req_state) {
+void RelayManager_Class::setRelay(bool req_state) {
     m_relayState = req_state; // Aggiorna lo stato logico interno
 
     // Scrive il livello appropriato sul pin
@@ -59,20 +59,20 @@ void RelayManager::setRelay(bool req_state) {
     LOG_DEBUG("[%s] - %s", m_pinID, (m_relayState ? "ON" : "OFF"));
 }
 
-void RelayManager::on() {
+void RelayManager_Class::on() {
     setRelay(true);
 }
 
-void RelayManager::off() {
+void RelayManager_Class::off() {
     setRelay(false);
 }
 
-void RelayManager::toggle() {
+void RelayManager_Class::toggle() {
     setRelay(!m_relayState); // Inverte lo stato logico e lo applica
 }
 
 // Avvia un pulsetime per il relè
-void RelayManager::startPulse(uint32_t duration_ms) {
+void RelayManager_Class::startPulse(uint32_t duration_ms) {
     if (!m_pulseActive) {
         m_pulseStartTime = millis();
         m_pulseDuration = duration_ms;
@@ -85,7 +85,7 @@ void RelayManager::startPulse(uint32_t duration_ms) {
 }
 
 // Ottiene il tempo rimanente del pulsetime (0 se non attivo o scaduto)
-uint32_t RelayManager::getRemainingPulseTime() {
+uint32_t RelayManager_Class::getRemainingPulseTime() {
     if (m_pulseActive) {
         uint32_t elapsed = millis() - m_pulseStartTime;
         if (elapsed < m_pulseDuration) {
@@ -98,7 +98,7 @@ uint32_t RelayManager::getRemainingPulseTime() {
 }
 
 // Deve essere chiamata regolarmente nel loop() per aggiornare lo stato del relè
-void RelayManager::update() {
+void RelayManager_Class::update() {
     if (m_pulseActive) {
         if (millis() - m_pulseStartTime >= m_pulseDuration) {
             m_pulseActive = false;
@@ -109,16 +109,16 @@ void RelayManager::update() {
 }
 
 // Ritorna lo stato logico attuale del relè (true = acceso, false = spento)
-bool RelayManager::state() const {
+bool RelayManager_Class::state() const {
     return m_relayState;
 }
 
 // Ritorna vero se il relè è fisicamente attivo (a livello di pin)
-bool RelayManager::isActive() const {
+bool RelayManager_Class::isActive() const {
     return digitalRead(m_pin) == m_activeLevel;
 }
 
 // Ritorna l'ID del pin (utile per debug)
-const char *RelayManager::pinID() const {
+const char *RelayManager_Class::pinID() const {
     return m_pinID;
 }

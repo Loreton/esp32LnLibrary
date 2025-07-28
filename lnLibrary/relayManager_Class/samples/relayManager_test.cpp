@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 28-07-2025 15.55.38
+// Date .........: 28-07-2025 17.05.25
 // ref: https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 //
 #ifdef __ln_MODULE_DEBUG_TEST__
@@ -9,7 +9,7 @@
 #define magnetoTermicoRelay_pin     17  // OUTPUT
 
 
-RelayManager myRelay; // Creazione di un'istanza della classe
+RelayManager_Class myRelay; // Creazione di un'istanza della classe
 
 
 void setup() {

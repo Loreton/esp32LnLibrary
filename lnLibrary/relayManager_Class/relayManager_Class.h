@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 28-07-2025 15.48.21
+// Date .........: 28-07-2025 17.05.02
 //
 
 #ifndef RELAY_MANAGER_H
@@ -8,7 +8,7 @@
 
 #include <Arduino.h> // Necessario per funzioni come pinMode, digitalWrite, millis
 
-class RelayManager {
+class RelayManager_Class {
 private:
     uint8_t             m_pin = 99;
     const char* m_name  = nullptr;
@@ -29,7 +29,7 @@ private:
 
 public:
     // Costruttore
-    RelayManager();
+    RelayManager_Class();
 
     // --- Metodi Pubblici ---
     // Inizializza il relè.
