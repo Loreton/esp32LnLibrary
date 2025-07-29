@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 25-07-2025 10.48.46
+// Date .........: 28-07-2025 19.51.25
 */
 
 #pragma once
@@ -88,7 +88,10 @@ typedef struct ButtonLongPress_Struct { // io_input_pin_struct_t
     void showStatus(void);
     void reset(void);
 
-    inline bool isMaxLevelReached(void) const {return m_maxLevelReachedAndNotified;};
+
+    inline uint8_t currentPressLevel(void) const { return m_currentPressLevel; }
+
+    inline bool maxLevelReached(void) const {return m_maxLevelReachedAndNotified;};
     inline bool isPressed(void) const {return (m_buttonPressed == m_pressedLogicLevel); };
     inline uint8_t pressedLevel(void) const {return m_currentPressLevel; };
 

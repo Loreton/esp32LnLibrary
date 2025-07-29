@@ -47,11 +47,13 @@ public: // Membri pubblici
     void pressingLevelNotification(ButtonLongPressCallback onPressCallback = nullptr);
     void showStatus(void);
     void reset(void);
+    bool pressedLevelChanged(bool fDisplay=false);
 
     // Funzioni inline (getter)
-    inline bool isMaxLevelReached(void) const { return m_maxLevelReachedAndNotified; }
+    inline bool maxLevelReached(void) const { return m_maxLevelReachedAndNotified; }
     inline bool isPressed(void) const { return (m_buttonPressed == m_pressedLogicLevel); }
-    inline uint8_t pressedLevel(void) const { return m_currentPressLevel; }
+    inline uint8_t currentPressLevel(void) const { return m_currentPressLevel; }
+    inline uint8_t lastPressedLevel(void) const { return m_lastPressedLevel; }
     inline const char* pinID(void) const { return m_pinID; }
 
     // Membri pubblici che potrebbero essere consultati esternamente (es. per debug o display)
@@ -74,8 +76,10 @@ private: // Membri privati (accessibili solo dall'interno della classe)
     uint32_t          m_gapThresholds[MAX_DEFINED_PRESS_LEVELS];
     int8_t            m_numThresholds = 0;
 
+    uint32_t          m_lastDisplayTime = 0;
+
     // Metodi privati
-    void _checkNewLevel();
+    void updatePressedLevel();
 };
 
 // Funzioni esterne correlate (se necessario mantenerle fuori dalla classe)
