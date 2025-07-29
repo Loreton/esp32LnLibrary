@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-07-2025 08.20.56
+// Date .........: 29-07-2025 08.24.25
 //
 
 #include <Arduino.h>
@@ -90,21 +90,11 @@ void ButtonLongPress_Class::updatePressedLevel() {
     }
 
     // notifica elapsed ogni minuto....
-    // Se `lnTime` è una classe globale, è OK.
     if (m_elapsed - m_lastDisplayTime > 60000) {
         m_lastDisplayTime = m_elapsed; // This will affect all instances if static.
-
         pressedLevelChanged(true); // fDisplay=true
-        // uint32_t ms_to_next_level = 0;
-        // if (m_currentPressLevel < m_numThresholds) { // Avoid accessing beyond array bounds
-        //     ms_to_next_level = m_pressThresholds[m_currentPressLevel] - m_elapsed;
-        // } else {
-        //     ms_to_next_level = 0; // Already at or past max level
-        // }
-
-        // LOG_INFO("[%s]: PRESSED_LEVEL %d/%d", m_pinID, m_currentPressLevel, m_numThresholds);
-        // LOG_NOTIFY("\telapsed: %s - time to next level: ", lnTime.mSecTo_HHMMSSms(m_elapsed), lnTime.mSecTo_HHMMSSms(ms_to_next_level));
     }
+
 }
 
 
@@ -113,24 +103,6 @@ void ButtonLongPress_Class::updatePressedLevel() {
 //# returrn: true if pressed level has been changed
 //###########################################################################
 bool ButtonLongPress_Class::pressedLevelChanged(bool fDisplay) {
-
-    // if (m_currentPressLevel != m_lastPressedLevel) {
-    //     // Controlla l'indice prima di accedere all'array m_gapThresholds
-    //     if (m_currentPressLevel > 0 && m_currentPressLevel <= m_numThresholds) {
-    //         next_interval = m_gapThresholds[m_currentPressLevel -1]; // Indexing for gap, e.g., gap after level 1 is at index 0
-    //     } else {
-    //         next_interval = 0; // O un valore di default
-    //     }
-
-    //     LOG_INFO("[%s]: PRESSED_LEVEL %d/%d", m_pinID, m_currentPressLevel, m_numThresholds);
-    //     LOG_NOTIFY("\telapsed: %s - time to next level:", lnTime.mSecTo_HHMMSSms(m_elapsed), lnTime.mSecTo_HHMMSSms(ms_to_next_level));
-
-
-    //     m_lastPressedLevel = m_currentPressLevel;
-    //     return true;
-    // }
-
-
     bool hasChanged=false;
     if (m_currentPressLevel != m_lastPressedLevel) {
         m_lastPressedLevel = m_currentPressLevel;
