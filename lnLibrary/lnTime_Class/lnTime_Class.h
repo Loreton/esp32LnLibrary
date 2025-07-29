@@ -1,9 +1,9 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 28-07-2025 14.16.30
+// Date .........: 29-07-2025 12.14.46
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 28-07-2025 14.16.30
+// Date .........: 29-07-2025 12.14.46
 */
 
 #pragma once
@@ -12,7 +12,7 @@
     #include <ESP32Time.h> // ESP32Time.cpp
     // #include "lnLogger_Class.h" // Assicurati che lnLogger.h sia disponibile nel tuo progetto
 
-    #define TIME_BUFFER_LENGTH 16
+    // #define TIME_BUFFER_LENGTH 16
     #define EUROPE_ROME_TZ "CET-1CEST,M3.5.0,M10.5.0/3"
 
     class LnTime_Class {
@@ -23,17 +23,17 @@
         // Metodi pubblici
         void setup();
         char *nowTime();
-        const char* mSecTo_HHMMSSms(uint32_t millisec = 0, char *buffer = nullptr, uint8_t buffer_len = 0);
+        const char* timeStamp(char *buffer, uint8_t buffer_len, uint32_t millisec=0, bool stripHeader=false);
         void to_HHMMSS(uint32_t mseconds, char *outStr, uint8_t maxlen);
         void alignToMinute();
         bool isSecondOClock();
         bool isMinuteOClock();
         bool isQuarterOClock();
         int8_t waitForSecond();
-        int secondsToMinute();
-        int secondsOfDay(int offset = 0);
-        int minutesOfDay(int offset = 0);
-        unsigned long getEpoch(unsigned long offset = 0);
+        int8_t secondsToMinute();
+        uint32_t secondsOfDay(int offset = 0);
+        uint32_t minutesOfDay(int offset = 0);
+        uint32_t getEpoch(unsigned long offset = 0);
 
         // Metodi per accedere alla struttura tm e all'oggetto rtc (nuovi o modificati per l'accesso esterno)
         struct tm getTimeStruct();
@@ -41,8 +41,10 @@
 
     private:
         ESP32Time rtc;
-        char timeBuffer[TIME_BUFFER_LENGTH];
-        struct tm _timeinfo;
+        // char        timeBuffer[TIME_BUFFER_LENGTH];
+        struct tm   m_timeinfo;
+        int8_t      m_last_minute = 255;
+        int8_t      m_last_second = 255;
     };
 
     // Dichiarazioni delle funzioni di stampa esterne
