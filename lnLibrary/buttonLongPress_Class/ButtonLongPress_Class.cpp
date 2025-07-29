@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-07-2025 12.07.45
+// Date .........: 29-07-2025 14.03.49
 //
 
 #include <Arduino.h>
@@ -58,7 +58,7 @@ void ButtonLongPress_Class::init(const char* name, uint8_t pin,
 
     m_lastButtonState = digitalRead(m_pin) == m_pressedLogicLevel;
     m_buttonPressed = (m_lastButtonState == m_pressedLogicLevel);
-    LOG_NOTIFY("[%s] initialized. active level: %s", m_pinID, str_pinLevel[m_pressedLogicLevel]);
+    LOG_TRACE("[%s] initialized. active level: %s", m_pinID, str_pinLevel[m_pressedLogicLevel]);
 }
 
 // *** RESET DEI PARAMETRI DI LIVELLO NELLA FUNZIONE CHIAMANTE ***
@@ -136,14 +136,14 @@ bool ButtonLongPress_Class::pressedLevelChanged(bool forceDisplay) {
         LOG_INFO("[%s]: PRESSED_LEVEL %d/%d", m_pinID, m_currentPressLevel, m_numThresholds);
         // LOG_NOTIFY("\telapsed: %lu - next level in: %lu", m_elapsed, ms_to_next_level);
         // LOG_INFO("\telapsed: %s - next level in: %s", lnTime.to_HHMMSSms(true, m_elapsed), lnTime.to_HHMMSSms(true, ms_to_next_level));
-        // LOG_INFO("\telapsed: %s - next level in: %s", lnLog.getTimeStamp(true, m_elapsed), lnLog.getTimeStamp(true, ms_to_next_level));
+        // LOG_INFO("\telapsed: %s - next level in: %s", lnLog.timeStamp(true, m_elapsed), lnLog.timeStamp(true, ms_to_next_level));
         char elapsedBUFFER[16];
         char nextLevelBUFFER[16];
-        // lnLog.getTimeStamp(elapsedBUFFER,   sizeof(elapsedBUFFER),   m_elapsed, true);
-        // lnLog.getTimeStamp(nextLevelBUFFER, sizeof(nextLevelBUFFER), ms_to_next_level, true);
+        // lnLog.timeStamp(elapsedBUFFER,   sizeof(elapsedBUFFER),   m_elapsed, true);
+        // lnLog.timeStamp(nextLevelBUFFER, sizeof(nextLevelBUFFER), ms_to_next_level, true);
         LOG_INFO("\telapsed: %s - next level in: %s",
-                            lnLog.getTimeStamp(elapsedBUFFER,   sizeof(elapsedBUFFER),   m_elapsed, true),
-                            lnLog.getTimeStamp(nextLevelBUFFER, sizeof(nextLevelBUFFER), ms_to_next_level, true)
+                            lnLog.timeStamp(elapsedBUFFER,   sizeof(elapsedBUFFER),   m_elapsed, true),
+                            lnLog.timeStamp(nextLevelBUFFER, sizeof(nextLevelBUFFER), ms_to_next_level, true)
                             );
         // LOG_INFO("\telapsed: %s - next level in: %s",elapsedBUFFER, nextLevelBUFFER );
     }

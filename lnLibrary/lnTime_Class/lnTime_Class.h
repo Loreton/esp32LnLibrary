@@ -1,9 +1,9 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-07-2025 12.14.46
+// Date .........: 29-07-2025 14.03.23
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-07-2025 12.14.46
+// Date .........: 29-07-2025 14.03.23
 */
 
 #pragma once
@@ -35,9 +35,20 @@
         uint32_t minutesOfDay(int offset = 0);
         uint32_t getEpoch(unsigned long offset = 0);
 
+
+
         // Metodi per accedere alla struttura tm e all'oggetto rtc (nuovi o modificati per l'accesso esterno)
         struct tm getTimeStruct();
         ESP32Time& getRtcInstance(); // Aggiungi questo metodo per esporre l'istanza rtc
+        /**
+         * Se timeBuffer è statica e globale.
+         * Ogni chiamata a timeStamp sovrascrive il contenuto di timeBuffer,
+         * quindi quando stampi più valori nello stesso printf,
+         * entrambe le chiamate restituiscono il valore dell'ultima chiamata
+         * per tale ragione il buffer deve essere allocato estrnamente
+         * ....oppure prestare molta attenzione
+        */
+        char timeBUFFER[16];
 
     private:
         ESP32Time rtc;

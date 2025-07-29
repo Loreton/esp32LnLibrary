@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-07-2025 12.19.15
+// Date .........: 29-07-2025 14.01.01
 */
 
 #include <Arduino.h>
@@ -45,12 +45,12 @@ void ESP32Logger::init() { // Changed class name
 
 /**
  * Se timeBuffer è statica e globale.
- * Ogni chiamata a getTimeStamp sovrascrive il contenuto di timeBuffer,
+ * Ogni chiamata a timeStamp sovrascrive il contenuto di timeBuffer,
  * quindi quando stampi più valori nello stesso printf,
  * entrambe le chiamate restituiscono il valore dell'ultima chiamata
  * per tale ragione il buffer deve essere allocato estrnamente
 */
-const char* ESP32Logger::getTimeStamp(char *buffer, uint8_t maxBufferLen, uint32_t millisec, bool trimHeader) { // Changed class name
+const char* ESP32Logger::timeStamp(char *buffer, uint8_t maxBufferLen, uint32_t millisec, bool trimHeader) { // Changed class name
 
     if (millisec == 0) {
         millisec = esp_timer_get_time() / 1000; // Time in microseconds from boot
@@ -152,7 +152,7 @@ void ESP32Logger::write(const char* color, const char* tag, const char* file, in
 
         Serial.printf("%s[%s][%s][%s] %s%s\n",
                       color,
-                      this->getTimeStamp(nowTimeBUFFER, sizeof(nowTimeBUFFER), 0, false),
+                      this->timeStamp(nowTimeBUFFER, sizeof(nowTimeBUFFER), 0, false),
                       this->getFileLineInfo(fnameBUFFER, sizeof(fnameBUFFER), file, line),
                       tag,
                       logLineBUFFER,

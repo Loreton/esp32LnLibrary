@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 28-07-2025 16.23.49
+// Date .........: 29-07-2025 13.55.47
 //
 
 #include <Arduino.h> // in testa anche per le definizioni dei type
@@ -46,7 +46,7 @@ void PassiveBuzzer_Class::init(const char* pin_name, int buzzerPin, uint8_t acti
     pinMode(m_pin, OUTPUT);
     digitalWrite(m_pin, m_off);
 
-    LOG_NOTIFY("[%s] initialized. active level: %s", m_pinID, str_pinLevel[m_activeLevel]);
+    LOG_TRACE("[%s] initialized. active level: %s", m_pinID, str_pinLevel[m_activeLevel]);
     begin();
 }
 
@@ -63,7 +63,7 @@ void PassiveBuzzer_Class::begin() {
     unsigned long actualFreq = ledcSetup(m_channel, 1, m_resolutionBits); // Frequenza iniziale > 0 altrimenti da errore
 
     if (actualFreq == 0) {
-        LOG_INFO("%s [ERRORE] ledcSetup() FALLITO per canale %d. Controlla pin, canale e risoluzione.", m_channel);
+        LOG_ERROR("%s [ERRORE] ledcSetup() FALLITO per canale %d. Controlla pin, canale e risoluzione.", m_channel);
         // Puoi aggiungere qui una logica per gestire l'errore, es. bloccare l'esecuzione
         while (true); // Ferma il programma in caso di errore critico
     }
@@ -72,7 +72,7 @@ void PassiveBuzzer_Class::begin() {
         // e la risoluzione. La frequenza verrà poi impostata da playTone/playScale.
         ledcAttachPin(m_pin, m_channel);
         noTone(); // Assicurati che sia spento all'inizio
-        LOG_INFO("%s Channel: %d - Risoluzione: %d bit inizializzato.", m_pinID, m_channel, m_resolutionBits);
+        LOG_TRACE("%s Channel: %d - Risoluzione: %d bit inizializzato.", m_pinID, m_channel, m_resolutionBits);
     }
 }
 

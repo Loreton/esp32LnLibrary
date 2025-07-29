@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 28-07-2025 17.05.02
+// Date .........: 29-07-2025 14.19.47
 //
 
 #ifndef RELAY_MANAGER_H
@@ -23,6 +23,19 @@ private:
 
     bool                m_pulseActive = false;
     bool                m_relayState = false; // Stato logico del relè (true = acceso, false = spento)
+
+    /**
+     * Se timeBuffer è statica e globale.
+     * Ogni chiamata a timeStamp sovrascrive il contenuto di timeBuffer,
+     * quindi quando stampi più valori nello stesso printf,
+     * entrambe le chiamate restituiscono il valore dell'ultima chiamata
+     * per tale ragione il buffer deve essere allocato estrnamente
+     * ....oppure prestare molta attenzione
+    */
+    char                m_timeBUFFER[16];
+    uint8_t             m_timeBUFFER_Len = sizeof(m_timeBUFFER);
+    // char                m_millisecBUFFER[16];
+    // uint8_t             m_millisecBUFFER_Len = sizeof(m_millisecBUFFER);
 
     // Imposta lo stato fisico del relè sul pin
     void setRelay(bool state);
@@ -61,7 +74,9 @@ public:
     bool isActive() const;
 
     // Ritorna l'ID del pin (utile per debug)
-    const char *pinID() const;
+    // const char *pinID() const;
+    inline const char* pinID(void) const { return m_pinID; }
+
 };
 
 #endif // RELAY_MANAGER_H

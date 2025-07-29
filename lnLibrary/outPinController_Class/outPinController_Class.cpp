@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-07-2025 08.02.02
+// Date .........: 29-07-2025 13.55.10
 //
 
 #include <Arduino.h>     // in testa anche per le definizioni dei type
@@ -29,7 +29,7 @@ void outPinController_Class::init(const char *name, uint8_t pin, uint8_t active_
 
     pinMode(m_pin, OUTPUT);
     digitalWrite(m_pin, m_off); // start off
-    LOG_NOTIFY("[%s] initialized. active level: %s", m_pinID, str_pinLevel[m_activeLevel]);
+    LOG_TRACE("[%s] initialized. active level: %s", m_pinID, str_pinLevel[m_activeLevel]);
 }
 
 

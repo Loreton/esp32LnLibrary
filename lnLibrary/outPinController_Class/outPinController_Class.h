@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 28-07-2025 15.03.39
+// Date .........: 29-07-2025 13.57.33
 //
 #pragma once
 #include <Arduino.h> // in testa anche per le definizioni dei type
@@ -55,6 +55,8 @@ public:
     // Metodi inline per accendere e spegnere
     inline void on() { _set(true); };
     inline void off() { _set(false); };
+    inline const char* pinID(void) const { return m_pinID; }
+
 
     void reset();
 };

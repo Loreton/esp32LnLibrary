@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-07-2025 12.14.48
+// Date .........: 29-07-2025 14.02.00
 */
 
 #include <Arduino.h> // ESP32Time.cpp
@@ -27,7 +27,6 @@ void LnTime_Class::setup() {
 
 // Ottiene l'ora corrente formattata HH:MM:SS
 char *LnTime_Class::nowTime() {
-    char timeBUFFER[16];
     m_timeinfo = rtc.getTimeStruct();
     snprintf(timeBUFFER, sizeof(timeBUFFER), "%02d:%02d:%02d", m_timeinfo.tm_hour, m_timeinfo.tm_min, m_timeinfo.tm_sec);
     return timeBUFFER;

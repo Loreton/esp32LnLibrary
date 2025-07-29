@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 28-07-2025 17.05.11
+// Date .........: 29-07-2025 14.20.00
 //
 
 #include <Arduino.h> // Necessario per funzioni come pinMode, digitalWrite, millis
@@ -42,7 +42,7 @@ void RelayManager_Class::init(const char *name, uint8_t pin, uint8_t activeLevel
     digitalWrite(m_pin, m_Off);
     setRelay(false); // Assicura che lo stato logico e fisico siano coerenti
 
-    LOG_NOTIFY("[%s] initialized. active level: %s", m_pinID, (m_activeLevel == HIGH ? "HIGH" : "LOW"));
+    LOG_TRACE("[%s] initialized. active level: %s", m_pinID, (m_activeLevel == HIGH ? "HIGH" : "LOW"));
 }
 
 // Imposta lo stato fisico del relè sul pin
@@ -77,10 +77,12 @@ void RelayManager_Class::startPulse(uint32_t duration_ms) {
         m_pulseStartTime = millis();
         m_pulseDuration = duration_ms;
         m_pulseActive = true;
-        LOG_NOTIFY("[%s] Pulsetime avviato per %lu ms", m_pinID, duration_ms);
+        lnLog.timeStamp(m_timeBUFFER, m_timeBUFFER_Len, duration_ms, true);
+        LOG_TRACE("[%s] Pulsetime avviato per %s", m_pinID, m_timeBUFFER, true);
         on(); // Accende il relè all'avvio del pulsetime
     } else {
-        LOG_NOTIFY("[%s] Pulsetime già attivo per %lu ms", m_pinID, m_pulseDuration - (millis() - m_pulseStartTime));
+        lnLog.timeStamp(m_timeBUFFER, m_timeBUFFER_Len, m_pulseDuration - (millis() - m_pulseStartTime), true);
+        LOG_WARNING("[%s] Pulsetime già attivo per %lu ms (skipping...)", m_pinID, m_timeBUFFER);
     }
 }
 
@@ -119,6 +121,6 @@ bool RelayManager_Class::isActive() const {
 }
 
 // Ritorna l'ID del pin (utile per debug)
-const char *RelayManager_Class::pinID() const {
-    return m_pinID;
-}
+// const char *RelayManager_Class::pinID() const {
+//     return m_pinID;
+// }
