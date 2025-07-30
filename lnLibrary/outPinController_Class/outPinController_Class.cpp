@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-07-2025 13.55.10
+// Date .........: 30-07-2025 17.36.30
 //
 
 #include <Arduino.h>     // in testa anche per le definizioni dei type
@@ -70,7 +70,7 @@ void outPinController_Class::pulse(uint32_t duration) {
         on();
         LOG_DEBUG("%s pulseON. duration: %lu ms", m_pinID,  m_pulseOnDuration);
     } else {
-        LOG_WARNING("%s pulseON already active: %lu ms", m_pinID,  m_pulseOnDuration);
+        LOG_DEBUG("%s pulseON already active: %lu ms", m_pinID,  m_pulseOnDuration);
     }
 }
 
@@ -91,7 +91,7 @@ void outPinController_Class::blinking(uint32_t onMs, uint32_t offMs, int8_t cycl
         LOG_DEBUG("%s blinking. ON: %lu ms, OFF: %lu ms (cycles: %d)", m_pinID,  m_onTime, m_offTime, m_numCycles);
     }
     else {
-        LOG_WARNING("%s already blinking. ON: %lu ms, OFF: %lu ms (cycles: %d)", m_pinID,  m_onTime, m_offTime, m_numCycles);
+        LOG_DEBUG("%s already blinking. ON: %lu ms, OFF: %lu ms (cycles: %d)", m_pinID,  m_onTime, m_offTime, m_numCycles);
     }
 
 }

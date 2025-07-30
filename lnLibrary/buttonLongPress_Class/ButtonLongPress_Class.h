@@ -77,6 +77,7 @@ private: // Membri privati (accessibili solo dall'interno della classe)
     int8_t            m_numThresholds = 0;
 
     uint32_t          m_lastDisplayTime = 0;
+    uint32_t          m_lastMsgTime = 0;
 
     // Metodi privati
     void updatePressedLevel();

@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-07-2025 14.01.01
+// Date .........: 30-07-2025 19.52.35
 */
 
 #include <Arduino.h>
@@ -94,9 +94,12 @@ const char* ESP32Logger::getFileLineInfo(char *outBUFFER, const uint8_t OutBUFFE
     const char *filename = strrchr(file, '/');                           // Find the last '/' to get only the file name
     filename = filename ? filename + 1 : file;                           // If found, move the pointer, otherwise use the entire path
 
+    /*
     const char *sep = strrchr(filename, '_');                            // Find the separator to cut a suffix (e.g. _H)
     if (!sep) sep = strrchr(filename, '.');                              // Find the separator to cut the extension .cpp)
+    */
 
+    const char *sep = strrchr(filename, '.');                            // Find the separator to cut a suffix (e.g. .xxx)
     size_t len = sep ? (size_t)(sep - filename) : strlen(filename);      // Length of the name without extension
 
     if (len > filename_maxLen) len = filename_maxLen;                                  // Truncate the name if longer than maxlen
