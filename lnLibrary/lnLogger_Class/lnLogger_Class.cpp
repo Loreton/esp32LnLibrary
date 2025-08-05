@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 30-07-2025 19.52.35
+// Date .........: 05-08-2025 09.31.40
 */
 
 #include <Arduino.h>
@@ -63,6 +63,7 @@ const char* ESP32Logger::timeStamp(char *buffer, uint8_t maxBufferLen, uint32_t 
     uint8_t sec      = (seconds % 60);
     uint8_t min      = (seconds / 60) % 60;
     uint8_t hour     = (seconds / 3600);
+
     if (trimHeader) {
         if (hour > 0) {
             snprintf(buffer, maxBufferLen, "%02d:%02d:%02d.%03lu", hour, min, sec, msec);

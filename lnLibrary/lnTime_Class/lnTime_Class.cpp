@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-07-2025 14.02.00
+// Date .........: 05-08-2025 09.31.04
 */
 
 #include <Arduino.h> // ESP32Time.cpp
@@ -36,6 +36,8 @@ char *LnTime_Class::nowTime() {
 const char* LnTime_Class::timeStamp(char *buffer, uint8_t buffer_len, uint32_t millisec, bool stripHeader) {
     if (millisec == 0) {
         millisec = rtc.getMillis();
+        // millisec = esp_timer_get_time() / 1000; // Time in microseconds from boot
+        // millisec = this_rtc.getMicros() / 1000; // Time in milliseconds
     }
 
     uint16_t msec    = (millisec % 1000);

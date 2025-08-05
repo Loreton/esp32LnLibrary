@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 30-07-2025 19.49.44
+// Date .........: 05-08-2025 11.40.16
 //
 
 #include <Arduino.h>
@@ -46,14 +46,14 @@ void ButtonLongPress_Class::init(const char* name, uint8_t pin,
     }
 
     // calcolo del nextGAP.
-    for (int8_t i = 0; i < m_numThresholds - 1; i++) {
-        m_gapThresholds[i] = m_pressThresholds[i+1] - m_pressThresholds[i];
-    }
+    // for (int8_t i = 0; i < m_numThresholds - 1; i++) {
+    //     m_gapThresholds[i] = m_pressThresholds[i+1] - m_pressThresholds[i];
+    // }
     // L'ultimo elemento può essere impostato all'ultimo gap per consistenza,
     // o gestito separatamente se non c'è un "gap successivo" definito.
-    if (m_numThresholds > 0) {
-        m_gapThresholds[m_numThresholds - 1] = 0; // O un valore predefinito
-    }
+    // if (m_numThresholds > 0) {
+    //     m_gapThresholds[m_numThresholds - 1] = 0; // O un valore predefinito
+    // }
 
 
     m_lastButtonState = digitalRead(m_pin) == m_pressedLogicLevel;
@@ -72,6 +72,11 @@ void ButtonLongPress_Class::reset(void) {
     m_maxLevelReachedAndNotified = false;
 }
 
+
+
+
+
+
 // ##############################################
 // Se il pulsante è attualmente PREMUTO (debounced) e il timer è attivo,
 // aggiorna il livello di pressione.
@@ -88,55 +93,79 @@ void ButtonLongPress_Class::updatePressedLevel() {
     }
 
     if (newLevel > m_currentPressLevel && newLevel <= m_numThresholds) {
+        m_lastPressedLevel = m_currentPressLevel;
         m_currentPressLevel = newLevel;
+        LOG_DEBUG("[%s]: new pressed Level %d", m_pinID, newLevel);
+        m_levelHasChanged=true;
     }
 
-    pressedLevelChanged();
+
+    displayPressedLevel();
 
 }
 
 
-//###########################################################################
-//# creata una funzione per poterla utilizzare anche da una callback function
-//# returrn: true if pressed level has been changed
-//###########################################################################
-bool ButtonLongPress_Class::pressedLevelChanged(bool forceDisplay) {
-    bool hasChanged=false;
-    uint32_t nextLevel_ms;  // default: Already at or past max level
-    uint32_t msToNextLevel;  // default: Already at or past max level
-    m_elapsed = millis() - m_pressStartTime;
 
-    if (m_currentPressLevel != m_lastPressedLevel) {
-        m_lastPressedLevel = m_currentPressLevel;
-        hasChanged = true;
+
+//###########################################################################
+//#
+//###########################################################################
+bool ButtonLongPress_Class::pressedLevelHasChanged(void) {
+    if (m_levelHasChanged) {
+        m_levelHasChanged = false;
+        return true;
     }
+    return false;
+}
+
+
+
+
+
+//###########################################################################
+//#
+//###########################################################################
+void ButtonLongPress_Class::displayPressedLevel(bool forceDisplay) {
+
+    m_elapsed = millis() - m_pressStartTime; // update continuo
+
 
     #define PRESSING_DISPLAY_TIME 60*1000
-    if (forceDisplay || hasChanged || (m_elapsed - m_lastDisplayTime > PRESSING_DISPLAY_TIME) ) {
+    if (forceDisplay || m_levelHasChanged || (m_elapsed - m_lastDisplayTime > PRESSING_DISPLAY_TIME) ) {
+        uint32_t nextGAP_ms;
+        uint32_t msToNextLevel;
+
         m_lastDisplayTime = m_elapsed;
 
         // Controlla l'indice prima di accedere all'array m_gapThresholds
-        if (m_currentPressLevel > 0 && m_currentPressLevel <= m_numThresholds) {
-            nextLevel_ms = m_gapThresholds[m_currentPressLevel -1]; // Indexing for gap, e.g., gap after level 1 is at index 0
-        } else {
-            nextLevel_ms=0;  // default: Already at or past max level
+        if (m_currentPressLevel > 0 && m_currentPressLevel < m_numThresholds) {
+            uint8_t level = m_currentPressLevel;
+
+            if (level<m_numThresholds-1) {
+                nextGAP_ms = m_pressThresholds[level+1]-m_pressThresholds[level];
+            } else if (level>=m_numThresholds-1) {
+                nextGAP_ms = m_pressThresholds[level]-m_pressThresholds[level-1]; // calcoliamo sempre l'ultimo
+            }
+
+            // * calcola next pressing level GAP
+            msToNextLevel = (m_elapsed > nextGAP_ms) ? (m_elapsed - nextGAP_ms) : (nextGAP_ms - m_elapsed);
+
+            // * calcola and display elapsed time
+            char elapsedBUFFER[16];   lnTime.timeStamp(elapsedBUFFER,   sizeof(elapsedBUFFER),   m_elapsed, false);
+            char nextLevelBUFFER[16]; lnTime.timeStamp(nextLevelBUFFER, sizeof(nextLevelBUFFER), msToNextLevel, false);
+
+            //* display
+            LOG_NOTIFY("[%s]:", m_pinID);
+            LOG_NOTIFY("\tpressed Level   %d/%d", m_currentPressLevel, m_numThresholds);
+            LOG_TRACE( "\tthreshold[%d]:  %8lu", level,  m_pressThresholds[level]);
+            LOG_TRACE( "\tthreshold[%d]:  %8lu", level+1,  m_pressThresholds[level+1] );
+            LOG_TRACE( "\tGAP:            %8lu", nextGAP_ms );
+            LOG_NOTIFY("\telapsed:        %8lu - [hms]: %s", m_elapsed, elapsedBUFFER);
+            LOG_NOTIFY("\tnext level in:  %8lu - [hms]: %s", msToNextLevel, nextLevelBUFFER);
+
         }
-
-
-
-        LOG_INFO("[%s]: PRESSED_LEVEL %d/%d", m_pinID, m_currentPressLevel, m_numThresholds);
-        char elapsedBUFFER[16];
-        char nextLevelBUFFER[16];
-        msToNextLevel = (m_elapsed > nextLevel_ms) ? (m_elapsed - nextLevel_ms) : 0;
-        LOG_INFO("\telapsed (%lu): %s - next level in (%lu): %s",
-                            m_elapsed,
-                            lnLog.timeStamp(elapsedBUFFER,   sizeof(elapsedBUFFER),   m_elapsed, true),
-                            msToNextLevel,
-                            lnLog.timeStamp(nextLevelBUFFER, sizeof(nextLevelBUFFER), msToNextLevel, true)
-                            );
     }
 
-    return hasChanged;
 }
 
 
@@ -219,26 +248,7 @@ void ButtonLongPress_Class::pressingLevelNotification(ButtonLongPressCallback on
                 onPressCallback(this);
             }
             else {
-                pressedLevelChanged();  // per permettere di richiamarlo dall'esterno....
-                /*
-                // Controlla l'indice prima di accedere all'array m_gapThresholds
-                if (m_currentPressLevel != m_lastPressedLevel) {
-
-                    if (m_currentPressLevel > 0 && m_currentPressLevel <= m_numThresholds) {
-                        next_interval = m_gapThresholds[m_currentPressLevel -1]; // Indexing for gap, e.g., gap after level 1 is at index 0
-                    } else {
-                        next_interval = 0; // O un valore di default
-                    }
-
-                    LOG_NOTIFY("[%s] PRESSED_LEVEL %d/%d - elapsed ms:%6lu - next_interval: %lu",
-                               m_pinID,
-                               m_currentPressLevel,
-                               m_numThresholds,
-                               m_elapsed,
-                               next_interval);
-                    m_lastPressedLevel = m_currentPressLevel;
-                }
-                */
+                displayPressedLevel();  // per permettere di richiamarlo dall'esterno....
 
                 // --- LOGICA DEL BEEP OGNI 5 SECONDI quando si raggiunge il MAX-LEVEL---
                 #define ALARM_BEEP_INTERVAL 2000
@@ -260,7 +270,25 @@ void ButtonLongPress_Class::pressingLevelNotification(ButtonLongPressCallback on
 //#
 //###########################################################################
 void ButtonLongPress_Class::showStatus(void) {
-    ext_showStatus(this);
+    // ext_showStatus(this);
+    LOG_INFO("%s", m_pinID);
+    const char *TAB="    ";
+    LOG_INFO("%s%-18s: %2d - %s", TAB, "m_pressedLogicLevel", m_pressedLogicLevel, str_pinLevel[m_pressedLogicLevel]);
+    LOG_INFO("%s%-18s: %2d - %s", TAB, "m_buttonPressed", m_buttonPressed, str_TrueFalse[m_buttonPressed]);
+    LOG_INFO("%s%-18s: %2d - %s", TAB, "m_maxLevelReachedAndNotified", m_maxLevelReachedAndNotified, str_TrueFalse[m_maxLevelReachedAndNotified]);
+    LOG_INFO("%s%-18s: %2d - %s", TAB, "m_lastButtonState", m_lastButtonState, str_OnOff[m_lastButtonState]);
+    LOG_INFO("%s%-18s: %2d - %s", TAB, "m_lastPressedLevel", m_lastPressedLevel, str_OnOff[m_lastPressedLevel]);
+
+    LOG_INFO("%s%-18s: %2d", TAB, "m_currentPressLevel", m_currentPressLevel);
+    LOG_INFO("%s%-18s: %lu", TAB, "m_pressStartTime", m_pressStartTime);
+    LOG_INFO("%s%-18s: %lu", TAB, "m_elapsed", m_elapsed);
+
+    LOG_INFO("%snum_thresholds: %2d", TAB, m_numThresholds);
+    for (int8_t j = 0; j < m_numThresholds; j++) {
+        uint32_t next_gap = (j < m_numThresholds-1) ? (m_pressThresholds[j+1]-m_pressThresholds[j]) : 0;
+        LOG_INFO("%sthreshold[%d]: %-lu - next GAP: %-ld", TAB, j, m_pressThresholds[j], next_gap );
+    }
+    LOG_INFO(""); // blank line
 }
 
 //######################################################
