@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 30-07-2025 17.36.30
+// Date .........: 05-08-2025 18.08.07
 //
 
 #include <Arduino.h>     // in testa anche per le definizioni dei type
@@ -118,4 +118,8 @@ void outPinController_Class::reset() {
     m_fixed = m_pulseOn = m_blinking = m_temporaryBlinking = false;
     m_numCycles = 0;
     off();
+}
+
+bool outPinController_Class::isPlayingSomething() {
+    return m_fixed || m_pulseOn || m_blinking || m_temporaryBlinking;
 }

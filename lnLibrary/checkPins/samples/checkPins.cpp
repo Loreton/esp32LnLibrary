@@ -1,10 +1,12 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-06-2025 20.07.08
+// Date .........: 05-08-2025 19.44.52
 //
 
 #include <Arduino.h> // in testa anche per le definizioni dei type
-#include "@serialRead.h"
+#include "driver/ledc.h"
+
+#include "lnSerialRead.h"
 #define ESP32_WROOM_32E_2RELAY_MODULE   1
 #define ESP32_WROOM_32_MODULE           2
 
@@ -175,7 +177,7 @@ void setup() {
         uint8_t i_pins[] =  { 0,    2,    4, 5,                     12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33, 34, 35, 36, 39};
         pins->input_count = copyArray(i_pins, pins->input, sizeof(i_pins));
 
-        uint8_t o_pins[] =  { 0,    2, 3, 4, 5,                     12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33, 99 };
+        uint8_t o_pins[] =  { 0,    2, 3, 4, 5,                     12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33 };
         pins->output_count = copyArray(o_pins, pins->output, sizeof(o_pins));
 
     }
@@ -185,7 +187,7 @@ void setup() {
         uint8_t i_pins[] =  { 0,    2,    4, 5,                     12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33, 34, 35, 36, 39};
         pins->input_count = copyArray(i_pins, pins->input, sizeof(i_pins));
 
-        uint8_t o_pins[] =  { 0,    2, 3, 4, 5,                     12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33, 99};
+        uint8_t o_pins[] =  { 0,    2, 3, 4, 5,                     12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33};
         pins->output_count = copyArray(o_pins, pins->output, sizeof(o_pins));
     }
 
@@ -225,11 +227,17 @@ bool isValidPin(uint8_t pin_nr, uint8_t  *pins, uint8_t count) {
             break;
         }
     }
+    // if (!found) {
+    //     Serial.printf("\n\t\tVALID pins: ");
+    //     for (int i = 0; i < count; i++) {
+    //         Serial.printf("%d, ", pins[i]);
+    //     }
+    //     Serial.printf("\n");    }
     return found;
 }
 
 
-// const char *MODE;
+
 
 // const char TAB=""
 // ################################################################
@@ -241,7 +249,22 @@ void loop() {
 
     // mi aspetto il primo char = 'o' oppure 'i'
     // il resto è il numero del pin
-    Serial.printf("\n\n%splease enter pin to check:\n", TAB);
+
+    // Serial.printf("\n\n\t\tINPUT pins: ");
+    // for (int i = 0; i < pins->input_count; i++) {
+    //     Serial.printf("%d, ", pins->input[i]);
+    // }
+    // Serial.printf("\n");
+
+    // Serial.printf("\t\tOUTPUT pins:");
+    // for (int i = 0; i < pins->output_count; i++) {
+    //     Serial.printf("%d, ", pins->output[i]);
+    // }
+    // Serial.printf("\n");
+
+
+
+    Serial.printf("\n%splease enter pin to check:\n", TAB);
     Serial.printf("%sixx (INPUT)\n", TAB);
     Serial.printf("%soxx (toggle OUTPUT)\n", TAB);
     Serial.printf("%slxx (set OUTPUT-LOW)\n", TAB);
@@ -262,7 +285,7 @@ void loop() {
 
     if (mode == 'i') {
         if (isValidPin(pin_nr, pins->input, pins->input_count)) {
-            Serial.printf("%spin %ld as OUTPUT", TAB, pin_nr);
+            Serial.printf("%spin %ld as INPUT", TAB, pin_nr);
             processInputPin(pin_nr);
         }
 
@@ -279,8 +302,8 @@ void loop() {
         if (isValidPin(pin_nr, pins->output, pins->output_count)) {
             Serial.printf("%spin %ld as OUTPUT (mode: %c)", TAB, pin_nr, mode);
 
-            digitalWrite(pin_nr, LOW);
             pinMode(pin_nr, OUTPUT);
+            digitalWrite(pin_nr, LOW);
 
             if (mode == 'l') {
                 pinOFF(pin_nr);
@@ -292,7 +315,13 @@ void loop() {
                 pinON(pin_nr);
             }
             else if (mode == 'f') {
-                tone(pin_nr, 800, 2000);
+                int channel = 0;
+                int frequency=1000;
+                ledcAttachPin(pin_nr, channel); // channel
+                ledcWriteTone(channel, frequency); // Imposta frequenza, duty cycle 50% automatico
+                delay(1000);
+                ledcWrite(channel, 0); // spegni
+                // tone(pin_nr, 800, 2000);
             }
         }
 
@@ -302,8 +331,6 @@ void loop() {
                 Serial.printf("%d, ", pins->output[i]);
             }
         }
-
-
     }
 
 }

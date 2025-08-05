@@ -1,14 +1,12 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 06-04-2025 16.07.52
+// Date .........: 05-08-2025 18.35.59
 //
 
 #include <Arduino.h>
 
 // #include "pins_Initialization.h"
-
-#ifndef __PINS_DEFINITIONS_H__
-    #define __PINS_DEFINITIONS_H__
+#pragma once
 
 /*
 ESP32 Pinout Description https://www.teachmemicro.com/esp32-pinout-diagram-wroom-32/
@@ -77,4 +75,3 @@ CMD     GPIO11      CMD 2                                   D0      GPIO7  D0 2
     #define GPIO39       39        // avoid - VN   ADC1_CH3  S_VN TX                OK          --   input only (NOT found)
 
 
-#endif

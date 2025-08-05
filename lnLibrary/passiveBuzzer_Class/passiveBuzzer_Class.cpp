@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-07-2025 13.55.47
+// Date .........: 05-08-2025 16.48.56
 //
 
 #include <Arduino.h> // in testa anche per le definizioni dei type
@@ -142,11 +142,11 @@ void PassiveBuzzer_Class::playScale(int noteFrequencies[], int numberOfNotes, ui
         m_currentNoteIndex = m_numNotes - 1;
     }
 
+    LOG_INFO("%s Avvio scala %s", m_pinID, (m_scaleDirectionUp ? "Ascendente" : "Discendente"));
     // Inizia a suonare la prima nota
     ledcWriteTone(m_channel, m_scaleNotes[m_currentNoteIndex]);
     m_currentFrequency = m_scaleNotes[m_currentNoteIndex]; // Aggiorna la frequenza corrente
     m_noteStartTime = millis();
-    LOG_INFO("%s Avvio scala %s", m_pinID, (m_scaleDirectionUp ? "Ascendente" : "Discendente"));
 }
 
 // Metodo per fermare qualsiasi suono (singolo o scala)
