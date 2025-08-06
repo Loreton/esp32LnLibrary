@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-07-2025 13.57.42
+// Date .........: 06-08-2025 13.53.31
 //
 
 #pragma once
@@ -20,7 +20,7 @@ class PassiveBuzzer_Class {
         void playToneDutyCycle(int frequency, float dutyCyclePercent, uint32_t duration);
         void playToneFixed(int frequency, uint32_t duration);
         void playScale(int noteFrequencies[], int numberOfNotes, uint32_t singleNoteDuration, bool upDirection);
-        void noTone();
+        void myNoTone();
         void update();
         bool isPlayingSomething();
 

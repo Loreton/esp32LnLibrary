@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 05-08-2025 19.44.52
+// Date .........: 06-08-2025 13.46.13
 //
 
 #include <Arduino.h> // in testa anche per le definizioni dei type
@@ -321,6 +321,8 @@ void loop() {
                 ledcWriteTone(channel, frequency); // Imposta frequenza, duty cycle 50% automatico
                 delay(1000);
                 ledcWrite(channel, 0); // spegni
+                ledcDetachPin(pin_nr); //
+
                 // tone(pin_nr, 800, 2000);
             }
         }

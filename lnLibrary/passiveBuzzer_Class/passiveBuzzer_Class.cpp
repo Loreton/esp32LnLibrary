@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 05-08-2025 16.48.56
+// Date .........: 06-08-2025 13.53.25
 //
 
 #include <Arduino.h> // in testa anche per le definizioni dei type
@@ -71,7 +71,9 @@ void PassiveBuzzer_Class::begin() {
         // Inizializza il canale con una frequenza di base (può essere 0 o una bassa frequenza)
         // e la risoluzione. La frequenza verrà poi impostata da playTone/playScale.
         ledcAttachPin(m_pin, m_channel);
-        noTone(); // Assicurati che sia spento all'inizio
+        // ledcDetachPin(pin_nr); // se dovesse servire
+
+        myNoTone(); // Assicurati che sia spento all'inizio
         LOG_TRACE("%s Channel: %d - Risoluzione: %d bit inizializzato.", m_pinID, m_channel, m_resolutionBits);
     }
 }
@@ -143,6 +145,8 @@ void PassiveBuzzer_Class::playScale(int noteFrequencies[], int numberOfNotes, ui
     }
 
     LOG_INFO("%s Avvio scala %s", m_pinID, (m_scaleDirectionUp ? "Ascendente" : "Discendente"));
+    // ledcAttachPin(m_pin, m_channel);
+
     // Inizia a suonare la prima nota
     ledcWriteTone(m_channel, m_scaleNotes[m_currentNoteIndex]);
     m_currentFrequency = m_scaleNotes[m_currentNoteIndex]; // Aggiorna la frequenza corrente
@@ -150,18 +154,19 @@ void PassiveBuzzer_Class::playScale(int noteFrequencies[], int numberOfNotes, ui
 }
 
 // Metodo per fermare qualsiasi suono (singolo o scala)
-void PassiveBuzzer_Class::noTone() {
+void PassiveBuzzer_Class::myNoTone() {
     ledcWrite(m_channel, 0); // Imposta il duty cycle a 0 per spegnere completamente
     m_currentFrequency = 0;  // Resetta la frequenza corrente
     m_isPlaying = false;
     m_isPlayingScale = false;
+    // ledcDetachPin(m_pin); // detach pin
 }
 
 // Metodo da chiamare ripetutamente nel loop() per gestire la fine del tono o il progresso della scala
 void PassiveBuzzer_Class::update() {
     if (m_isPlaying) {
         if (millis() - m_toneStartTime >= m_toneDuration) {
-            noTone();
+            myNoTone();
             LOG_INFO("%s Tono singolo terminato", m_pinID);
         }
     }
@@ -176,10 +181,12 @@ void PassiveBuzzer_Class::update() {
 
             // Controlla se la scala è finita
             if ((m_scaleDirectionUp && m_currentNoteIndex >= m_numNotes) || (!m_scaleDirectionUp && m_currentNoteIndex < 0)) {
-                noTone();
+                myNoTone();
                 LOG_INFO("%s Scala terminata.", m_pinID);
             }
             else {
+                // ledcAttachPin(m_pin, m_channel);
+
                 // Suona la prossima nota
                 ledcWriteTone(m_channel, m_scaleNotes[m_currentNoteIndex]);
                 m_currentFrequency = m_scaleNotes[m_currentNoteIndex]; // Aggiorna la frequenza corrente
