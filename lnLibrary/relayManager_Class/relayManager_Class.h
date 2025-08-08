@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-07-2025 14.19.47
+// Date .........: 08-08-2025 12.20.04
 //
 
 #ifndef RELAY_MANAGER_H
@@ -34,9 +34,6 @@ private:
     */
     char                m_timeBUFFER[16];
     uint8_t             m_timeBUFFER_Len = sizeof(m_timeBUFFER);
-    // char                m_millisecBUFFER[16];
-    // uint8_t             m_millisecBUFFER_Len = sizeof(m_millisecBUFFER);
-
     // Imposta lo stato fisico del relè sul pin
     void setRelay(bool state);
 
@@ -45,10 +42,6 @@ public:
     RelayManager_Class();
 
     // --- Metodi Pubblici ---
-    // Inizializza il relè.
-    // name: Nome descrittivo del relè.
-    // pin: Il numero del GPIO a cui è collegato il relè.
-    // activationLevel: Il livello fisico (HIGH o LOW) che attiva il relè.
     void init(const char *name, uint8_t pin, uint8_t activationLevel);
 
     // Accende il relè
