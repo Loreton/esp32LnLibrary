@@ -1,0 +1,116 @@
+//
+// updated by ...: Loreto Notarantonio
+// Date .........: 08-08-2025 18.23.53
+//
+
+
+#include <WiFi.h>
+#include "WiFiManager_Class.h"
+#include "lnLogger_Class.h"
+
+
+
+// ----------------------------------------------------
+// Classe WiFiManager_Class
+// ----------------------------------------------------
+    // Costruttore
+WiFiManager_Class::WiFiManager_Class() {};
+    // Costruttore
+// WiFiManager_Class::WiFiManager_Class(Network* creds, int count) {
+//         m_networks = creds;
+//         m_networkCount = count;
+//     }
+
+    // Inizializza il WiFi in modalità Station e si connette
+void WiFiManager_Class::init(Network* creds, int8_t count) {
+    m_networks     = creds;
+    m_networkCount = count;
+    // Serial.println("\nInizializzazione WiFi...");
+    LOG_INFO("\nInizializzazione WiFi...");
+    WiFi.mode(WIFI_STA);
+    connectToBestNetwork();
+}
+
+
+    // Funzione da chiamare nel loop principale per monitorare la connessione
+void WiFiManager_Class::update() {
+    // Controlla lo stato della connessione
+    if (WiFi.status() != WL_CONNECTED) {
+        // Serial.println("Connessione persa. Tentativo di riconnessione...");
+        LOG_ERROR("Connessione persa. Tentativo di riconnessione...");
+        connectToBestNetwork();
+    }
+
+    // Esegue una scansione periodica per trovare una rete migliore
+    if (millis() - m_lastScanTime > m_scanInterval) {
+        // Serial.println("Tempo di scansione periodica. Ricerca di una rete migliore...");
+        LOG_NOTIFY("Tempo di scansione periodica. Ricerca di una rete migliore...");
+        connectToBestNetwork();
+        m_lastScanTime = millis();
+    }
+}
+
+    // Scansiona le reti e si connette a quella migliore (RSSI più alto)
+void WiFiManager_Class::connectToBestNetwork() {
+    int bestRSSI = -127; // Valore RSSI minimo
+    int bestNetworkIndex = -1;
+
+    LOG_NOTIFY("Avvio scansione reti...");
+    int n = WiFi.scanNetworks();
+
+    if (n == 0) {
+        LOG_WARNING("Nessuna rete trovata.");
+        return;
+    }
+
+    LOG_INFO("reti trovate: %d", n);
+    // Serial.println(" reti trovate.");
+
+    // Cerca la rete migliore tra quelle configurate
+    for (int i = 0; i < n; ++i) {
+        LOG_INFO("  %d: %s (%d dBm)\n", i + 1, WiFi.SSID(i).c_str(), WiFi.RSSI(i));
+
+        for (int j = 0; j < m_networkCount; ++j) {
+            if (String(WiFi.SSID(i)) == String(m_networks[j].ssid)) {
+                if (WiFi.RSSI(i) > bestRSSI) {
+                    bestRSSI = WiFi.RSSI(i);
+                    bestNetworkIndex = j;
+                }
+                break;
+            }
+        }
+    }
+
+    // Connessione alla rete scelta
+    if (bestNetworkIndex != -1) {
+        // Controlla se siamo già connessi alla rete migliore
+        if (WiFi.status() == WL_CONNECTED && String(WiFi.SSID()) == String(m_networks[bestNetworkIndex].ssid)) {
+            LOG_NOTIFY("Già connesso alla rete migliore. Non è necessario cambiare.");
+        } else {
+            // Serial.print("Connessione a: ");
+            // Serial.println(m_networks[bestNetworkIndex].ssid);
+            LOG_INFO("Connessione a: %s", m_networks[bestNetworkIndex].ssid);
+            WiFi.begin(m_networks[bestNetworkIndex].ssid, m_networks[bestNetworkIndex].password);
+
+            // Attendi la connessione
+            int attempts = 0;
+            while (WiFi.status() != WL_CONNECTED && attempts < 20) { // 10 secondi di timeout
+                delay(500);
+                Serial.print(".");
+                attempts++;
+            }
+
+            if (WiFi.status() == WL_CONNECTED) {
+                // Serial.println("\nConnesso!");
+                // Serial.print("Indirizzo IP: ");
+                // Serial.println(WiFi.localIP());
+                LOG_INFO("Connesso! Indirizzo IP: %s", WiFi.localIP());
+            } else {
+                LOG_ERROR("\nConnessione fallita.");
+            }
+        }
+    } else {
+        LOG_ERROR("Nessuna delle reti configurate è stata trovata.");
+    }
+};
+
