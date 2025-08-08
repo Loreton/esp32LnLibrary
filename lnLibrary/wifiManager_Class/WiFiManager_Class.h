@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 08-08-2025 18.48.48
+// Date .........: 08-08-2025 19.47.45
 //
 
 #pragma once
@@ -19,6 +19,7 @@
     private:
         Network*            m_networks;
         int8_t              m_networkCount;
+        bool              m_scanning;
         uint32_t            m_lastScanTime = 0;
         const uint32_t      m_scanInterval = 5*60*1000; // Intervallo di scansione (in ms), qui 1 minuto
 
@@ -31,6 +32,7 @@
 
         // Funzione da chiamare nel loop principale per monitorare la connessione
         void update();
+        void processScanResults(int n);
 
     private:
         // Scansiona le reti e si connette a quella migliore (RSSI più alto)

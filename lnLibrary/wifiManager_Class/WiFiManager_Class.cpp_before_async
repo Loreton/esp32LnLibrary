@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 08-08-2025 19.45.45
+// Date .........: 08-08-2025 19.35.39
 //
 
 
@@ -13,13 +13,13 @@
 // ----------------------------------------------------
 // Classe WiFiManager_Class
 // ----------------------------------------------------
-// Costruttore
+    // Costruttore
 WiFiManager_Class::WiFiManager_Class() {};
 
 
-// Inizializza il WiFi in modalità Station e si connette
+    // Inizializza il WiFi in modalità Station e si connette
 void WiFiManager_Class::init(Network* creds, int8_t count) {
-    m_networks       = creds;
+    m_networks     = creds;
     m_networkCount = count;
     LOG_INFO("Inizializzazione WiFi...");
     WiFi.mode(WIFI_STA);
@@ -27,38 +27,29 @@ void WiFiManager_Class::init(Network* creds, int8_t count) {
 }
 
 
-// Funzione da chiamare nel loop principale per monitorare la connessione
+    // Funzione da chiamare nel loop principale per monitorare la connessione
 void WiFiManager_Class::update() {
-    // Se non siamo connessi o è il momento di scansionare nuovamente, avvia la scansione
-    if ((WiFi.status() != WL_CONNECTED || (millis() - m_lastScanTime > m_scanInterval)) && !m_scanning) {
-        LOG_NOTIFY("Tempo di scansione periodica o connessione persa. Avvio scansione...");
+    // Controlla lo stato della connessione
+    if (WiFi.status() != WL_CONNECTED) {
+        LOG_ERROR("Connessione persa. Tentativo di riconnessione...");
+        connectToBestNetwork();
+    }
+
+    // Esegue una scansione periodica per trovare una rete migliore
+    if (millis() - m_lastScanTime > m_scanInterval) {
+        LOG_NOTIFY("Tempo di scansione periodica. Ricerca di una rete migliore...");
         connectToBestNetwork();
         m_lastScanTime = millis();
     }
-
-    // Se la scansione è in corso, controlla se è terminata
-    if (m_scanning) {
-        int scanResult = WiFi.scanComplete();
-        if (scanResult >= 0) { // La scansione è completata
-            m_scanning = false;
-            processScanResults(scanResult);
-        }
-    }
 }
 
-// Avvia una scansione non bloccante
+    // Scansiona le reti e si connette a quella migliore (RSSI più alto)
 void WiFiManager_Class::connectToBestNetwork() {
-    if (!m_scanning) {
-        LOG_NOTIFY("Avvio scansione reti (asincrona)...");
-        WiFi.scanNetworks(true); // Scansione non bloccante
-        m_scanning = true;
-    }
-}
-
-// Elabora i risultati della scansione e si connette alla rete migliore
-void WiFiManager_Class::processScanResults(int n) {
     int bestRSSI = -127; // Valore RSSI minimo
     int bestNetworkIndex = -1;
+
+    LOG_NOTIFY("Avvio scansione reti...");
+    int n = WiFi.scanNetworks();
 
     if (n == 0) {
         LOG_WARNING("Nessuna rete trovata.");
@@ -114,4 +105,5 @@ void WiFiManager_Class::processScanResults(int n) {
     } else {
         LOG_ERROR("Nessuna delle reti configurate è stata trovata.");
     }
-}
+};
+
