@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 08-08-2025 19.45.45
+// Date .........: 09-08-2025 18.07.33
 //
 
 
@@ -61,7 +61,7 @@ void WiFiManager_Class::processScanResults(int n) {
     int bestNetworkIndex = -1;
 
     if (n == 0) {
-        LOG_WARNING("Nessuna rete trovata.");
+        LOG_WARN("Nessuna rete trovata.");
         return;
     }
 
@@ -108,7 +108,7 @@ void WiFiManager_Class::processScanResults(int n) {
                 // LOG_INFO("Connesso! SSID: %s - BSSID: %s",  WiFi.SSID(), WiFi.BSSIDstr().c_str());
                 // LOG_INFO("Indirizzo IP: %s", WiFi.localIP().toString().c_str());
             } else {
-                LOG_ERROR("Connessione fallita.");
+                LOG_ERROR("WiFi - Connessione fallita.");
             }
         }
     } else {

@@ -1,15 +1,19 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 05-08-2025 09.31.04
+// Date .........: 09-08-2025 19.15.55
 */
 
 #include <Arduino.h> // ESP32Time.cpp
 #include <ESP32Time.h> // ESP32Time.cpp
+#include "esp_sntp.h"
+#include <WiFi.h>
 
 
 #include "lnGlobalVars.h"
 // #include "lnTime_Class.h"
 // #include "lnLogger_Class.h"
+
+#define EUROPE_ROME_TZ "CET-1CEST,M3.5.0,M10.5.0/3" // https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv
 
 // Costruttore
 LnTime_Class::LnTime_Class() {
@@ -18,57 +22,228 @@ LnTime_Class::LnTime_Class() {
     // L'inizializzazione del tempo effettivo verrà fatta in setup().
 }
 
+
+
+// ==================   NTP functions ==========================
+// ==================   NTP functions ==========================
+// ==================   NTP functions ==========================
+
+
+// Implementazione del metodo statico
+void LnTime_Class::cbSyncTime(struct timeval *tv) {
+    static const char* sntp_status[] = {
+        "SNTP_SYNC_STATUS_RESET",
+        "SNTP_SYNC_STATUS_COMPLETED",
+        "SNTP_SYNC_STATUS_IN_PROGRESS"
+    };
+    uint8_t status = sntp_get_sync_status();
+    LOG_NOTIFY("NTP time synched: %d [%s]", status, sntp_status[status]);
+}
+
+void LnTime_Class::initNTP(void) {
+    // const char* ntpServer [] = {"pool.ntp.org", "br.pool.ntp.org", "time.nist.gov","2.br.pool.ntp.org"};
+    // const char* ntpServer1 = "pool.ntp.org";
+    // const char* ntpServer2 = "time.windows.com";
+    // const char* ntpServer3 = "time.google.com";
+
+    // Controlla se il Wi-Fi è connesso prima di avviare l'NTP
+    if (WiFi.status() == WL_CONNECTED) {
+        LOG_INFO("WiFi is connected, initializing NTP.");
+
+        // Imposta la modalità di sincronizzazione
+        sntp_set_sync_mode(SNTP_SYNC_MODE_IMMED);
+
+        // Imposta la callback (ora che è un metodo statico, funziona)
+        sntp_set_time_sync_notification_cb(cbSyncTime);
+
+        // Imposta l'intervallo di sincronizzazione
+        sntp_set_sync_interval(12 * 60 * 60 * 1000UL); // 12 ore
+        sntp_set_sync_interval(10 * 60 * 1000UL); // 10 minuti
+
+        // Imposta i server NTP
+        // configTime(0, 0, ntpServer1, ntpServer2, ntpServer3);
+        configTime(0, 0, m_ntpServer1, m_ntpServer2, m_ntpServer3);
+
+        // Imposta il fuso orario
+        setenv("TZ", EUROPE_ROME_TZ, 1);
+        tzset();
+        m_ntp_active = true;
+        // Allinea l'RTC interno con l'ora NTP
+        struct tm timeinfo;
+        if (getLocalTime(&timeinfo)) {
+            rtc.setTimeStruct(timeinfo);
+            LOG_INFO("RTC synchronized with NTP time.");
+        }
+    } else {
+        LOG_WARN("WiFi not connected. Skipping NTP initialization.");
+    }
+}
+
+
+
+// ==================   TIME functions ==========================
+
+
 // Inizializzazione del modulo tempo
 void LnTime_Class::setup() {
-    rtc.setTime(0, 0, 8, 1, 6, 2025); // 1st Jun 2025 08:00:00 - Esempio di data iniziale
-    configTzTime(EUROPE_ROME_TZ, "time.google.com", "time.windows.com", "pool.ntp.org");
-    LOG_INFO("RTC local time set");
+    if (WiFi.status() == WL_CONNECTED) {
+        LOG_INFO("WiFi is connected. Synchronizing time with NTP server...");
+        initNTP(); // Imposta il fuso orario e i server NTP
+        LOG_INFO("NTP time synchronization initiated.");
+    }
+    else {
+        rtc.setTime(0, 0, 8, 1, 6, 2025); // 1st Jun 2025 08:00:00 - Esempio di data iniziale
+        configTzTime(EUROPE_ROME_TZ,  m_ntpServer1, m_ntpServer2, m_ntpServer3);
+        LOG_INFO("RTC local time set");
+    }
 }
+
+
+
+
+
+
 
 // Ottiene l'ora corrente formattata HH:MM:SS
 char *LnTime_Class::nowTime() {
     m_timeinfo = rtc.getTimeStruct();
-    snprintf(timeBUFFER, sizeof(timeBUFFER), "%02d:%02d:%02d", m_timeinfo.tm_hour, m_timeinfo.tm_min, m_timeinfo.tm_sec);
-    return timeBUFFER;
+    snprintf(sharedTimeBUFFER, sizeof(sharedTimeBUFFER), "%02d:%02d:%02d", m_timeinfo.tm_hour, m_timeinfo.tm_min, m_timeinfo.tm_sec);
+    return sharedTimeBUFFER;
 }
 
-// Converte millisecondi in HH:MM:SS.ms
-const char* LnTime_Class::timeStamp(char *buffer, uint8_t buffer_len, uint32_t millisec, bool stripHeader) {
+
+
+
+
+// // Converte millisecondi in HH:MM:SS.ms
+// const char* LnTime_Class::timeStamp(char *buffer, uint8_t buffer_len, uint32_t millisec, bool stripHeader) {
+//     if (millisec == 0) {
+//         int64_t time_since_boot = esp_timer_get_time(); // Time in microseconds from boot
+//         millisec = time_since_boot / 1000; // Time in microseconds from boot
+//     }
+
+//     uint16_t msec    = (millisec % 1000);
+//     uint32_t seconds = (millisec / 1000);
+//     uint8_t sec      = (seconds  % 60);
+//     uint8_t min      = (seconds / 60) % 60;
+//     uint8_t hour     = (seconds / 3600);
+
+//     snprintf(buffer, buffer_len, "%02d:%02d:%02d.%03lu", hour, min, sec, msec);
+//     if (stripHeader) {
+//         if (hour > 0) {
+//             return buffer;
+//         } else if (min > 0) {
+//             return buffer+3;
+//         } else {
+//             return buffer+6;
+//         }
+//     }
+//     return buffer;
+// }
+
+/** ------------------ Sample
     if (millisec == 0) {
-        millisec = rtc.getMillis();
-        // millisec = esp_timer_get_time() / 1000; // Time in microseconds from boot
-        // millisec = this_rtc.getMicros() / 1000; // Time in milliseconds
+        struct tm timeInfo = rtc.getTimeStruct(); // ora corrente
+        millisec = rtc.getMillis();  // current mSeconds (0-999)
+        strftime(buffer, buffer_len, "%H:%M:%S", &timeInfo);
+    }
+    else {
+        time_t rawTime = millisec / 1000;
+        struct tm *timeInfo = gmtime(&rawTime); // Utilizza gmtime per orario UTC - vedi getEpoch()
+        strftime(buffer, buffer_len, "%H:%M:%S", timeInfo);
+    }
+----------------- */
+
+// ################################################################
+// Converte millisecondi in HH:MM:SS.ms
+// ritorna il timestamp del giorno
+//    se millisec != 0 allora converte i millisec in timestamp
+//    addMilliSec = true: aggiunge .xxx alla fine della stringa
+//    stripHeader = true: rimuove hour o minutes se == 0
+// ################################################################
+const char* LnTime_Class::timeStamp(char *buffer, uint8_t buffer_len, uint32_t millisec, bool addMilliSec, bool stripHeader) {
+    uint16_t msec;
+    uint32_t seconds;
+
+    if (millisec == 0) {
+        m_timeinfo = rtc.getTimeStruct();
+        seconds = (m_timeinfo.tm_hour * 3600) + (m_timeinfo.tm_min * 60) + m_timeinfo.tm_sec;
+        msec = rtc.getMillis();  // current mSeconds (0-999)
+    }
+    else {
+        msec    = (millisec % 1000);
+        seconds = (millisec / 1000);
     }
 
-    uint16_t msec    = (millisec % 1000);
-    uint32_t seconds = (millisec / 1000);
     uint8_t sec      = (seconds  % 60);
     uint8_t min      = (seconds / 60) % 60;
     uint8_t hour     = (seconds / 3600);
 
-    if (stripHeader) {
-        if (hour > 0) {
-            snprintf(buffer, buffer_len, "%02d:%02d:%02d.%03lu", hour, min, sec, msec);
-        } else if (min > 0) {
-            snprintf(buffer, buffer_len, "%02d:%02d.%03lu", min, sec, msec);
-        } else {
-            snprintf(buffer, buffer_len, "%02d.%03lu", sec, msec);
-        }
-    }
-    else {
+    if (addMilliSec) {
         snprintf(buffer, buffer_len, "%02d:%02d:%02d.%03lu", hour, min, sec, msec);
     }
+    else {
+        snprintf(buffer, buffer_len, "%02d:%02d:%02d", hour, min, sec);
+    }
 
-
+    if (stripHeader) {
+        if (hour > 0) {
+            return buffer;
+        } else if (min > 0) {
+            return buffer+3;
+        } else {
+            return buffer+6;
+        }
+    }
     return buffer;
 }
 
+
+#ifdef LN_SCARTATA
+// ################################################################
 // Converte millisecondi in HH:MM:SS (utilizzando gmtime)
-void LnTime_Class::to_HHMMSS(uint32_t mseconds, char *outStr, uint8_t maxlen) {
-    time_t rawTime = mseconds / 1000;
+// ################################################################
+const char *LnTime_Class::to_HHMMSS_discarded(uint32_t millisec, char *buffer, uint8_t buffer_len, bool addMilliSec) {
+    uint16_t msec, seconds;
+
+    if (millisec == 0) {
+        msec = rtc.getMillis();  // current mSeconds (0-999)
+        seconds = rtc.getEpoch();
+    }
+    else {
+        msec    = (millisec % 1000);
+        seconds = (millisec / 1000);
+    }
+
+
+    time_t rawTime = seconds;
     struct tm *timeInfo = gmtime(&rawTime); // Utilizza gmtime per orario UTC
-    strftime(outStr, maxlen, "%H:%M:%S", timeInfo);
+    strftime(buffer, buffer_len, "%H:%M:%S", timeInfo);
+    if (addMilliSec) {
+        snprintf(buffer, buffer_len, "%0s:%03lu", buffer, msec);
+    }
+    return buffer;
 }
+#endif
+
+
+
+
+// true: se ci troviamo nel modulo de secondo richiestso (Sec%reqSec)
+bool LnTime_Class::everyXseconds(uint8_t seconds) {
+    uint8_t curr_second;
+
+    m_timeinfo = rtc.getTimeStruct();
+    curr_second = m_timeinfo.tm_sec;
+
+    if (curr_second%seconds == 0 && curr_second != m_last_second) { // ogni 5 secondi
+        m_last_second = curr_second;
+        return true;
+    }
+    return false;
+}
+
+
 
 // Allinea l'esecuzione all'inizio del minuto
 void LnTime_Class::alignToMinute() {
@@ -130,6 +305,11 @@ int8_t LnTime_Class::secondsToMinute() {
 }
 
 // Restituisce i secondi del giorno
+uint32_t LnTime_Class::millisecOfDay(int offset) {
+    m_timeinfo = rtc.getTimeStruct();
+    return ( (m_timeinfo.tm_hour * 3600) + (m_timeinfo.tm_min * 60) + m_timeinfo.tm_sec + offset ) * 1000 + rtc.getMillis();
+}
+// Restituisce i secondi del giorno
 uint32_t LnTime_Class::secondsOfDay(int offset) {
     m_timeinfo = rtc.getTimeStruct();
     return (m_timeinfo.tm_hour * 3600) + (m_timeinfo.tm_min * 60) + m_timeinfo.tm_sec + offset;
@@ -147,7 +327,7 @@ uint32_t LnTime_Class::getEpoch(unsigned long offset) {
 }
 
 // Restituisce la struttura tm
-struct tm LnTime_Class::getTimeStruct() {
+struct tm LnTime_Class::getTimeStruct(void) {
     return rtc.getTimeStruct();
 }
 
@@ -166,40 +346,40 @@ LnTime_Class lnTime;
 // Implementazioni delle funzioni di stampa (possono essere in un nuovo file .cpp, es. LnTime_ClassUtils.cpp)
 void printLocalTime(const struct tm *timeinfo_ptr) {
 
-#if LOG_LEVEL >= LOG_LEVEL_DEBUG
+#if LOG_LEVEL >= LOG_LEVEL_TRACE
     char buffer[64];
 
     strftime(buffer, sizeof(buffer), "%A, %B %d %Y %H:%M:%S", timeinfo_ptr);
-    LOG_DEBUG("%s", buffer);
+    LOG_SPEC("%s", buffer);
 
     strftime(buffer, sizeof(buffer), "%A", timeinfo_ptr);
-    LOG_DEBUG("Day of week: %s", buffer);
+    LOG_SPEC("Day of week: %s", buffer);
 
     strftime(buffer, sizeof(buffer), "%B", timeinfo_ptr);
-    LOG_DEBUG("Month: %s", buffer);
+    LOG_SPEC("Month: %s", buffer);
 
     strftime(buffer, sizeof(buffer), "%d", timeinfo_ptr);
-    LOG_DEBUG("Day of Month: %s", buffer);
+    LOG_SPEC("Day of Month: %s", buffer);
 
     strftime(buffer, sizeof(buffer), "%Y", timeinfo_ptr);
-    LOG_DEBUG("Year: %s", buffer);
+    LOG_SPEC("Year: %s", buffer);
 
     strftime(buffer, sizeof(buffer), "%H", timeinfo_ptr);
-    LOG_DEBUG("Hour: %s", buffer);
+    LOG_SPEC("Hour: %s", buffer);
 
     strftime(buffer, sizeof(buffer), "%I", timeinfo_ptr);
-    LOG_DEBUG("Hour (12 hour format): %s", buffer);
+    LOG_SPEC("Hour (12 hour format): %s", buffer);
 
     strftime(buffer, sizeof(buffer), "%M", timeinfo_ptr);
-    LOG_DEBUG("Minute: %s", buffer);
+    LOG_SPEC("Minute: %s", buffer);
 
     strftime(buffer, sizeof(buffer), "%S", timeinfo_ptr);
-    LOG_DEBUG("Second: %s", buffer);
+    LOG_SPEC("Second: %s", buffer);
 
-    LOG_DEBUG("      Time variables");
-    char timeHour[3]; strftime(timeHour, 3, "%H", timeinfo_ptr); LOG_DEBUG("%s", timeHour);
-    char timeWeekDay[10]; strftime(timeWeekDay, 10, "%A", timeinfo_ptr); LOG_DEBUG("%s", timeWeekDay);
-    LOG_DEBUG("");
+    LOG_SPEC("      Time variables");
+    char timeHour[3]; strftime(timeHour, 3, "%H", timeinfo_ptr); LOG_SPEC("%s", timeHour);
+    char timeWeekDay[10]; strftime(timeWeekDay, 10, "%A", timeinfo_ptr); LOG_SPEC("%s", timeWeekDay);
+    LOG_SPEC("");
 #endif
 }
 

@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 05-08-2025 09.31.40
+// Date .........: 09-08-2025 16.10.20
 */
 
 #include <Arduino.h>
@@ -9,7 +9,7 @@
 
 #include "lnLogger_Class.h" // Changed to new header file name
 
-// ESP32Time       this_rtc;
+ESP32Time       this_rtc;
 // extern ESP32Time      rtc;
 
 
@@ -42,42 +42,6 @@ void ESP32Logger::init() { // Changed class name
 }
 
 
-
-/**
- * Se timeBuffer è statica e globale.
- * Ogni chiamata a timeStamp sovrascrive il contenuto di timeBuffer,
- * quindi quando stampi più valori nello stesso printf,
- * entrambe le chiamate restituiscono il valore dell'ultima chiamata
- * per tale ragione il buffer deve essere allocato estrnamente
-*/
-const char* ESP32Logger::timeStamp(char *buffer, uint8_t maxBufferLen, uint32_t millisec, bool trimHeader) { // Changed class name
-
-    if (millisec == 0) {
-        millisec = esp_timer_get_time() / 1000; // Time in microseconds from boot
-        // millisec = rtc.getMillis(); // Time in milliseconds
-        // millisec = this_rtc.getMicros() / 1000; // Time in milliseconds
-    }
-
-    uint16_t msec    = (millisec % 1000); // value from 0-999
-    uint32_t seconds = (millisec / 1000); // could be long
-    uint8_t sec      = (seconds % 60);
-    uint8_t min      = (seconds / 60) % 60;
-    uint8_t hour     = (seconds / 3600);
-
-    if (trimHeader) {
-        if (hour > 0) {
-            snprintf(buffer, maxBufferLen, "%02d:%02d:%02d.%03lu", hour, min, sec, msec);
-        } else if (min > 0) {
-            snprintf(buffer, maxBufferLen, "%02d:%02d.%03lu", min, sec, msec);
-        } else {
-            snprintf(buffer, maxBufferLen, "%02d.%03lu", sec, msec);
-        }
-    }
-    else {
-        snprintf(buffer, maxBufferLen, "%02d:%02d:%02d.%03lu", hour, min, sec, msec);
-    }
-    return buffer;
-}
 
 
 
@@ -154,9 +118,12 @@ void ESP32Logger::write(const char* color, const char* tag, const char* file, in
             logLineBUFFER[sizeof(logLineBUFFER) - 1] = '\0';
         }
 
+        struct tm timeinfo = this_rtc.getTimeStruct();
+        snprintf(nowTimeBUFFER, sizeof(nowTimeBUFFER), "%02d:%02d:%02d", timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+
         Serial.printf("%s[%s][%s][%s] %s%s\n",
                       color,
-                      this->timeStamp(nowTimeBUFFER, sizeof(nowTimeBUFFER), 0, false),
+                      nowTimeBUFFER,
                       this->getFileLineInfo(fnameBUFFER, sizeof(fnameBUFFER), file, line),
                       tag,
                       logLineBUFFER,

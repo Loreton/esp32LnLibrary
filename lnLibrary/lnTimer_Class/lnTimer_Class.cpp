@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 28-07-2025 14.36.57
+// Date .........: 09-08-2025 08.43.16
 //
 
 #include "lnLogger_Class.h" // Assicurati che questo sia disponibile nel tuo ambiente
@@ -22,7 +22,7 @@ void MillisTimer::begin() {
 // Avvia o riavvia il timer
 void MillisTimer::start(uint32_t msDuration, TimerCallback callback) {
     if (m_isRunning) {
-        LOG_WARNING("[%s] already running, new start command was rejected", m_name);
+        LOG_WARN("[%s] already running, new start command was rejected", m_name);
     } else {
         m_startTime = millis();
         m_duration = msDuration;

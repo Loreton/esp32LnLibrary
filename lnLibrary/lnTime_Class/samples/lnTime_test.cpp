@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 28-07-2025 13.55.54
+// Date .........: 09-08-2025 08.43.09
 //
 
 
@@ -30,7 +30,7 @@ void loop() {
     }
 
     if (lnTime.isMinuteOClock()) {
-        LOG_WARNING("It's a new minute!");
+        LOG_WARN("It's a new minute!");
         print_rtc_time(&lnTime); // Chiamata alla funzione esterna, passando il puntatore
     }
 

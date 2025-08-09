@@ -52,7 +52,7 @@ void WiFiManager_Class::connectToBestNetwork() {
     int n = WiFi.scanNetworks();
 
     if (n == 0) {
-        LOG_WARNING("Nessuna rete trovata.");
+        LOG_WARN("Nessuna rete trovata.");
         return;
     }
 

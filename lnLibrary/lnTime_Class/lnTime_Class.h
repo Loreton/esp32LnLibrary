@@ -1,9 +1,9 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-07-2025 14.03.23
+// Date .........: 09-08-2025 19.11.34
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 29-07-2025 14.03.23
+// Date .........: 09-08-2025 19.11.34
 */
 
 #pragma once
@@ -22,18 +22,27 @@
 
         // Metodi pubblici
         void setup();
+        void initNTP(); // Nuovo metodo pubblico per la sincronizzazione
+
         char *nowTime();
-        const char* timeStamp(char *buffer, uint8_t buffer_len, uint32_t millisec=0, bool stripHeader=false);
-        void to_HHMMSS(uint32_t mseconds, char *outStr, uint8_t maxlen);
+        // const char* timeStamp(char *buffer, uint8_t buffer_len, uint32_t millisec=0, bool stripHeader=false);
+        const char* timeStamp(char *buffer, uint8_t buffer_len, uint32_t millisec=0, bool addMilliSec=false, bool stripHeader=false); // msec from boot (or millisec) HH:MM:SS.msec
+        // const char *to_HHMMSS(uint32_t mseconds, char *buffer, uint8_t buffer_len, bool addMilliSec=false); // un po dupllicato di msecToTimeStamp()
         void alignToMinute();
         bool isSecondOClock();
         bool isMinuteOClock();
         bool isQuarterOClock();
         int8_t waitForSecond();
         int8_t secondsToMinute();
+        uint32_t millisecOfDay(int offset = 0);
         uint32_t secondsOfDay(int offset = 0);
         uint32_t minutesOfDay(int offset = 0);
         uint32_t getEpoch(unsigned long offset = 0);
+        bool     everyXseconds(uint8_t seconds);
+
+
+
+        bool ntpActive(void) const {return m_ntp_active;};
 
 
 
@@ -48,14 +57,26 @@
          * per tale ragione il buffer deve essere allocato estrnamente
          * ....oppure prestare molta attenzione
         */
-        char timeBUFFER[16];
+        char sharedTimeBUFFER[16];
 
     private:
         ESP32Time rtc;
-        // char        timeBuffer[TIME_BUFFER_LENGTH];
         struct tm   m_timeinfo;
-        int8_t      m_last_minute = 255;
-        int8_t      m_last_second = 255;
+        int8_t      m_last_minute = 99;
+        int8_t      m_last_second = 99;
+        bool        m_ntp_active = false;
+        // uint8_t     m_last_second=99;
+
+        static void cbSyncTime(struct timeval *tv) ;
+        // const char* m_ntpServer [] = {"pool.ntp.org", "time.google.com", "br.pool.ntp.org", "time.nist.gov", "2.br.pool.ntp.org"};
+
+        const char* m_ntpServer1 = "pool.ntp.org";
+        const char* m_ntpServer2 = "time.google.com";
+        const char* m_ntpServer3 = "br.pool.ntp.org";
+        const char* m_ntpServer4 = "time.nist.gov";
+        const char* m_ntpServer5 = "2.br.pool.ntp.org";
+        const char* m_ntpServer6 = "time.windows.com";
+
     };
 
     // Dichiarazioni delle funzioni di stampa esterne

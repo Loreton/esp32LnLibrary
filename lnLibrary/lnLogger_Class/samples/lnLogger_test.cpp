@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 28-07-2025 11.36.03
+// Date .........: 09-08-2025 08.42.57
 //
 
 
@@ -19,7 +19,7 @@ void setup() {
 
 void loop() {
     LOG_INFO("This is an info message.");
-    LOG_WARNING("Something might be wrong here: %d", 42);
+    LOG_WARN("Something might be wrong here: %d", 42);
     LOG_ERROR("Critical error occurred in file %s at line %d", __FILE__, __LINE__);
     LOG_DEBUG("Debugging variable value: %s", VAR_NAME_VALUE(some_variable));
     delay(1000);
