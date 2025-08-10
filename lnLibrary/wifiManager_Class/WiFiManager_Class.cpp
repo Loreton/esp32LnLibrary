@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 09-08-2025 18.07.33
+// Date .........: 10-08-2025 18.45.07
 //
 
 
@@ -27,6 +27,17 @@ void WiFiManager_Class::init(Network* creds, int8_t count) {
 }
 
 
+
+void WiFiManager_Class::checkOutOfService() {
+    #define MAX_WIFI_TIMEOUT  1*60*1000  // 1 ora....
+    if (WiFi.status() == WL_CONNECTED) {
+        m_wifiOutTime = millis();  // azzeriamo counter
+    }
+    if (millis() - m_wifiOutTime > MAX_WIFI_TIMEOUT) {
+        ESP.restart();
+    }
+}
+
 // Funzione da chiamare nel loop principale per monitorare la connessione
 void WiFiManager_Class::update() {
     // Se non siamo connessi o è il momento di scansionare nuovamente, avvia la scansione
@@ -44,6 +55,7 @@ void WiFiManager_Class::update() {
             processScanResults(scanResult);
         }
     }
+    checkOutOfService();
 }
 
 // Avvia una scansione non bloccante
@@ -97,16 +109,13 @@ void WiFiManager_Class::processScanResults(int n) {
             int attempts = 0;
             while (WiFi.status() != WL_CONNECTED && attempts < 20) { // 10 secondi di timeout
                 delay(500);
-                LOG_NOTIFY("...");
+                LOG_NOTIFY("connecting to ...%s", m_networks[bestNetworkIndex].ssid);
                 attempts++;
             }
 
             if (WiFi.status() == WL_CONNECTED) {
-                // LOG_INFO("Connesso! Indirizzo IP: %s - BSSID: %s", WiFi.localIP().toString().c_str(), WiFi.BSSIDstr().c_str());
-                // LOG_INFO("Connesso! SSID: %s - BSSID: %s - IP: %s", WiFi.SSID(), WiFi.BSSIDstr().c_str(), WiFi.localIP().toString().c_str());
                 LOG_INFO("Connesso! %s - %s - %s", WiFi.SSID(), WiFi.BSSIDstr().c_str(), WiFi.localIP().toString().c_str());
-                // LOG_INFO("Connesso! SSID: %s - BSSID: %s",  WiFi.SSID(), WiFi.BSSIDstr().c_str());
-                // LOG_INFO("Indirizzo IP: %s", WiFi.localIP().toString().c_str());
+                // m_wifiOutTime = millis();
             } else {
                 LOG_ERROR("WiFi - Connessione fallita.");
             }

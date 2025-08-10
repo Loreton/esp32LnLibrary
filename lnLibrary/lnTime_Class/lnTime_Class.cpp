@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 09-08-2025 19.15.55
+// Date .........: 10-08-2025 18.46.11
 */
 
 #include <Arduino.h> // ESP32Time.cpp
@@ -41,13 +41,8 @@ void LnTime_Class::cbSyncTime(struct timeval *tv) {
 }
 
 void LnTime_Class::initNTP(void) {
-    // const char* ntpServer [] = {"pool.ntp.org", "br.pool.ntp.org", "time.nist.gov","2.br.pool.ntp.org"};
-    // const char* ntpServer1 = "pool.ntp.org";
-    // const char* ntpServer2 = "time.windows.com";
-    // const char* ntpServer3 = "time.google.com";
-
     // Controlla se il Wi-Fi è connesso prima di avviare l'NTP
-    if (WiFi.status() == WL_CONNECTED) {
+    if (WiFi.status() == WL_CONNECTED && !m_ntp_active) {
         LOG_INFO("WiFi is connected, initializing NTP.");
 
         // Imposta la modalità di sincronizzazione
@@ -76,6 +71,13 @@ void LnTime_Class::initNTP(void) {
         }
     } else {
         LOG_WARN("WiFi not connected. Skipping NTP initialization.");
+        m_ntp_active = false;
+    }
+}
+
+void LnTime_Class::update(void) {
+    if (WiFi.status() == WL_CONNECTED && !m_ntp_active) {
+        initNTP();
     }
 }
 
@@ -238,6 +240,22 @@ bool LnTime_Class::everyXseconds(uint8_t seconds) {
 
     if (curr_second%seconds == 0 && curr_second != m_last_second) { // ogni 5 secondi
         m_last_second = curr_second;
+        return true;
+    }
+    return false;
+}
+
+
+
+// true: se ci troviamo nel modulo de secondo richiestso (Sec%reqSec)
+bool LnTime_Class::everyXminutes(uint8_t minutes) {
+    uint8_t curr_minute;
+
+    m_timeinfo = rtc.getTimeStruct();
+    curr_minute = m_timeinfo.tm_min;
+
+    if (curr_minute%minutes == 0 && curr_minute != m_last_minute) { // ogni 5 minutei
+        m_last_minute = curr_minute;
         return true;
     }
     return false;

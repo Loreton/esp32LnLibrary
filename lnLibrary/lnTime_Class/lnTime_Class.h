@@ -1,9 +1,9 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 09-08-2025 19.11.34
+// Date .........: 10-08-2025 18.34.28
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 09-08-2025 19.11.34
+// Date .........: 10-08-2025 18.34.28
 */
 
 #pragma once
@@ -22,6 +22,7 @@
 
         // Metodi pubblici
         void setup();
+        void update();
         void initNTP(); // Nuovo metodo pubblico per la sincronizzazione
 
         char *nowTime();
@@ -38,7 +39,9 @@
         uint32_t secondsOfDay(int offset = 0);
         uint32_t minutesOfDay(int offset = 0);
         uint32_t getEpoch(unsigned long offset = 0);
+
         bool     everyXseconds(uint8_t seconds);
+        bool     everyXminutes(uint8_t minutes);
 
 
 

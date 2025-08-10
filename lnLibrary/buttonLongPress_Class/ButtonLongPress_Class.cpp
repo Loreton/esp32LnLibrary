@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 05-08-2025 11.40.16
+// Date .........: 10-08-2025 11.22.13
 //
 
 #include <Arduino.h>
@@ -254,7 +254,7 @@ void ButtonLongPress_Class::pressingLevelNotification(ButtonLongPressCallback on
                 #define ALARM_BEEP_INTERVAL 2000
                 if (m_maxLevelReachedAndNotified) {
                     if (millis() - m_lastMsgTime >= ALARM_BEEP_INTERVAL) {
-                        LOG_WARNING("[%s] ALARM! max pressed level %d reached", m_pinID, m_currentPressLevel);
+                        LOG_WARN("[%s] ALARM! max pressed level %d reached", m_pinID, m_currentPressLevel);
                         m_lastMsgTime = millis();
                     }
                 }

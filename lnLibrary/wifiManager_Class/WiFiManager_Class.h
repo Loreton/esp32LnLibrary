@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 09-08-2025 07.51.16
+// Date .........: 10-08-2025 12.03.58
 //
 
 #pragma once
@@ -21,6 +21,7 @@
         int8_t              m_networkCount;
         bool                m_scanning;
         uint32_t            m_lastScanTime = 0;
+        uint32_t            m_wifiOutTime = 0;
         const uint32_t      m_scanInterval = 5*60*1000; // Intervallo di scansione (in ms), qui 1 minuto
 
     public:
@@ -38,5 +39,6 @@
     private:
         // Scansiona le reti e si connette a quella migliore (RSSI più alto)
         void connectToBestNetwork();
+        void checkOutOfService();
     };
 
