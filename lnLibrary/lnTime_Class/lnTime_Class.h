@@ -1,9 +1,9 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 10-08-2025 18.34.28
+// Date .........: 11-08-2025 17.21.27
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 10-08-2025 18.34.28
+// Date .........: 11-08-2025 17.21.27
 */
 
 #pragma once
@@ -45,7 +45,8 @@
 
 
 
-        bool ntpActive(void) const {return m_ntp_active;};
+        // bool ntpActive(void) const {return m_ntp_active;};
+        void setNtpInactive(void) {m_ntp_active=false; }
 
 
 

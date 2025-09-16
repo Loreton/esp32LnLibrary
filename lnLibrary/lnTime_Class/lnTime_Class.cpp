@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 10-08-2025 18.46.11
+// Date .........: 11-08-2025 17.47.03
 */
 
 #include <Arduino.h> // ESP32Time.cpp
@@ -52,22 +52,22 @@ void LnTime_Class::initNTP(void) {
         sntp_set_time_sync_notification_cb(cbSyncTime);
 
         // Imposta l'intervallo di sincronizzazione
-        sntp_set_sync_interval(12 * 60 * 60 * 1000UL); // 12 ore
-        sntp_set_sync_interval(10 * 60 * 1000UL); // 10 minuti
+        // sntp_set_sync_interval(12 * 60 * 60 * 1000UL); // 12 ore
+        sntp_set_sync_interval(30 * 60 * 1000UL); // 30 minuti
 
         // Imposta i server NTP
-        // configTime(0, 0, ntpServer1, ntpServer2, ntpServer3);
         configTime(0, 0, m_ntpServer1, m_ntpServer2, m_ntpServer3);
 
         // Imposta il fuso orario
         setenv("TZ", EUROPE_ROME_TZ, 1);
         tzset();
         m_ntp_active = true;
+
         // Allinea l'RTC interno con l'ora NTP
         struct tm timeinfo;
         if (getLocalTime(&timeinfo)) {
             rtc.setTimeStruct(timeinfo);
-            LOG_INFO("RTC synchronized with NTP time.");
+            LOG_INFO("RTC synchronized with NTP time. (waiting for NTP sync status...)");
         }
     } else {
         LOG_WARN("WiFi not connected. Skipping NTP initialization.");
@@ -80,6 +80,8 @@ void LnTime_Class::update(void) {
         initNTP();
     }
 }
+
+
 
 
 
@@ -97,6 +99,7 @@ void LnTime_Class::setup() {
         rtc.setTime(0, 0, 8, 1, 6, 2025); // 1st Jun 2025 08:00:00 - Esempio di data iniziale
         configTzTime(EUROPE_ROME_TZ,  m_ntpServer1, m_ntpServer2, m_ntpServer3);
         LOG_INFO("RTC local time set");
+        m_ntp_active = false;
     }
 }
 
