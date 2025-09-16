@@ -1,12 +1,17 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 28-07-2025 14.52.14
+// Date .........: 10-09-2025 08.19.36
 */
 
 
 #include <Arduino.h>
 
-#include "lnLogger_Class.h"
+
+// ---------------------------------
+// lnLibrary headers files
+// ---------------------------------
+// #define  LOG_MODULE_LEVEL LOG_LEVEL_DEBUG
+#include <lnLogger_Class.h>
 
 
 void setPinID(char buffer[], int MAXLENGTH, const char *name, int pin) {
@@ -15,7 +20,7 @@ void setPinID(char buffer[], int MAXLENGTH, const char *name, int pin) {
     static char pinSuffix[8];
     int pinLen = snprintf(pinSuffix, sizeof(pinSuffix), ".%02d", pin);
 
-    int nameMaxLen = MAXLENGTH - (pinLen);
+    int nameMaxLen = MAXLENGTH - pinLen;
     LOG_TRACE("MAXLENGTH: %d", (int)MAXLENGTH);
     LOG_TRACE("nameMaxLen: %d", (int)nameMaxLen);
     LOG_TRACE("pinLen: %d", (int)pinLen);
@@ -23,7 +28,7 @@ void setPinID(char buffer[], int MAXLENGTH, const char *name, int pin) {
     //-- manca un carattere non capisco!!!
     // snprintf(buffer, MAXLENGTH, "[%.*s.%2d]", (int)nameMaxLen-2, name, pin);
 
-    //... allora spezziamo il processo... prima i nome
+    //... allora spezziamo il processo... prima il nome
     int index = snprintf(buffer, MAXLENGTH, "%.*s", (int)nameMaxLen, name);
     LOG_TRACE("buffer: <%s> len: %d", buffer, (int)strlen(buffer));
 

@@ -1,0 +1,42 @@
+//
+// updated by ...: Loreto Notarantonio
+// Date .........: 28-08-2025 16.25.08
+//
+
+
+Certo, sono felice che la soluzione ti sia stata utile!
+
+Una `std::map` in C++ è un **contenitore associativo** che memorizza gli elementi in coppie di **chiave-valore** (key-value pair). La sua caratteristica principale è che ogni chiave è unica e funge da identificatore per recuperare il valore associato.
+
+---
+
+### Come funziona `std::map`
+
+Pensa a una `std::map` come a un **dizionario** o un'agenda telefonica 📘.
+
+* **Chiave (Key)**: È l'elemento che usi per cercare qualcosa. Nel nostro caso, era il valore del modulo (`10`, `15`, `20`). Proprio come in un'agenda telefonica, il nome della persona (la chiave) è unico.
+* **Valore (Value)**: È il dato associato alla chiave. Nel nostro caso, era l'ultimo `epoch` in cui quel modulo si era attivato. Nell'esempio dell'agenda, sarebbe il numero di telefono.
+
+La magia di `std::map` sta nel fatto che mantiene le sue coppie chiave-valore **ordinate per chiave**. Questo permette una ricerca molto efficiente, tipicamente con una complessità logaritmica ($O(\log n)$), il che significa che il tempo di ricerca non aumenta linearmente con il numero di elementi.
+
+---
+
+### Vantaggi nell'uso della `map`
+
+1.  **Associazione intuitiva**: Mette in relazione diretta una chiave con un valore, rendendo il codice più leggibile e logico. Invece di dover gestire array o elenchi paralleli, puoi semplicemente dire `mappa[chiave]` per accedere al valore desiderato.
+2.  **Flessibilità dinamica**: A differenza di un array statico, non devi sapere in anticipo quanti moduli utilizzerai. La `std::map` si espande automaticamente man mano che inserisci nuove coppie chiave-valore.
+3.  **Gestione automatica**: Non devi preoccuparti di come gli elementi vengono ordinati o di dove vengono memorizzati in memoria. La `map` si occupa di tutto.
+
+---
+
+### Esempi nel tuo codice
+
+Nel tuo caso, le `map` sono state usate così:
+
+* `std::map<uint16_t, uint32_t> m_last_epoch_seconds_map;`
+    * `uint16_t` è il tipo della **chiave**, che corrisponde al `modulo` passato alla funzione.
+    * `uint32_t` è il tipo del **valore**, che memorizza l'ultimo `epoch` per quel modulo.
+
+Quando chiami `lnTime.atSecondModulo(10)`, il codice cerca la chiave `10` nella `map` per trovare il suo valore. Se non trova la chiave `10`, la `map` la crea automaticamente e le assegna un valore predefinito (nel nostro caso `0`, gestito dalla tua logica).
+
+Quando la condizione `current_epoch % modulo == 0` è vera, la riga `m_last_epoch_seconds_map[modulo] = current_epoch;` aggiorna il valore associato alla chiave `modulo` con l'`epoch` corrente. Questo garantisce che la prossima volta che la funzione viene chiamata con lo stesso `modulo`, il controllo (`current_epoch != last_epoch`) funzioni correttamente, evitando l'attivazione multipla.

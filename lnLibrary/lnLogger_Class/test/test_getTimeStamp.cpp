@@ -4,13 +4,13 @@
 #define uint16_t unsigned long
 #define uint8_t unsigned int
 
-const uint8_t BUFFER_LEN = 16;
+// const uint8_t BUFFER_LEN = 16;
 char timeBuffer[16]; // Static buffer for the timestamp
 
 
 
 char* getTimeStamp(bool trimHeader, uint32_t millisec) { // Changed class name
-    snprintf(timeBuffer, BUFFER_LEN, "%s", "ciao mi chiamo loreto");
+    snprintf(timeBuffer, sizeof(timeBuffer), "%s", "ciao mi chiamo loreto");
     uint16_t msec    = (millisec % 1000); // value from 0-999
     uint32_t seconds = (millisec / 1000); // could be long
     uint8_t sec      = (seconds % 60);
@@ -18,15 +18,15 @@ char* getTimeStamp(bool trimHeader, uint32_t millisec) { // Changed class name
     uint8_t hour     = (seconds / 3600);
     if (trimHeader) {
         if (hour > 0) {
-            snprintf(timeBuffer, BUFFER_LEN, "%02d:%02d:%02d.%03lu", hour, min, sec, msec);
+            snprintf(timeBuffer, sizeof(timeBuffer), "%02d:%02d:%02d.%03lu", hour, min, sec, msec); // snprintf() scrive al massimo n-1 caratteri più il terminatore nul (\0) in dest.
         } else if (min > 0) {
-            snprintf(timeBuffer, BUFFER_LEN, "%02d:%02d.%03lu", min, sec, msec);
+            snprintf(timeBuffer, sizeof(timeBuffer), "%02d:%02d.%03lu", min, sec, msec); // snprintf() scrive al massimo n-1 caratteri più il terminatore nul (\0) in dest.
         } else {
-            snprintf(timeBuffer, BUFFER_LEN, "%02d.%03lu", sec, msec);
+            snprintf(timeBuffer, sizeof(timeBuffer), "%02d.%03lu", sec, msec); // snprintf() scrive al massimo n-1 caratteri più il terminatore nul (\0) in dest.
         }
     }
     else {
-        snprintf(timeBuffer, BUFFER_LEN, "%02d:%02d:%02d.%03lu", hour, min, sec, msec);
+        snprintf(timeBuffer, sizeof(timeBuffer), "%02d:%02d:%02d.%03lu", hour, min, sec, msec); // snprintf() scrive al massimo n-1 caratteri più il terminatore nul (\0) in dest.
     }
     return timeBuffer;
 }

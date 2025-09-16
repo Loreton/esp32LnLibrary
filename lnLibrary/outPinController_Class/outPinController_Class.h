@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 05-08-2025 18.08.29
+// Date .........: 11-09-2025 19.08.34
 //
 #pragma once
 #include <Arduino.h> // in testa anche per le definizioni dei type
@@ -48,15 +48,16 @@ public:
     void init(const char *name, uint8_t pin, uint8_t active_level = HIGH);
     void update();
 
-    void blinking(uint32_t onMs, uint32_t offMs, int8_t cycles = 0);
-    void blinking_dutyCycle(uint32_t period, float duty_cycle, int8_t cycles = 0); // con duty_cycle
-    void pulse(uint32_t duration);
+    void blinking_dutyCycle(uint32_t period, float duty_cycle, int8_t cycles = 0, bool waitForEnding=false); // con duty_cycle
+    void blinking(uint32_t onMs, uint32_t offMs, int8_t cycles = 0, bool waitForEnding=false);
+    void pulse(uint32_t duration, bool waitForEnding=false);
 
     // Metodi inline per accendere e spegnere
     inline void on() { _set(true); };
     inline void off() { _set(false); };
     inline const char* pinID(void) const { return m_pinID; }
     bool isPlayingSomething(void);
+    void waitForPulseEnding(int32_t timeOut);
 
 
 

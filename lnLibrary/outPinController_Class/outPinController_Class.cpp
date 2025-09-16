@@ -1,14 +1,19 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 05-08-2025 18.08.07
+// Date .........: 12-09-2025 16.49.19
 //
 
 #include <Arduino.h>     // in testa anche per le definizioni dei type
 
-#include "lnGlobalVars.h" // Assicurati che questi includano ancora i valori necessari
-#include "lnLogger_Class.h"
-#include "lnSetPinID.h"
-#include "lnSerialRead.h"
+
+// ---------------------------------
+// lnLibrary headers files
+// ---------------------------------
+// #define  LOG_MODULE_LEVEL LOG_LEVEL_DEBUG
+#include <lnLogger_Class.h>
+#include <lnGlobalVars.h> // Assicurati che questi includano ancora i valori necessari
+#include <lnSetPinID.h>
+#include <lnSerialRead.h>
 #include "outPinController_Class.h" // Includi il nuovo header della classe
 
 // costruttore
@@ -60,7 +65,7 @@ void outPinController_Class::update() {
 }
 
 
-void outPinController_Class::pulse(uint32_t duration) {
+void outPinController_Class::pulse(uint32_t duration, bool waitForEnding) {
     if (!m_pulseOn) {
         reset();
         m_pulseOn = true;
@@ -72,13 +77,19 @@ void outPinController_Class::pulse(uint32_t duration) {
     } else {
         LOG_DEBUG("%s pulseON already active: %lu ms", m_pinID,  m_pulseOnDuration);
     }
+    if (waitForEnding) {
+        waitForPulseEnding(duration*2);
+        off();
+    }
 }
 
 
-void outPinController_Class::blinking(uint32_t onMs, uint32_t offMs, int8_t cycles) {
+void outPinController_Class::blinking(uint32_t onMs, uint32_t offMs, int8_t cycles, bool waitForEnding) {
     if (!m_blinking) {
         reset();
         m_blinking = true;
+
+        if (cycles == 0) {waitForEnding = false; } // se cycles == 0 allora non consideriamo il wait altrimenti sarebbe infinito
 
         // se m_numCycles == 0 (default) il numero di cicli è infinito fino al reset
         m_numCycles = (cycles > 0) ? cycles : 0;
@@ -94,16 +105,21 @@ void outPinController_Class::blinking(uint32_t onMs, uint32_t offMs, int8_t cycl
         LOG_DEBUG("%s already blinking. ON: %lu ms, OFF: %lu ms (cycles: %d)", m_pinID,  m_onTime, m_offTime, m_numCycles);
     }
 
+    if (waitForEnding) {
+        uint32_t duration = (onMs + offMs) * cycles;
+        waitForPulseEnding(duration);
+        off();
+    }
 }
 
 // duty-cycle da 0.0 a 1.0
-void outPinController_Class::blinking_dutyCycle(uint32_t period, float duty_cycle, int8_t cycles) {
+void outPinController_Class::blinking_dutyCycle(uint32_t period, float duty_cycle, int8_t cycles, bool waitForEnding) {
     if (!m_blinking) {
         float dutyCycle = constrain(duty_cycle, 0.0, 1.0); // importanti i decimali per avere un float point
         uint32_t on_duration = period * dutyCycle;
         uint32_t off_duration = period - on_duration;
         LOG_DEBUG("%s duty_cycle: %.2f ON: %lums, OFF: %lums (cycles: %d)", m_pinID, dutyCycle, on_duration, off_duration, cycles);
-        blinking(on_duration, off_duration, cycles);
+        blinking(on_duration, off_duration, cycles, waitForEnding);
     }
 }
 
@@ -122,4 +138,18 @@ void outPinController_Class::reset() {
 
 bool outPinController_Class::isPlayingSomething() {
     return m_fixed || m_pulseOn || m_blinking || m_temporaryBlinking;
+}
+
+
+
+// #############################################################
+// # il timeout non è vincolante, se il suono finisce prima si esce...
+// #############################################################
+void outPinController_Class::waitForPulseEnding(int32_t timeOut) {
+    while (isPlayingSomething() && timeOut > 0) {
+        delay(10);
+        timeOut -= 10;
+        update();
+        LOG_TRACE("\t[%s] waiting for the end of pulse", m_pinID);
+    }
 }

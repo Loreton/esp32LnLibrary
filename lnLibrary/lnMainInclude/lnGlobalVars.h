@@ -1,13 +1,13 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 28-07-2025 14.46.36
+// Date .........: 12-09-2025 16.09.52
 */
 
 
 #pragma once
 #include <Arduino.h>
-    #include "lnLogger_Class.h"
-    #include "lnTime_Class.h"
+    #include <lnLogger_Class.h>
+    // #include "lnTime_Class.h"
     // #include "lnTimer_Class.h"
 
 
@@ -32,8 +32,8 @@
     // #pragma message(VAR_NAME_VALUE(LORETO))
     // #pragma message(VAR_NAME_VALUE(LORETO2))
 
-    #define ON  true
-    #define OFF false
+    // #define ON  true
+    // #define OFF false
 
     #ifdef __I_AM_MAIN_CPP__
         const char PROGMEM *str_action[]     = {"released", "pressed"};
@@ -85,7 +85,7 @@
 
 
     #ifdef __I_AM_MAIN_CPP__
-        #include "lnLogger_Class.h"
+        #include <lnLogger_Class.h>
         void printSizeOf(void) {
             // Serial.printf("byte:            %d\n", sizeof(byte));
             // Serial.printf("char:            %d\n", sizeof(char));

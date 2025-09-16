@@ -1,6 +1,6 @@
 /*
 // updated by ...: Loreto Notarantonio
-// Date .........: 28-07-2025 14.49.34
+// Date .........: 10-09-2025 13.35.54
 */
 
 
@@ -10,7 +10,8 @@
 // ---------------------------------
 // lnLibrary headers files
 // ---------------------------------
-#include "lnLogger_Class.h"
+// #define  LOG_MODULE_LEVEL LOG_LEVEL_DEBUG
+#include <lnLogger_Class.h>
 #include "lnString.h"
 
 /*
@@ -138,7 +139,7 @@ char *getSubString(char *source, char *dest, char left, char right) {
         len=myTo - myFrom;
     }
    LOG_INFO("len: %d\n", len);
-    snprintf(dest, len+1, "%s", myFrom);
+    snprintf(dest, len+1, "%s", myFrom); // snprintf() scrive al massimo n-1 caratteri più il terminatore nul (\0) in dest.
    LOG_INFO("From: %s\n", dest);
     return dest;
 }

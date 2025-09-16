@@ -1,6 +1,6 @@
 //
 // updated by ...: Loreto Notarantonio
-// Date .........: 06-08-2025 13.46.13
+// Date .........: 16-09-2025 12.10.00
 //
 
 #include <Arduino.h> // in testa anche per le definizioni dei type
@@ -43,13 +43,19 @@ void toggleOutputPin(uint8_t pin) {
     digitalWrite(pin, LOW); pinMode(pin, OUTPUT);
 
     digitalWrite(pin, LOW);
-    delay(1000); Serial.printf(" - %s", str_pinLevel[digitalRead(pin)]);
+    delay(50);
+    Serial.printf(" - %s", str_pinLevel[digitalRead(pin)]);
+    delay(1000);
 
     digitalWrite(pin, HIGH);
-    delay(1000); Serial.printf(" - %s", str_pinLevel[digitalRead(pin)]);
+    delay(50);
+    Serial.printf(" - %s", str_pinLevel[digitalRead(pin)]);
+    delay(1000);
 
     digitalWrite(pin, LOW);
-    delay(1000); Serial.printf(" - %s", str_pinLevel[digitalRead(pin)]);
+    delay(50);
+    Serial.printf(" - %s", str_pinLevel[digitalRead(pin)]);
+    delay(1000);
 
     pinMode(pin, INPUT);
     delay(1000);
@@ -65,7 +71,9 @@ void pinOFF(uint8_t pin) {
     Serial.printf("\tsetting pin: %2d OFF", pin);
 
     digitalWrite(pin, LOW);
-    delay(1000); Serial.printf(" - %s", str_pinLevel[digitalRead(pin)]);
+    delay(50);
+    Serial.printf(" - %s", str_pinLevel[digitalRead(pin)]);
+    delay(1000);
 
     Serial.printf("\n");
 }
@@ -77,7 +85,9 @@ void pinON(uint8_t pin) {
     Serial.printf("\tsetting pin: %2d ON", pin);
 
     digitalWrite(pin, HIGH);
-    delay(1000); Serial.printf(" - %s", str_pinLevel[digitalRead(pin)]);
+    delay(50);
+    Serial.printf(" - %s", str_pinLevel[digitalRead(pin)]);
+    delay(1000);
 
     Serial.printf("\n");
 }
