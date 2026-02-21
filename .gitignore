@@ -53,8 +53,14 @@ dkms.conf
 
 
 
-# loreto va bene sia */.pio/ che .pio/ anche se su sotto directory
-*/.pio/
-.pio/
+# by Loreto
+# va bene sia */.pio/ che .pio/ anche se su sotto directory
+*.o
+*.obj
+**/build/*
+.activate
+.lnactivate
+.piorun
+.venv
 *ssids*.h
-extraLibraries/
+
